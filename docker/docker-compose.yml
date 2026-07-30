@@ -1,0 +1,23 @@
+﻿version: "3.8"
+services:
+  db:
+    image: postgres:15-alpine
+    environment: { POSTGRES_DB: atlas, POSTGRES_USER: atlas, POSTGRES_PASSWORD: atlas_secret }
+    volumes: [ pgdata:/var/lib/postgresql/data ]
+    ports: ["5432:5432"]
+
+  backend:
+    build: { context: ., dockerfile: docker/Dockerfile }
+    environment:
+      ATLAS_ENVIRONMENT: production
+      ATLAS_DB__URL: postgresql+asyncpg://atlas:atlas_secret@db:5432/atlas
+      ATLAS_LOG__LEVEL: INFO
+    depends_on: [db]
+    ports: ["8000:8000"]
+
+  frontend:
+    build: { context: ., dockerfile: docker/Dockerfile.frontend }
+    depends_on: [backend]
+    ports: ["80:80"]
+
+volumes: { pgdata: }

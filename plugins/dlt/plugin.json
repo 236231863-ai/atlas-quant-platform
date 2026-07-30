@@ -1,0 +1,10 @@
+﻿{
+  "id": "dlt",
+  "name": "大乐透",
+  "version": "1.0.0",
+  "author": "Atlas Quant Team",
+  "description": "中国体育彩票大乐透 (DLT) 插件",
+  "entry": "plugins.dlt:DltPlugin",
+  "dependencies": [],
+  "engine_version": ">=0.1.0"
+}

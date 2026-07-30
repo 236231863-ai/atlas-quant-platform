@@ -1,0 +1,10 @@
+﻿{
+  "id": "ssq",
+  "name": "双色球",
+  "version": "1.0.0",
+  "author": "Atlas Quant Team",
+  "description": "中国福利彩票双色球 (SSQ) 插件",
+  "entry": "plugins.ssq:SsqPlugin",
+  "dependencies": [],
+  "engine_version": ">=0.1.0"
+}

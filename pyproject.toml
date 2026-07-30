@@ -1,0 +1,75 @@
+﻿[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "atlas-quant"
+version = "0.1.0"
+description = "Atlas Quant Platform - 跨领域量化研究平台"
+authors = ["Atlas Quant Team"]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "atlas", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.1"
+numpy = "^1.26"
+sqlalchemy = "^2.0"
+alembic = "^1.13"
+pydantic = "^2.5"
+pydantic-settings = "^2.1"
+click = "^8.1"
+rich = "^13.7"
+httpx = "^0.26"
+scipy = "^1.12"
+statsmodels = "^0.14"
+matplotlib = "^3.8"
+plotly = "^5.18"
+loguru = "^0.7"
+
+openai = {version = "^1.12", optional = true}
+anthropic = {version = "^0.23", optional = true}
+fastapi = {version = "^0.109", optional = true}
+uvicorn = {version = "^0.27", optional = true}
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.2"
+black = "^24.1"
+mypy = "^1.8"
+pre-commit = "^3.6"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.0"
+pytest-asyncio = "^0.23"
+pytest-cov = "^4.1"
+pytest-mock = "^3.12"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+exclude = ["tests/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "unit: 单元测试, 无外部依赖",
+    "integration: 集成测试, 需要数据库",
+    "e2e: 端到端测试",
+    "slow: 超过5秒的测试",
+]
+addopts = "--strict-markers --tb=short --no-header"
+
+[tool.coverage.run]
+source = ["core", "engine", "plugins"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true

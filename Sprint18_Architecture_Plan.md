@@ -1,0 +1,10 @@
+﻿# Sprint 18 Architecture Plan - Artificial Research Institution (v2.0.0)
+## New Modules
+- engine/institution/governance/ - Research Governance (Phase 1)
+- engine/institution/departments/ - Research Departments (Phase 2)
+- engine/institution/career/ - Researcher Career (Phase 3)
+- engine/publication/ - Publication System (Phase 4)
+- engine/review_committee/ - Review Committee (Phase 5)
+- engine/research_assets/ - Asset Management (Phase 6)
+- engine/intelligence/ - Institution Director (Phase 7)
+- engine/dashboard/ - Institution Dashboard (Phase 8)
