@@ -1,1 +1,67 @@
-﻿name: CI
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    name: Lint (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Run ruff
+        run: ruff check . --exclude .venv --exclude tests
+
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt -c constraints.txt
+      - name: Run tests with coverage
+        run: |
+          pip install pytest-cov
+          python -m pytest tests/ -q --cov=core --cov=engine --cov=backend --cov-report=term --cov-report=xml
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.xml
+          fail_ci_if_error: false
+
+  build:
+    name: Build Desktop (Windows)
+    runs-on: windows-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt -c constraints.txt
+      - name: Build Atlas.exe
+        run: |
+          cd packaging
+          python -m PyInstaller --noconfirm --clean atlas_desktop.spec --distpath ../dist --workpath ../build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Atlas.exe
+          path: dist/Atlas.exe

@@ -1,1 +1,52 @@
-﻿name: Release
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build Release Artifacts
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements-dev.txt -c constraints.txt
+          pip install PyInstaller
+
+      - name: Build Desktop + CLI + Worker
+        run: |
+          cd packaging
+          python -m PyInstaller --noconfirm --clean atlas_desktop.spec --distpath ../dist --workpath ../build
+          python -m PyInstaller --noconfirm --clean atlas_cli.spec --distpath ../dist --workpath ../build
+          python -m PyInstaller --noconfirm --clean atlas_worker.spec --distpath ../dist --workpath ../build
+
+      - name: Create portable zip
+        run: |
+          powershell Compress-Archive -Path dist/Atlas.exe, dist/Atlas_CLI.exe, dist/Atlas_Worker.exe -DestinationPath dist/Atlas_Portable.zip
+
+      - name: Build installer
+        run: |
+          iwr https://jrsoftware.org/download.php/is.exe -OutFile is.exe
+          .\is.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-
+          "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer/setup.iss
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/Atlas.exe
+            dist/Atlas_CLI.exe
+            dist/Atlas_Worker.exe
+            dist/Atlas_Portable.zip
+            release/Atlas_Setup.exe
+          generate_release_notes: true
