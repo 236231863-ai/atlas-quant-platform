@@ -1,0 +1,23 @@
+version: "3.8"
+
+# 开发环境覆盖：docker compose up 时自动加载
+# 特性：源码热挂载 + 调试端口 + 宽松日志
+
+services:
+  backend:
+    volumes:
+      - ../backend:/app/backend
+      - ../engine:/app/engine
+      - ../core:/app/core
+    environment:
+      ATLAS_ENVIRONMENT: development
+      ATLAS_LOG__LEVEL: DEBUG
+    command: uvicorn backend.api.v1.app:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+
+  frontend:
+    volumes:
+      - ../frontend:/app/frontend
+    environment:
+      NODE_ENV: development
