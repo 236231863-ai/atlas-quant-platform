@@ -1,5 +1,27 @@
 ﻿# Atlas Quant Platform Changelog
 
+## [v3.5.2] - 2026-08-02
+### Engineering Sprint E1 - Project Engineering Foundation
+### Added
+- Engineering: Sprint_E1_Architecture.md, Git_Workflow.md, Dependency_Report.md
+- Git governance: LICENSE, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md
+- VSCode workspace: launch.json, tasks.json, extensions.json, settings.json
+- Dependency management: requirements family (5 envs) + constraints.txt
+- Unified build pipeline: build.ps1 / build.bat / build.sh
+- Executable packaging: Atlas.exe / Atlas_CLI.exe / Atlas_Worker.exe + specs
+- Installer: Atlas_Setup.exe (Inno Setup)
+- Docker orchestration: backend/frontend/nginx/postgres/redis
+- GitHub CI/CD: ci.yml + release.yml + PR template
+- Release engineering: Portable/Debug zips + notes + checklists
+- Documentation: 10 guides (QuickStart/Developer/User/Install/Deploy/API/Plugin/Architecture/FAQ/Marketplace)
+- Official project structure: examples/ + assets/ completed
+- Engineering tests: tests/engineering/ (55 tests)
+### Changed
+- README updated with engineering standards and badges
+- Unified version to v3.5.2
+### Note
+- No engine, AI, research, or database business logic modified
+
 ## [v3.5.1] - 2026-07-30
 ### Added
 - Branding & Product Identity (logos, version, editions)
