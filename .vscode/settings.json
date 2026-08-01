@@ -1,0 +1,10 @@
+{
+    "python.defaultInterpreterPath": "C:\\Users\\Administrator\\Documents\\Codex\\2026-07-28\\lqrp-v0-1-v0-2-v0\\AtlasQuant\\.venv\\Scripts\\python.exe",
+    "python.terminal.activateEnvironment": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+        88,
+        120
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system"
+}

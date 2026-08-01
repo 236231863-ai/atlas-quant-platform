@@ -12,8 +12,9 @@ data/
 # Logs
 logs/
 
-# IDE
-.vscode/
+# IDE（保留项目级 .vscode 工程文件，忽略个人设置）
+.vscode/*.local
+.vscode/settings.local.json
 .idea/
 
 # Environment
