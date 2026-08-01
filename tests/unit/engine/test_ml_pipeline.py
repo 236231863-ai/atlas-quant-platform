@@ -41,15 +41,27 @@ class TestFeaturePipeline:
         X, y = FeaturePipeline.to_feature_matrix(vs)
         assert len(X[0]) == 11
 class T4:
-    def test_d1(self): assert True
-    def test_d2(self): assert True
-    def test_d3(self): assert True
-    def test_d4(self): assert True
-    def test_d5(self): assert True
-    def test_d6(self): assert True
-    def test_d7(self): assert True
-    def test_d8(self): assert True
-    def test_d9(self): assert True
-    def test_d10(self): assert True
-    def test_d11(self): assert True
-    def test_d12(self): assert True
+    def test_d1(self):
+        assert True
+    def test_d2(self):
+        assert True
+    def test_d3(self):
+        assert True
+    def test_d4(self):
+        assert True
+    def test_d5(self):
+        assert True
+    def test_d6(self):
+        assert True
+    def test_d7(self):
+        assert True
+    def test_d8(self):
+        assert True
+    def test_d9(self):
+        assert True
+    def test_d10(self):
+        assert True
+    def test_d11(self):
+        assert True
+    def test_d12(self):
+        assert True

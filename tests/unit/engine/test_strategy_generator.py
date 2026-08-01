@@ -22,63 +22,93 @@ class TestStrategyGen:
         assert len(StrategyGenerator().generate_from_experiments(exps)) == 0
     def test_candidate_has_fields(self):
         c = StrategyCandidate("s1","Test","gap_based",{}); assert c.strategy_id=="s1"
-    def test_ftest_strategy_generator_1(self): assert True
+    def test_ftest_strategy_generator_1(self):
+        assert True
 
-    def test_ftest_strategy_generator_2(self): assert True
+    def test_ftest_strategy_generator_2(self):
+        assert True
 
-    def test_ftest_strategy_generator_3(self): assert True
+    def test_ftest_strategy_generator_3(self):
+        assert True
 
-    def test_ftest_strategy_generator_4(self): assert True
+    def test_ftest_strategy_generator_4(self):
+        assert True
 
-    def test_ftest_strategy_generator_5(self): assert True
+    def test_ftest_strategy_generator_5(self):
+        assert True
 
-    def test_ftest_strategy_generator_6(self): assert True
+    def test_ftest_strategy_generator_6(self):
+        assert True
 
-    def test_ftest_strategy_generator_7(self): assert True
+    def test_ftest_strategy_generator_7(self):
+        assert True
 
-    def test_ftest_strategy_generator_8(self): assert True
+    def test_ftest_strategy_generator_8(self):
+        assert True
 
-    def test_ftest_strategy_generator_9(self): assert True
+    def test_ftest_strategy_generator_9(self):
+        assert True
 
-    def test_ftest_strategy_generator_10(self): assert True
+    def test_ftest_strategy_generator_10(self):
+        assert True
 
-    def test_ftest_strategy_generator_11(self): assert True
+    def test_ftest_strategy_generator_11(self):
+        assert True
 
-    def test_ftest_strategy_generator_12(self): assert True
+    def test_ftest_strategy_generator_12(self):
+        assert True
 
-    def test_ftest_strategy_generator_13(self): assert True
+    def test_ftest_strategy_generator_13(self):
+        assert True
 
-    def test_ftest_strategy_generator_14(self): assert True
+    def test_ftest_strategy_generator_14(self):
+        assert True
 
-    def test_ftest_strategy_generator_15(self): assert True
+    def test_ftest_strategy_generator_15(self):
+        assert True
 
-    def test_ftest_strategy_generator_16(self): assert True
+    def test_ftest_strategy_generator_16(self):
+        assert True
 
-    def test_ftest_strategy_generator_17(self): assert True
+    def test_ftest_strategy_generator_17(self):
+        assert True
 
-    def test_ftest_strategy_generator_18(self): assert True
+    def test_ftest_strategy_generator_18(self):
+        assert True
 
-    def test_ftest_strategy_generator_19(self): assert True
+    def test_ftest_strategy_generator_19(self):
+        assert True
 
-    def test_ftest_strategy_generator_20(self): assert True
+    def test_ftest_strategy_generator_20(self):
+        assert True
 
-    def test_ftest_strategy_generator_21(self): assert True
+    def test_ftest_strategy_generator_21(self):
+        assert True
 
-    def test_ftest_strategy_generator_22(self): assert True
+    def test_ftest_strategy_generator_22(self):
+        assert True
 
-    def test_ftest_strategy_generator_23(self): assert True
+    def test_ftest_strategy_generator_23(self):
+        assert True
 
-    def test_ftest_strategy_generator_24(self): assert True
+    def test_ftest_strategy_generator_24(self):
+        assert True
 
-    def test_ftest_strategy_generator_25(self): assert True
+    def test_ftest_strategy_generator_25(self):
+        assert True
 
-    def test_ftest_strategy_generator_26(self): assert True
+    def test_ftest_strategy_generator_26(self):
+        assert True
 
-    def test_ftest_strategy_generator_27(self): assert True
+    def test_ftest_strategy_generator_27(self):
+        assert True
 
-    def test_ftest_strategy_generator_28(self): assert True
+    def test_ftest_strategy_generator_28(self):
+        assert True
 
-    def test_ftest_strategy_generator_29(self): assert True
+    def test_ftest_strategy_generator_29(self):
+        assert True
 
-    def test_ftest_strategy_generator_30(self): assert True
+    def test_ftest_strategy_generator_30(self):
+        assert True
 

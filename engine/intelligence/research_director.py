@@ -45,4 +45,5 @@ class ResearchDirector:
         else: return "Phase 4: Advanced research with automated loops"
 
     @property
-    def research_graph(self): return self._research_graph
+    def research_graph(self):
+        return self._research_graph

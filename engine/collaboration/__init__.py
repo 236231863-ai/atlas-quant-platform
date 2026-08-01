@@ -8,7 +8,8 @@ from engine.agent_protocol import ResearchTask, ResearchMessage, AgentResult
 class CollaborativeResearchReport:
     objective: str; agents_involved: List[str]; results: List[Dict[str, Any]]
     consensus: str; confidence: float
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchTeamCoordinator:
     def __init__(self):

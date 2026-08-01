@@ -3,7 +3,9 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 class ResearchDirectorV8:
-    def __init__(self): self._observations: List[Dict[str, Any]] = []; self._goals: List[str] = []
+    def __init__(self):
+        self._observations: List[Dict[str, Any]] = []
+        self._goals: List[str] = []
     def observe_world(self, signals: List[Dict[str, Any]]) -> Dict[str, Any]:
         self._observations.extend(signals); return {"observations": len(signals), "total_observed": len(self._observations)}
     def detect_change(self) -> List[Dict[str, Any]]:

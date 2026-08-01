@@ -5,7 +5,8 @@ from dataclasses import dataclass, asdict
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 class BayesianOptimizer:
-    def __init__(self, random_seed: Optional[int] = None): self._rng = random.Random(random_seed)
+    def __init__(self, random_seed: Optional[int] = None):
+        self._rng = random.Random(random_seed)
     @staticmethod
     def expected_improvement(mean: float, std: float, best: float, eps: float = 0.01) -> float:
         if std <= 0: return 0.0

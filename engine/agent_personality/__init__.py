@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class PersonalityProfile:
     agent_id: str; risk_preference: float = 0.5; exploration_level: float = 0.5
     analysis_depth: float = 0.5; decision_style: str = "balanced"; confidence_level: float = 0.5
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class PersonalityManager:
-    def __init__(self): self._profiles: Dict[str, PersonalityProfile] = {}
+    def __init__(self):
+        self._profiles: Dict[str, PersonalityProfile] = {}
     def create_profile(self, agent_id: str, **kwargs) -> PersonalityProfile:
         profile = PersonalityProfile(agent_id=agent_id, **kwargs)
         self._profiles[agent_id] = profile; return profile

@@ -9,12 +9,15 @@ class EvolutionNode:
     strategy_id: str; generation: int; parent_id: Optional[str]; mutation_type: str
     parameters: Dict[str, Any]; performance: Dict[str, float] = field(default_factory=dict)
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class EvolutionGraph:
     nodes: List[EvolutionNode] = field(default_factory=list)
-    def add_node(self, node: EvolutionNode): self.nodes.append(node); return node
+    def add_node(self, node: EvolutionNode):
+        self.nodes.append(node)
+        return node
     def get_lineage(self, strategy_id: str) -> List[EvolutionNode]:
         result = []; current = strategy_id
         while current:
@@ -25,9 +28,11 @@ class EvolutionGraph:
     def count(self) -> int: return len(self.nodes)
 
 class StrategyEvolutionEngine:
-    def __init__(self): self._graph = EvolutionGraph()
+    def __init__(self):
+        self._graph = EvolutionGraph()
     @property
-    def graph(self): return self._graph
+    def graph(self):
+        return self._graph
 
     def create_initial(self, strategy_id: str, params: Dict[str, Any]) -> EvolutionNode:
         node = EvolutionNode(strategy_id=strategy_id, generation=1, parent_id=None,

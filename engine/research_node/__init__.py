@@ -7,7 +7,8 @@ from typing import Any, Dict, List, Optional
 class NodeInfo:
     node_id: str; node_type: str; status: str = "idle"; capabilities: List[str] = field(default_factory=list)
     task_count: int = 0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchNode:
     def __init__(self, node_id: str, node_type: str = "local", capabilities: Optional[List[str]] = None):

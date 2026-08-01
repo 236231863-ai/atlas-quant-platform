@@ -34,10 +34,17 @@ class TestHMM:
         results = HMMEngine.analyze_batch({1: [1]*10 + [2]*5 + [3]*5})
         assert isinstance(results[0], HMMResult)
 class X4:
-    def test_11(self): pass
-    def test_12(self): pass
-    def test_13(self): pass
-    def test_14(self): pass
-    def test_15(self): pass
-    def test_16(self): pass
-    def test_17(self): pass
+    def test_11(self):
+        pass
+    def test_12(self):
+        pass
+    def test_13(self):
+        pass
+    def test_14(self):
+        pass
+    def test_15(self):
+        pass
+    def test_16(self):
+        pass
+    def test_17(self):
+        pass

@@ -4,10 +4,19 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class ExecutionReport: execution_id:str; status:str="planned"; time_cost:float=0.0; resource_cost:float=0.0; risk_level:float=0.0; success_probability:float=0.5; def to_dict(self):return asdict(self)
+class ExecutionReport:
+    execution_id:str
+    status:str="planned"
+    time_cost:float=0.0
+    resource_cost:float=0.0
+    risk_level:float=0.0
+    success_probability:float=0.5
+    def to_dict(self):
+        return asdict(self)
 
 class ExecutionSimulator:
-    def __init__(self): self._executions: Dict[str, ExecutionReport] = {}
+    def __init__(self):
+        self._executions: Dict[str, ExecutionReport] = {}
     def simulate(self, plan_id: str, plan_steps: int) -> ExecutionReport:
         import uuid
         eid = str(uuid.uuid4())

@@ -30,63 +30,93 @@ class TestReview:
         r = ResearchReviewSystem(); r.propose("e1"); assert len(r.history()) == 1
     def test_count(self):
         r = ResearchReviewSystem(); r.propose("e1"); r.propose("e2"); assert r.count() == 2
-    def test_ftest_review_1(self): assert True
+    def test_ftest_review_1(self):
+        assert True
 
-    def test_ftest_review_2(self): assert True
+    def test_ftest_review_2(self):
+        assert True
 
-    def test_ftest_review_3(self): assert True
+    def test_ftest_review_3(self):
+        assert True
 
-    def test_ftest_review_4(self): assert True
+    def test_ftest_review_4(self):
+        assert True
 
-    def test_ftest_review_5(self): assert True
+    def test_ftest_review_5(self):
+        assert True
 
-    def test_ftest_review_6(self): assert True
+    def test_ftest_review_6(self):
+        assert True
 
-    def test_ftest_review_7(self): assert True
+    def test_ftest_review_7(self):
+        assert True
 
-    def test_ftest_review_8(self): assert True
+    def test_ftest_review_8(self):
+        assert True
 
-    def test_ftest_review_9(self): assert True
+    def test_ftest_review_9(self):
+        assert True
 
-    def test_ftest_review_10(self): assert True
+    def test_ftest_review_10(self):
+        assert True
 
-    def test_ftest_review_11(self): assert True
+    def test_ftest_review_11(self):
+        assert True
 
-    def test_ftest_review_12(self): assert True
+    def test_ftest_review_12(self):
+        assert True
 
-    def test_ftest_review_13(self): assert True
+    def test_ftest_review_13(self):
+        assert True
 
-    def test_ftest_review_14(self): assert True
+    def test_ftest_review_14(self):
+        assert True
 
-    def test_ftest_review_15(self): assert True
+    def test_ftest_review_15(self):
+        assert True
 
-    def test_ftest_review_16(self): assert True
+    def test_ftest_review_16(self):
+        assert True
 
-    def test_ftest_review_17(self): assert True
+    def test_ftest_review_17(self):
+        assert True
 
-    def test_ftest_review_18(self): assert True
+    def test_ftest_review_18(self):
+        assert True
 
-    def test_ftest_review_19(self): assert True
+    def test_ftest_review_19(self):
+        assert True
 
-    def test_ftest_review_20(self): assert True
+    def test_ftest_review_20(self):
+        assert True
 
-    def test_ftest_review_21(self): assert True
+    def test_ftest_review_21(self):
+        assert True
 
-    def test_ftest_review_22(self): assert True
+    def test_ftest_review_22(self):
+        assert True
 
-    def test_ftest_review_23(self): assert True
+    def test_ftest_review_23(self):
+        assert True
 
-    def test_ftest_review_24(self): assert True
+    def test_ftest_review_24(self):
+        assert True
 
-    def test_ftest_review_25(self): assert True
+    def test_ftest_review_25(self):
+        assert True
 
-    def test_ftest_review_26(self): assert True
+    def test_ftest_review_26(self):
+        assert True
 
-    def test_ftest_review_27(self): assert True
+    def test_ftest_review_27(self):
+        assert True
 
-    def test_ftest_review_28(self): assert True
+    def test_ftest_review_28(self):
+        assert True
 
-    def test_ftest_review_29(self): assert True
+    def test_ftest_review_29(self):
+        assert True
 
-    def test_ftest_review_30(self): assert True
+    def test_ftest_review_30(self):
+        assert True
 

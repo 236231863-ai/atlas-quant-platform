@@ -4,13 +4,29 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class PredictionRecord: record_id:str; prediction:str; actual_result:str; error:float=0.0; reason:str=""; timestamp:str=""; def to_dict(self):return asdict(self)
+class PredictionRecord:
+    record_id:str
+    prediction:str
+    actual_result:str
+    error:float=0.0
+    reason:str=""
+    timestamp:str=""
+    def to_dict(self):
+        return asdict(self)
 @dataclass
-class RealityLearningReport: records:List[PredictionRecord]=field(default_factory=list); avg_error:float=0.0; improvement_suggestions:List[str]=field(default_factory=list); def to_dict(self):return asdict(self)
+class RealityLearningReport:
+    records:List[PredictionRecord]=field(default_factory=list)
+    avg_error:float=0.0
+    improvement_suggestions:List[str]=field(default_factory=list)
+    def to_dict(self):
+        return asdict(self)
 
 class RealityLearningEngine:
-    def __init__(self): self._records: Dict[str, PredictionRecord] = {}
-    def record(self, record: PredictionRecord): self._records[record.record_id] = record; return record
+    def __init__(self):
+        self._records: Dict[str, PredictionRecord] = {}
+    def record(self, record: PredictionRecord):
+        self._records[record.record_id] = record
+        return record
     def analyze(self) -> RealityLearningReport:
         if not self._records: return RealityLearningReport()
         errors = [r.error for r in self._records.values()]

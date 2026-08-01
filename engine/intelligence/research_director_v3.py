@@ -24,4 +24,5 @@ class ResearchDirectorV3:
                 "Run experiments", "Benchmark results", "Update knowledge base"]
 
     def list_missions(self) -> List[Dict[str, Any]]: return self._missions
-    def set_objectives(self, objectives: List[str]): self._objectives = objectives
+    def set_objectives(self, objectives: List[str]):
+        self._objectives = objectives

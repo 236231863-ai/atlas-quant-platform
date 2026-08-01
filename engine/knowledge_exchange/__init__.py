@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class KnowledgeExchangeRecord:
     record_id: str; source: str; receiver: str; reason: str; confidence: float = 0.5
     impact: float = 0.0; knowledge_type: str = "insight"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class KnowledgeExchangeEngine:
-    def __init__(self): self._records: Dict[str, KnowledgeExchangeRecord] = {}
+    def __init__(self):
+        self._records: Dict[str, KnowledgeExchangeRecord] = {}
     def publish_insight(self, record: KnowledgeExchangeRecord):
         self._records[record.record_id] = record; return record
     def request_knowledge(self, topic: str) -> List[KnowledgeExchangeRecord]:

@@ -8,17 +8,20 @@ from datetime import datetime, timezone
 class AnalysisRequest:
     lottery_code: str = "dlt"; mode: str = "basic"; strategy: str = "balanced"
     parameters: Dict[str, Any] = field(default_factory=dict)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class AnalysisReport:
     report_id: str; summary: str; analysis_type: str; results: Dict[str, Any] = field(default_factory=dict)
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     disclaimer: str = "Statistical analysis only. No guarantee of future outcomes."
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ProductAPI:
-    def __init__(self): self._reports: Dict[str, AnalysisReport] = {}
+    def __init__(self):
+        self._reports: Dict[str, AnalysisReport] = {}
     def dashboard(self) -> Dict[str, Any]:
         return {"status": "online", "version": "2.1.1", "lotteries": ["dlt","ssq"], "total_reports": len(self._reports)}
     def analyze(self, request: AnalysisRequest) -> AnalysisReport:

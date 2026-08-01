@@ -34,8 +34,13 @@ class ResearchDirectorV6:
             result["improvement_goal"] = self._self_improvement.generate_improvement_goal(weakness)
         return result
 
-    def get_goal_gen(self): return self._goal_gen
-    def get_planner(self): return self._planner
-    def get_council(self): return self._council
-    def get_civilization(self): return self._civilization
-    def get_self_improvement(self): return self._self_improvement
+    def get_goal_gen(self):
+        return self._goal_gen
+    def get_planner(self):
+        return self._planner
+    def get_council(self):
+        return self._council
+    def get_civilization(self):
+        return self._civilization
+    def get_self_improvement(self):
+        return self._self_improvement

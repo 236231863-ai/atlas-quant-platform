@@ -7,10 +7,21 @@ from enum import Enum
 UserLevel = Enum("UserLevel", ["BEGINNER","EXPLORER","ADVANCED","RESEARCHER","PROFESSIONAL","SCIENTIST"])
 
 @dataclass
-class UserDigitalProfile: user_id:str; level:UserLevel=UserLevel.BEGINNER; skill_level:float=0.0; research_interests:List[str]=field(default_factory=list); favorite_strategy:str=""; risk_preference:float=0.5; usage_pattern:str="balanced"; learning_progress:float=0.0; def to_dict(self):return asdict(self)
+class UserDigitalProfile:
+    user_id:str
+    level:UserLevel=UserLevel.BEGINNER
+    skill_level:float=0.0
+    research_interests:List[str]=field(default_factory=list)
+    favorite_strategy:str=""
+    risk_preference:float=0.5
+    usage_pattern:str="balanced"
+    learning_progress:float=0.0
+    def to_dict(self):
+        return asdict(self)
 
 class ProfileEvolutionEngine:
-    def __init__(self): self._profiles: Dict[str, UserDigitalProfile] = {}
+    def __init__(self):
+        self._profiles: Dict[str, UserDigitalProfile] = {}
     def update_profile(self, uid: str, events: List[Dict]) -> UserDigitalProfile:
         profile = self._profiles.get(uid, UserDigitalProfile(user_id=uid))
         analysis_count = sum(1 for e in events if e.get("event_type","").startswith("analysis"))

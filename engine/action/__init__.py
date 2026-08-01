@@ -4,10 +4,20 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class ActionPlanReport: plan_id:str; goal:str; steps:List[str]; resources:Dict[str,float]; timeline:str; constraints:List[str]; metrics:List[str]=field(default_factory=list); def to_dict(self):return asdict(self)
+class ActionPlanReport:
+    plan_id:str
+    goal:str
+    steps:List[str]
+    resources:Dict[str,float]
+    timeline:str
+    constraints:List[str]
+    metrics:List[str]=field(default_factory=list)
+    def to_dict(self):
+        return asdict(self)
 
 class ActionPlanner:
-    def __init__(self): self._plans: Dict[str, ActionPlanReport] = {}
+    def __init__(self):
+        self._plans: Dict[str, ActionPlanReport] = {}
     def create_plan(self, goal: str, steps: List[str]) -> ActionPlanReport:
         import uuid
         plan = ActionPlanReport(plan_id=str(uuid.uuid4()), goal=goal, steps=steps, resources={"compute":1.0}, timeline="7d", constraints=["budget","time"])

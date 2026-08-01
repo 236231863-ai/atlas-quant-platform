@@ -7,7 +7,7 @@ SQLite for development, PostgreSQL for production.
 from __future__ import annotations
 
 import os
-from typing import AsyncGenerator, Optional
+from typing import Any, AsyncGenerator, Dict, Optional
 
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -36,12 +36,13 @@ def create_engine(db_url: Optional[str] = None) -> AsyncEngine:
     """Create database engine."""
     global _engine
     url = db_url or get_db_url()
-    _engine = create_async_engine(
-        url,
-        echo=os.getenv("ATLAS_DB_ECHO", "false").lower() == "true",
-        pool_size=5,
-        max_overflow=10,
-    )
+    kwargs: Dict[str, Any] = {
+        "echo": os.getenv("ATLAS_DB_ECHO", "false").lower() == "true",
+    }
+    if not url.startswith("sqlite"):
+        kwargs["pool_size"] = 5
+        kwargs["max_overflow"] = 10
+    _engine = create_async_engine(url, **kwargs)
     return _engine
 
 

@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class TransferredInsight:
     insight_id: str; source_domain: str; target_domain: str; concept: str
     similarity_score: float; applicability: float; description: str
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class KnowledgeTransferEngine:
-    def __init__(self): self._insights: Dict[str, TransferredInsight] = {}
+    def __init__(self):
+        self._insights: Dict[str, TransferredInsight] = {}
     def record_insight(self, insight: TransferredInsight):
         self._insights[insight.insight_id] = insight; return insight
     def concept_mapping(self, source_concepts: List[str], target_concepts: List[str]) -> List[Dict[str, Any]]:

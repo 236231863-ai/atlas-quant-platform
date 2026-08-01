@@ -17,6 +17,15 @@ class EcosystemDirector:
         health = self._operation.assess_health()
         forecast = self._growth.predict_growth(health.active_creators, health.total_transactions)
         return {"health": health.to_dict(), "forecast": forecast.to_dict()}
-    def get_operation(self): return self._operation; def get_growth(self): return self._growth
-    def get_strategy(self): return self._strategy; def get_creators(self): return self._creators
-    def get_enterprise(self): return self._enterprise; def get_governance(self): return self._governance
+    def get_operation(self):
+        return self._operation
+        def get_growth(self):
+            return self._growth
+    def get_strategy(self):
+        return self._strategy
+        def get_creators(self):
+            return self._creators
+    def get_enterprise(self):
+        return self._enterprise
+        def get_governance(self):
+            return self._governance

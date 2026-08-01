@@ -10,10 +10,12 @@ class KnowledgeRecord:
     confidence: float = 0.5; parent_id: Optional[str] = None
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     metadata: Dict[str, Any] = field(default_factory=dict)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class KnowledgeBase:
-    def __init__(self): self._records: Dict[str, KnowledgeRecord] = {}
+    def __init__(self):
+        self._records: Dict[str, KnowledgeRecord] = {}
     def add(self, record: KnowledgeRecord) -> KnowledgeRecord:
         self._records[record.id] = record; return record
     def get(self, rid: str) -> Optional[KnowledgeRecord]: return self._records.get(rid)
@@ -39,9 +41,11 @@ class KnowledgeBase:
         return [r for _, r in scored[:max_results]]
 
 class ResearchMemory:
-    def __init__(self): self._kb = KnowledgeBase()
+    def __init__(self):
+        self._kb = KnowledgeBase()
     @property
-    def knowledge_base(self): return self._kb
+    def knowledge_base(self):
+        return self._kb
     def record_hypothesis(self, hid: str, content: str, tags: List[str], confidence: float = 0.3) -> KnowledgeRecord:
         return self._kb.add(KnowledgeRecord(id=hid, type="hypothesis", content=content, tags=tags, confidence=confidence))
     def record_experiment(self, eid: str, content: str, tags: List[str], parent: Optional[str] = None) -> KnowledgeRecord:
@@ -50,8 +54,10 @@ class ResearchMemory:
         return self._kb.add(KnowledgeRecord(id=cid, type="conclusion", content=content, tags=tags, confidence=confidence))
 
 class ExperimentArchive:
-    def __init__(self): self._archive: List[KnowledgeRecord] = []
-    def archive(self, record: KnowledgeRecord): self._archive.append(record)
+    def __init__(self):
+        self._archive: List[KnowledgeRecord] = []
+    def archive(self, record: KnowledgeRecord):
+        self._archive.append(record)
     def list(self) -> List[KnowledgeRecord]: return self._archive
     def count(self) -> int: return len(self._archive)
     def find_by_tag(self, tag: str) -> List[KnowledgeRecord]:

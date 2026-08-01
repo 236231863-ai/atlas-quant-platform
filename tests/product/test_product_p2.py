@@ -10,7 +10,11 @@ from backend.billing import PlanService, PlanType
 from engine.growth import ExperimentManager, GrowthExperiment
 
 class TestAnalytics:
-    def test_track(self): t=EventTracker(); e=UserEvent("1","u1","USER_LOGIN","now"); t.track(e); assert t.count()==1
+    def test_track(self):
+        t=EventTracker()
+        e=UserEvent("1","u1","USER_LOGIN","now")
+        t.track(e)
+        assert t.count()==1
     def test_filter(self):
         t=EventTracker(); t.track(UserEvent("1","u1","LOGIN","now")); t.track(UserEvent("2","u1","ANALYSIS","now"))
         assert len(t.get_events("LOGIN"))==1

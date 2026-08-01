@@ -214,6 +214,8 @@ class TestDesktopDataFlow:
         peak = max(values); dd = peak - values[-1]
         assert dd == 12
 class TestExtra2:
-    def test_xx_3(self): assert True
-    def test_xx_4(self): pass
+    def test_xx_3(self):
+        assert True
+    def test_xx_4(self):
+        pass
 

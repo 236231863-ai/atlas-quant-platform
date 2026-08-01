@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 import pytest
 
 from core.types.models import DrawRecordData
-from engine.backtest.models import BacktestConfig, BacktestMetrics
+from engine.backtest.models import BacktestConfig, BacktestMetrics, TradeRecord
 from engine.backtest.simulator import TradeSimulator
 from engine.backtest.analyzers import ResultAggregator
 from engine.strategy.registry import StrategyRegistry, StrategyDefinition

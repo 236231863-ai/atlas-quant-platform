@@ -32,8 +32,13 @@ class ResearchDirectorV7:
     def manage_exchange(self, record: KnowledgeExchangeRecord) -> KnowledgeExchangeRecord:
         return self._exchange.publish_insight(record)
 
-    def get_models(self): return self._models
-    def get_personalities(self): return self._personalities
-    def get_network(self): return self._network
-    def get_missions(self): return self._missions
-    def get_exchange(self): return self._exchange
+    def get_models(self):
+        return self._models
+    def get_personalities(self):
+        return self._personalities
+    def get_network(self):
+        return self._network
+    def get_missions(self):
+        return self._missions
+    def get_exchange(self):
+        return self._exchange

@@ -8,7 +8,8 @@ import math
 class DiscoveryReport:
     discoveries: List[Dict[str, Any]] = field(default_factory=list)
     total_opportunities: int = 0; top_priority: float = 0.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchDiscoveryEngine:
     @staticmethod

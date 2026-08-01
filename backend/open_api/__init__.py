@@ -6,10 +6,20 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class DeveloperAPIKey: id:str; user_id:str; key_hash:str; permissions:List[str]=field(default_factory=lambda:["basic"]); rate_limit:int=100; created_at:str=field(default_factory=lambda:datetime.now(timezone.utc).isoformat()); def to_dict(self):return asdict(self)
+class DeveloperAPIKey:
+    id:str
+    user_id:str
+    key_hash:str
+    permissions:List[str]=field(default_factory=lambda:["basic"])
+    rate_limit:int=100
+    created_at:str=field(default_factory=lambda:datetime.now(timezone.utc).isoformat())
+    def to_dict(self):
+        return asdict(self)
 
 class APIGateway:
-    def __init__(self): self._keys: Dict[str, DeveloperAPIKey] = {}; self._usage: Dict[str, int] = {}
+    def __init__(self):
+        self._keys: Dict[str, DeveloperAPIKey] = {}
+        self._usage: Dict[str, int] = {}
     def create_key(self, uid: str) -> DeveloperAPIKey:
         key = DeveloperAPIKey(id=str(uuid.uuid4()), user_id=uid, key_hash=str(uuid.uuid4())[:8])
         self._keys[key.id] = key; return key

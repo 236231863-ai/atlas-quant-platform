@@ -4,17 +4,23 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 from enum import Enum
 
-class UserType(str, Enum): BEGINNER="beginner"; EXPLORER="explorer"; ADVANCED="advanced"; RESEARCHER="researcher"
+class UserType(str, Enum):
+    BEGINNER="beginner"
+    EXPLORER="explorer"
+    ADVANCED="advanced"
+    RESEARCHER="researcher"
 
 @dataclass
 class UserProfile:
     user_id: str; user_type: UserType=UserType.BEGINNER; experience_level: float=0.1
     favorite_features: List[str]=field(default_factory=list); analysis_style: str="balanced"
     risk_preference: float=0.5; preferred_report_type: str="simple"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class UserProfileEngine:
-    def __init__(self): self._profiles: Dict[str, UserProfile] = {}
+    def __init__(self):
+        self._profiles: Dict[str, UserProfile] = {}
     def analyze_behavior(self, uid: str, events: List[Dict[str, Any]]) -> UserProfile:
         profile = self._profiles.get(uid, UserProfile(user_id=uid))
         report_views = sum(1 for e in events if e.get("event_type")=="REPORT_VIEW")

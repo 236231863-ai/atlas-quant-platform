@@ -17,4 +17,7 @@ class ResearchDirectorV9:
     def get_risk_report(self) -> RiskIntelligenceReport: return self._risk.generate_report()
     def get_opportunity_ranking(self) -> OpportunityRanking: return self._opportunity.rank()
     def get_decision_count(self) -> int: return len(self._decisions)
-    def get_risk(self): return self._risk; def get_opportunity(self): return self._opportunity
+    def get_risk(self):
+        return self._risk
+        def get_opportunity(self):
+            return self._opportunity

@@ -16,10 +16,12 @@ class AgentReputation:
         elif overall >= 0.4: return "Silver"
         else: return "Bronze"
 
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ReputationSystem:
-    def __init__(self): self._reputations: Dict[str, AgentReputation] = {}
+    def __init__(self):
+        self._reputations: Dict[str, AgentReputation] = {}
     def register(self, agent_id: str) -> AgentReputation:
         rep = AgentReputation(agent_id=agent_id); self._reputations[agent_id] = rep; return rep
     def get(self, agent_id: str) -> Optional[AgentReputation]: return self._reputations.get(agent_id)

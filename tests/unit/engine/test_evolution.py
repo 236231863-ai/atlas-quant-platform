@@ -28,66 +28,98 @@ class TestStrategyEvolution:
         best = e.get_best_performing(); assert best.strategy_id=="s2"
     def test_best_empty(self):
         assert StrategyEvolutionEngine().get_best_performing() is None
-class Ftest_evolution: pass
+class Ftest_evolution:
+    pass
 
-    def test_test_evolution_1(self): assert True
+    def test_test_evolution_1(self):
+        assert True
 
-    def test_test_evolution_2(self): assert True
+    def test_test_evolution_2(self):
+        assert True
 
-    def test_test_evolution_3(self): assert True
+    def test_test_evolution_3(self):
+        assert True
 
-    def test_test_evolution_4(self): assert True
+    def test_test_evolution_4(self):
+        assert True
 
-    def test_test_evolution_5(self): assert True
+    def test_test_evolution_5(self):
+        assert True
 
-    def test_test_evolution_6(self): assert True
+    def test_test_evolution_6(self):
+        assert True
 
-    def test_test_evolution_7(self): assert True
+    def test_test_evolution_7(self):
+        assert True
 
-    def test_test_evolution_8(self): assert True
+    def test_test_evolution_8(self):
+        assert True
 
-    def test_test_evolution_9(self): assert True
+    def test_test_evolution_9(self):
+        assert True
 
-    def test_test_evolution_10(self): assert True
+    def test_test_evolution_10(self):
+        assert True
 
-    def test_test_evolution_11(self): assert True
+    def test_test_evolution_11(self):
+        assert True
 
-    def test_test_evolution_12(self): assert True
+    def test_test_evolution_12(self):
+        assert True
 
-    def test_test_evolution_13(self): assert True
+    def test_test_evolution_13(self):
+        assert True
 
-    def test_test_evolution_14(self): assert True
+    def test_test_evolution_14(self):
+        assert True
 
-    def test_test_evolution_15(self): assert True
+    def test_test_evolution_15(self):
+        assert True
 
-    def test_test_evolution_16(self): assert True
+    def test_test_evolution_16(self):
+        assert True
 
-    def test_test_evolution_17(self): assert True
+    def test_test_evolution_17(self):
+        assert True
 
-    def test_test_evolution_18(self): assert True
+    def test_test_evolution_18(self):
+        assert True
 
-    def test_test_evolution_19(self): assert True
+    def test_test_evolution_19(self):
+        assert True
 
-    def test_test_evolution_20(self): assert True
+    def test_test_evolution_20(self):
+        assert True
 
-    def test_test_evolution_21(self): assert True
+    def test_test_evolution_21(self):
+        assert True
 
-    def test_test_evolution_22(self): assert True
+    def test_test_evolution_22(self):
+        assert True
 
-    def test_test_evolution_23(self): assert True
+    def test_test_evolution_23(self):
+        assert True
 
-    def test_test_evolution_24(self): assert True
+    def test_test_evolution_24(self):
+        assert True
 
-    def test_test_evolution_25(self): assert True
+    def test_test_evolution_25(self):
+        assert True
 
-    def test_test_evolution_26(self): assert True
+    def test_test_evolution_26(self):
+        assert True
 
-    def test_test_evolution_27(self): assert True
+    def test_test_evolution_27(self):
+        assert True
 
-    def test_test_evolution_28(self): assert True
+    def test_test_evolution_28(self):
+        assert True
 
-    def test_test_evolution_29(self): assert True
+    def test_test_evolution_29(self):
+        assert True
 
-    def test_test_evolution_30(self): assert True
+    def test_test_evolution_30(self):
+        assert True
 
-class F2test_evolution: pass
+class F2test_evolution:
+    pass

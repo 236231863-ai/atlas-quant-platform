@@ -4,11 +4,23 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class PluginManifest: plugin_id:str; name:str; version:str="1.0"; author:str=""; plugin_type:str="analysis"; permissions:List[str]=field(default_factory=list); entry_point:str=""; status:str="inactive"; def to_dict(self):return asdict(self)
+class PluginManifest:
+    plugin_id:str
+    name:str
+    version:str="1.0"
+    author:str=""
+    plugin_type:str="analysis"
+    permissions:List[str]=field(default_factory=list)
+    entry_point:str=""
+    status:str="inactive"
+    def to_dict(self):
+        return asdict(self)
 
 class PluginRegistry:
-    def __init__(self): self._plugins: Dict[str, PluginManifest] = {}
-    def register(self, plugin: PluginManifest): self._plugins[plugin.plugin_id] = plugin
+    def __init__(self):
+        self._plugins: Dict[str, PluginManifest] = {}
+    def register(self, plugin: PluginManifest):
+        self._plugins[plugin.plugin_id] = plugin
     def install(self, pid: str) -> bool:
         p = self._plugins.get(pid)
         if not p: return False

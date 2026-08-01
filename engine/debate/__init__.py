@@ -7,15 +7,19 @@ from engine.agent_protocol import AgentFeedback
 @dataclass
 class DebateArgument:
     agent_id: str; position: str; reasoning: str; evidence: List[str] = field(default_factory=list)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class DebateReport:
     topic: str; arguments: List[DebateArgument]; votes: Dict[str, int]; decision: str; confidence: float
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchDebateSystem:
-    def __init__(self): self._arguments: List[DebateArgument] = []; self._votes: Dict[str, int] = {}
+    def __init__(self):
+        self._arguments: List[DebateArgument] = []
+        self._votes: Dict[str, int] = {}
     def argument(self, agent: str, position: str, reasoning: str) -> DebateArgument:
         arg = DebateArgument(agent_id=agent, position=position, reasoning=reasoning)
         self._arguments.append(arg); return arg

@@ -4,10 +4,16 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class BusinessReport: revenue_insights:Dict[str,float]=field(default_factory=dict); retention_rate:float=0.0; growth_opportunities:List[str]=field(default_factory=list); def to_dict(self):return asdict(self)
+class BusinessReport:
+    revenue_insights:Dict[str,float]=field(default_factory=dict)
+    retention_rate:float=0.0
+    growth_opportunities:List[str]=field(default_factory=list)
+    def to_dict(self):
+        return asdict(self)
 
 class BusinessIntelligenceEngine:
-    def __init__(self): self._reports: List[BusinessReport] = []
+    def __init__(self):
+        self._reports: List[BusinessReport] = []
     def analyze_revenue(self, subscriptions: List[str], prices: Dict[str,float]) -> Dict[str,float]:
         return {"total_users": len(subscriptions), "mrr": round(len(subscriptions)*sum(prices.values())/max(len(prices),1), 2)}
     def analyze_retention(self, active_users: int, total_users: int) -> float:

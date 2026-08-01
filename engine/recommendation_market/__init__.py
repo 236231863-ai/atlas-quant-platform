@@ -4,11 +4,21 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class RecommendedAsset: asset_id:str; asset_type:str; score:float=0.0; reason:str=""; similarity:float=0.0; def to_dict(self):return asdict(self)
+class RecommendedAsset:
+    asset_id:str
+    asset_type:str
+    score:float=0.0
+    reason:str=""
+    similarity:float=0.0
+    def to_dict(self):
+        return asdict(self)
 
 class RecommendationMarket:
-    def __init__(self): self._user_history: Dict[str, List[str]] = {}; self._assets: Dict[str, str] = {}
-    def register_asset(self, aid: str, a_type: str): self._assets[aid] = a_type
+    def __init__(self):
+        self._user_history: Dict[str, List[str]] = {}
+        self._assets: Dict[str, str] = {}
+    def register_asset(self, aid: str, a_type: str):
+        self._assets[aid] = a_type
     def record_interaction(self, uid: str, aid: str):
         if uid not in self._user_history: self._user_history[uid] = []
         self._user_history[uid].append(aid)

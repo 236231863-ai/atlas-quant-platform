@@ -15,6 +15,9 @@ class ResearchDirectorV11:
         score = self._evaluation.evaluate_prediction(0.8, 0.7, 0.9)
         maintenance = self._maintenance.health_check()
         return {"health": health.to_dict(), "score": score.to_dict(), "maintenance": maintenance.to_dict()}
-    def get_observability(self): return self._observability
-    def get_evaluation(self): return self._evaluation
-    def get_maintenance(self): return self._maintenance
+    def get_observability(self):
+        return self._observability
+    def get_evaluation(self):
+        return self._evaluation
+    def get_maintenance(self):
+        return self._maintenance

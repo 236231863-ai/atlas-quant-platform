@@ -197,6 +197,8 @@ class TestFrontendDataFlow:
     def test_vite_dev_command(self):
         cmd = "vite"; assert cmd == "vite"
 class TestExtra:
-    def test_xx_1(self): assert True
-    def test_xx_2(self): pass
+    def test_xx_1(self):
+        assert True
+    def test_xx_2(self):
+        pass
 

@@ -42,63 +42,93 @@ class TestScheduler:
     def test_report(self):
         s = ExperimentScheduler(); s.create_job("j1","e1"); s.enqueue("j1"); s.start("j1"); s.complete("j1",True)
         r = s.report(); assert r["success"] == 1
-    def test_ftest_scheduler_1(self): assert True
+    def test_ftest_scheduler_1(self):
+        assert True
 
-    def test_ftest_scheduler_2(self): assert True
+    def test_ftest_scheduler_2(self):
+        assert True
 
-    def test_ftest_scheduler_3(self): assert True
+    def test_ftest_scheduler_3(self):
+        assert True
 
-    def test_ftest_scheduler_4(self): assert True
+    def test_ftest_scheduler_4(self):
+        assert True
 
-    def test_ftest_scheduler_5(self): assert True
+    def test_ftest_scheduler_5(self):
+        assert True
 
-    def test_ftest_scheduler_6(self): assert True
+    def test_ftest_scheduler_6(self):
+        assert True
 
-    def test_ftest_scheduler_7(self): assert True
+    def test_ftest_scheduler_7(self):
+        assert True
 
-    def test_ftest_scheduler_8(self): assert True
+    def test_ftest_scheduler_8(self):
+        assert True
 
-    def test_ftest_scheduler_9(self): assert True
+    def test_ftest_scheduler_9(self):
+        assert True
 
-    def test_ftest_scheduler_10(self): assert True
+    def test_ftest_scheduler_10(self):
+        assert True
 
-    def test_ftest_scheduler_11(self): assert True
+    def test_ftest_scheduler_11(self):
+        assert True
 
-    def test_ftest_scheduler_12(self): assert True
+    def test_ftest_scheduler_12(self):
+        assert True
 
-    def test_ftest_scheduler_13(self): assert True
+    def test_ftest_scheduler_13(self):
+        assert True
 
-    def test_ftest_scheduler_14(self): assert True
+    def test_ftest_scheduler_14(self):
+        assert True
 
-    def test_ftest_scheduler_15(self): assert True
+    def test_ftest_scheduler_15(self):
+        assert True
 
-    def test_ftest_scheduler_16(self): assert True
+    def test_ftest_scheduler_16(self):
+        assert True
 
-    def test_ftest_scheduler_17(self): assert True
+    def test_ftest_scheduler_17(self):
+        assert True
 
-    def test_ftest_scheduler_18(self): assert True
+    def test_ftest_scheduler_18(self):
+        assert True
 
-    def test_ftest_scheduler_19(self): assert True
+    def test_ftest_scheduler_19(self):
+        assert True
 
-    def test_ftest_scheduler_20(self): assert True
+    def test_ftest_scheduler_20(self):
+        assert True
 
-    def test_ftest_scheduler_21(self): assert True
+    def test_ftest_scheduler_21(self):
+        assert True
 
-    def test_ftest_scheduler_22(self): assert True
+    def test_ftest_scheduler_22(self):
+        assert True
 
-    def test_ftest_scheduler_23(self): assert True
+    def test_ftest_scheduler_23(self):
+        assert True
 
-    def test_ftest_scheduler_24(self): assert True
+    def test_ftest_scheduler_24(self):
+        assert True
 
-    def test_ftest_scheduler_25(self): assert True
+    def test_ftest_scheduler_25(self):
+        assert True
 
-    def test_ftest_scheduler_26(self): assert True
+    def test_ftest_scheduler_26(self):
+        assert True
 
-    def test_ftest_scheduler_27(self): assert True
+    def test_ftest_scheduler_27(self):
+        assert True
 
-    def test_ftest_scheduler_28(self): assert True
+    def test_ftest_scheduler_28(self):
+        assert True
 
-    def test_ftest_scheduler_29(self): assert True
+    def test_ftest_scheduler_29(self):
+        assert True
 
-    def test_ftest_scheduler_30(self): assert True
+    def test_ftest_scheduler_30(self):
+        assert True
 

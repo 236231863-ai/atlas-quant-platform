@@ -36,63 +36,93 @@ class TestSandbox:
         assert "error" in r
     def test_count(self):
         s = ExperimentSandbox(); s.create("e1"); s.create("e2"); assert s.count() == 2
-    def test_ftest_sandbox_1(self): assert True
+    def test_ftest_sandbox_1(self):
+        assert True
 
-    def test_ftest_sandbox_2(self): assert True
+    def test_ftest_sandbox_2(self):
+        assert True
 
-    def test_ftest_sandbox_3(self): assert True
+    def test_ftest_sandbox_3(self):
+        assert True
 
-    def test_ftest_sandbox_4(self): assert True
+    def test_ftest_sandbox_4(self):
+        assert True
 
-    def test_ftest_sandbox_5(self): assert True
+    def test_ftest_sandbox_5(self):
+        assert True
 
-    def test_ftest_sandbox_6(self): assert True
+    def test_ftest_sandbox_6(self):
+        assert True
 
-    def test_ftest_sandbox_7(self): assert True
+    def test_ftest_sandbox_7(self):
+        assert True
 
-    def test_ftest_sandbox_8(self): assert True
+    def test_ftest_sandbox_8(self):
+        assert True
 
-    def test_ftest_sandbox_9(self): assert True
+    def test_ftest_sandbox_9(self):
+        assert True
 
-    def test_ftest_sandbox_10(self): assert True
+    def test_ftest_sandbox_10(self):
+        assert True
 
-    def test_ftest_sandbox_11(self): assert True
+    def test_ftest_sandbox_11(self):
+        assert True
 
-    def test_ftest_sandbox_12(self): assert True
+    def test_ftest_sandbox_12(self):
+        assert True
 
-    def test_ftest_sandbox_13(self): assert True
+    def test_ftest_sandbox_13(self):
+        assert True
 
-    def test_ftest_sandbox_14(self): assert True
+    def test_ftest_sandbox_14(self):
+        assert True
 
-    def test_ftest_sandbox_15(self): assert True
+    def test_ftest_sandbox_15(self):
+        assert True
 
-    def test_ftest_sandbox_16(self): assert True
+    def test_ftest_sandbox_16(self):
+        assert True
 
-    def test_ftest_sandbox_17(self): assert True
+    def test_ftest_sandbox_17(self):
+        assert True
 
-    def test_ftest_sandbox_18(self): assert True
+    def test_ftest_sandbox_18(self):
+        assert True
 
-    def test_ftest_sandbox_19(self): assert True
+    def test_ftest_sandbox_19(self):
+        assert True
 
-    def test_ftest_sandbox_20(self): assert True
+    def test_ftest_sandbox_20(self):
+        assert True
 
-    def test_ftest_sandbox_21(self): assert True
+    def test_ftest_sandbox_21(self):
+        assert True
 
-    def test_ftest_sandbox_22(self): assert True
+    def test_ftest_sandbox_22(self):
+        assert True
 
-    def test_ftest_sandbox_23(self): assert True
+    def test_ftest_sandbox_23(self):
+        assert True
 
-    def test_ftest_sandbox_24(self): assert True
+    def test_ftest_sandbox_24(self):
+        assert True
 
-    def test_ftest_sandbox_25(self): assert True
+    def test_ftest_sandbox_25(self):
+        assert True
 
-    def test_ftest_sandbox_26(self): assert True
+    def test_ftest_sandbox_26(self):
+        assert True
 
-    def test_ftest_sandbox_27(self): assert True
+    def test_ftest_sandbox_27(self):
+        assert True
 
-    def test_ftest_sandbox_28(self): assert True
+    def test_ftest_sandbox_28(self):
+        assert True
 
-    def test_ftest_sandbox_29(self): assert True
+    def test_ftest_sandbox_29(self):
+        assert True
 
-    def test_ftest_sandbox_30(self): assert True
+    def test_ftest_sandbox_30(self):
+        assert True
 

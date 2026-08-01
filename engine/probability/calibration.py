@@ -6,7 +6,8 @@ from typing import Any, Dict, List, Optional, Tuple
 class CalibrationResult:
     brier_score: float; calibration_error: float; confidence_adjustment: float
     calibration_points: List[Dict[str, float]]; is_well_calibrated: bool; overconfidence: float
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class CalibrationEngine:
     @staticmethod

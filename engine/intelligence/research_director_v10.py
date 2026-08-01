@@ -16,10 +16,13 @@ class ResearchDirectorV10:
         plan = self._planner.create_plan(goal, steps)
         execution = self._simulator.simulate(plan.plan_id, len(steps))
         return {"plan": plan.to_dict(), "execution": execution.to_dict()}
-    def record_feedback(self, insight: FeedbackInsight): self._feedback.record(insight)
+    def record_feedback(self, insight: FeedbackInsight):
+        self._feedback.record(insight)
     def adapt(self, param: str, current: float, error: float) -> AdaptationResult:
         return self._adaptation.adjust_parameter(param, current, error)
     def create_workflow(self, decision_id: str) -> WorkflowInstance:
         return self._workflow.create(decision_id)
-    def get_planner(self): return self._planner
-    def get_feedback(self): return self._feedback
+    def get_planner(self):
+        return self._planner
+    def get_feedback(self):
+        return self._feedback

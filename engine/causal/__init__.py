@@ -5,10 +5,18 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional, Tuple
 
 @dataclass
-class CounterfactualReport: scenario:str; cause:str; predicted_outcome:str; confidence:float=0.5; impact_score:float=0.0; def to_dict(self):return asdict(self)
+class CounterfactualReport:
+    scenario:str
+    cause:str
+    predicted_outcome:str
+    confidence:float=0.5
+    impact_score:float=0.0
+    def to_dict(self):
+        return asdict(self)
 
 class CausalGraph:
-    def __init__(self): self._nodes: Dict[str, List[Tuple[str, float]]] = {}
+    def __init__(self):
+        self._nodes: Dict[str, List[Tuple[str, float]]] = {}
     def add_edge(self, cause: str, effect: str, strength: float = 0.5):
         if cause not in self._nodes: self._nodes[cause] = []
         self._nodes[cause].append((effect, strength))

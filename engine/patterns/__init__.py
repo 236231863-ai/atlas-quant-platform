@@ -8,7 +8,8 @@ from collections import Counter
 @dataclass
 class ResearchPattern:
     pattern_id: str; description: str; pattern_type: str; impact: str; confidence: float; features: List[str]
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class PatternMiningEngine:
     @staticmethod

@@ -13,7 +13,8 @@ class MarkovResult:
     current_state: NumberState; state_persistence: float
     hot_probability: float; normal_probability: float; cold_probability: float
     steady_state: Dict[str, float]
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class MarkovEngine:
     @staticmethod

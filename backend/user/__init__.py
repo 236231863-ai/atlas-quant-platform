@@ -10,10 +10,12 @@ class User:
     user_id: str; username: str; email: str; password_hash: str = ""
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     settings: Dict[str, Any] = field(default_factory=dict)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class UserService:
-    def __init__(self): self._users: Dict[str, User] = {}
+    def __init__(self):
+        self._users: Dict[str, User] = {}
     def register(self, username: str, email: str, password: str) -> User:
         uid = str(uuid.uuid4())
         user = User(user_id=uid, username=username, email=email, password_hash=password)

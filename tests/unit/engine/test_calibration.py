@@ -47,15 +47,27 @@ class TestCalibration:
         r = CalibrationEngine.compute_calibration(preds, actual)
         assert r.brier_score < 0.5
 class T3:
-    def test_c1(self): assert True
-    def test_c2(self): assert True
-    def test_c3(self): assert True
-    def test_c4(self): assert True
-    def test_c5(self): assert True
-    def test_c6(self): assert True
-    def test_c7(self): assert True
-    def test_c8(self): assert True
-    def test_c9(self): assert True
-    def test_c10(self): assert True
-    def test_c11(self): assert True
-    def test_c12(self): assert True
+    def test_c1(self):
+        assert True
+    def test_c2(self):
+        assert True
+    def test_c3(self):
+        assert True
+    def test_c4(self):
+        assert True
+    def test_c5(self):
+        assert True
+    def test_c6(self):
+        assert True
+    def test_c7(self):
+        assert True
+    def test_c8(self):
+        assert True
+    def test_c9(self):
+        assert True
+    def test_c10(self):
+        assert True
+    def test_c11(self):
+        assert True
+    def test_c12(self):
+        assert True

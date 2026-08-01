@@ -10,10 +10,12 @@ class DatasetRecord:
     dataset_id: str; version: str; source: str; hash: str
     feature_schema: List[str]; created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     description: str = ""; size: int = 0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class DatasetRegistry:
-    def __init__(self): self._datasets: Dict[str, DatasetRecord] = {}
+    def __init__(self):
+        self._datasets: Dict[str, DatasetRecord] = {}
     def register(self, record: DatasetRecord) -> DatasetRecord:
         self._datasets[record.dataset_id] = record; return record
     def get(self, dataset_id: str) -> Optional[DatasetRecord]: return self._datasets.get(dataset_id)

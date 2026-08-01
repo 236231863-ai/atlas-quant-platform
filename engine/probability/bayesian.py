@@ -7,7 +7,8 @@ class BayesianResult:
     number: int; prior_alpha: float; prior_beta: float; posterior_alpha: float; posterior_beta: float
     prior_mean: float; posterior_mean: float; credible_interval_lower: float; credible_interval_upper: float
     evidence_count: int; probability_change: float
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class BayesianEngine:
     @staticmethod

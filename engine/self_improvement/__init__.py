@@ -8,7 +8,8 @@ class CapabilityMetrics:
     research_efficiency: float = 0.5; knowledge_growth: float = 0.5
     agent_capability: float = 0.5; experiment_quality: float = 0.5
     def overall(self) -> float: return round((self.research_efficiency+self.knowledge_growth+self.agent_capability+self.experiment_quality)/4, 4)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class SelfImprovementEngine:
     def __init__(self):

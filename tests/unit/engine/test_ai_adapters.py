@@ -61,22 +61,39 @@ class TestMockAdapter:
     def test_mock_always_available(self):
         assert MockLLMAdapter().is_available
 class TestExtraAI:
-    def test_x1(self): assert True
-    def test_x2(self): assert True
-    def test_x3(self): assert True
-    def test_x4(self): assert True
-    def test_x5(self): assert True
-    def test_x6(self): assert True
-    def test_x7(self): assert True
-    def test_x8(self): assert True
-    def test_x9(self): assert True
-    def test_x10(self): assert True
-    def test_x11(self): assert True
-    def test_x12(self): assert True
+    def test_x1(self):
+        assert True
+    def test_x2(self):
+        assert True
+    def test_x3(self):
+        assert True
+    def test_x4(self):
+        assert True
+    def test_x5(self):
+        assert True
+    def test_x6(self):
+        assert True
+    def test_x7(self):
+        assert True
+    def test_x8(self):
+        assert True
+    def test_x9(self):
+        assert True
+    def test_x10(self):
+        assert True
+    def test_x11(self):
+        assert True
+    def test_x12(self):
+        assert True
 class TestMore2:
-    def test_m6(self): pass
-    def test_m7(self): pass
-    def test_m8(self): pass
-    def test_m9(self): pass
-    def test_m10(self): pass
+    def test_m6(self):
+        pass
+    def test_m7(self):
+        pass
+    def test_m8(self):
+        pass
+    def test_m9(self):
+        pass
+    def test_m10(self):
+        pass
 

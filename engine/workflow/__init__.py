@@ -7,10 +7,19 @@ from enum import Enum
 WorkflowState = Enum("WorkflowState", ["CREATED","PLANNING","EXECUTING","REVIEWING","LEARNING","COMPLETED"])
 
 @dataclass
-class WorkflowInstance: workflow_id:str; state:str="CREATED"; decision_ref:str=""; action_ref:str=""; feedback_ref:str=""; learning_notes:str=""; def to_dict(self):return asdict(self)
+class WorkflowInstance:
+    workflow_id:str
+    state:str="CREATED"
+    decision_ref:str=""
+    action_ref:str=""
+    feedback_ref:str=""
+    learning_notes:str=""
+    def to_dict(self):
+        return asdict(self)
 
 class AutonomousWorkflowEngine:
-    def __init__(self): self._workflows: Dict[str, WorkflowInstance] = {}
+    def __init__(self):
+        self._workflows: Dict[str, WorkflowInstance] = {}
     def create(self, decision_id: str) -> WorkflowInstance:
         import uuid; w = WorkflowInstance(workflow_id=str(uuid.uuid4()), state="CREATED", decision_ref=decision_id)
         self._workflows[w.workflow_id] = w; return w

@@ -8,7 +8,8 @@ from engine.portfolio.diversity import DiversityOptimizer
 class PortfolioResult:
     combinations: List[List[int]]; diversity_score: float; coverage_score: float
     correlation_score: float; overall_score: float; num_combinations: int
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class PortfolioScore:
     @staticmethod

@@ -64,9 +64,15 @@ class TestBayesian:
         results = BayesianEngine.analyze_batch({}, 100)
         assert results == []
 class T1:
-    def test_a1(self): assert True
-    def test_a2(self): assert True
-    def test_a3(self): assert True
-    def test_a4(self): assert True
-    def test_a5(self): assert True
-    def test_a6(self): assert True
+    def test_a1(self):
+        assert True
+    def test_a2(self):
+        assert True
+    def test_a3(self):
+        assert True
+    def test_a4(self):
+        assert True
+    def test_a5(self):
+        assert True
+    def test_a6(self):
+        assert True

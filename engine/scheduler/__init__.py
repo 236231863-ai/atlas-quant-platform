@@ -15,10 +15,12 @@ class ExperimentJob:
     priority: int = 5; dependencies: List[str] = field(default_factory=list)
     retry_count: int = 0; max_retries: int = 3; error: str = ""
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ExperimentScheduler:
-    def __init__(self): self._jobs: Dict[str, ExperimentJob] = {}
+    def __init__(self):
+        self._jobs: Dict[str, ExperimentJob] = {}
     def create_job(self, job_id: str, exp_id: str, priority: int = 5, deps: Optional[List[str]] = None) -> ExperimentJob:
         job = ExperimentJob(job_id=job_id, experiment_id=exp_id, priority=priority, dependencies=deps or [])
         self._jobs[job_id] = job; return job

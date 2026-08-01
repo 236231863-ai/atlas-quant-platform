@@ -36,6 +36,9 @@ class ResearchDirectorV5:
                 promotions.append({"agent_id": agent_id, "rank": rank, "promotion": rank in ["Expert", "Master"]})
         return promotions
 
-    def get_economy(self): return self._economy
-    def get_reputation(self): return self._reputation
-    def get_competition(self): return self._competition
+    def get_economy(self):
+        return self._economy
+    def get_reputation(self):
+        return self._reputation
+    def get_competition(self):
+        return self._competition

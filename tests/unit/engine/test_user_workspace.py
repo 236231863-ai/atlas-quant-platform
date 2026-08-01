@@ -64,21 +64,37 @@ class TestUserService:
         d = p.to_dict()
         assert d["workspace_id"] == "wid"
 class TestExtraUser:
-    def test_u1(self): assert True
-    def test_u2(self): assert True
-    def test_u3(self): assert True
-    def test_u4(self): assert True
-    def test_u5(self): assert True
-    def test_u6(self): assert True
-    def test_u7(self): assert True
-    def test_u8(self): assert True
-    def test_u9(self): assert True
-    def test_u10(self): assert True
-    def test_u11(self): assert True
+    def test_u1(self):
+        assert True
+    def test_u2(self):
+        assert True
+    def test_u3(self):
+        assert True
+    def test_u4(self):
+        assert True
+    def test_u5(self):
+        assert True
+    def test_u6(self):
+        assert True
+    def test_u7(self):
+        assert True
+    def test_u8(self):
+        assert True
+    def test_u9(self):
+        assert True
+    def test_u10(self):
+        assert True
+    def test_u11(self):
+        assert True
 class TestMore3:
-    def test_m11(self): pass
-    def test_m12(self): pass
-    def test_m13(self): pass
-    def test_m14(self): pass
-    def test_m15(self): pass
+    def test_m11(self):
+        pass
+    def test_m12(self):
+        pass
+    def test_m13(self):
+        pass
+    def test_m14(self):
+        pass
+    def test_m15(self):
+        pass
 

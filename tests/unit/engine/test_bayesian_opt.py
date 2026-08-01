@@ -3,7 +3,8 @@ from __future__ import annotations
 import pytest
 from engine.optimization import BayesianOptimizer
 
-def objective(params): return -(params["x"]**2 + params["y"]**2)
+def objective(params):
+    return -(params["x"]**2 + params["y"]**2)
 
 class TestExpectedImprovement:
     def test_ei_positive(self):
@@ -40,13 +41,23 @@ class TestBayesianOptimizer:
         r = BayesianOptimizer(42).optimize(lambda p: -p["x"], {"x":[-5,0,5]}, n_trials=3, n_init=3)
         assert r["n_trials"] > 0
 class X1:
-    def test_01(self): pass
-    def test_02(self): pass
-    def test_03(self): pass
-    def test_04(self): pass
-    def test_05(self): pass
-    def test_06(self): pass
-    def test_07(self): pass
-    def test_08(self): pass
-    def test_09(self): pass
-    def test_10(self): pass
+    def test_01(self):
+        pass
+    def test_02(self):
+        pass
+    def test_03(self):
+        pass
+    def test_04(self):
+        pass
+    def test_05(self):
+        pass
+    def test_06(self):
+        pass
+    def test_07(self):
+        pass
+    def test_08(self):
+        pass
+    def test_09(self):
+        pass
+    def test_10(self):
+        pass

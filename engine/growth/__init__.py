@@ -7,11 +7,15 @@ from typing import Any, Dict, List, Optional
 class GrowthExperiment:
     experiment_id: str; name: str; variants: List[str]; target_metric: str
     status: str="running"; result: Dict[str, Any]=field(default_factory=dict)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ExperimentManager:
-    def __init__(self): self._experiments: Dict[str, GrowthExperiment] = {}
-    def create(self, exp: GrowthExperiment): self._experiments[exp.experiment_id]=exp; return exp
+    def __init__(self):
+        self._experiments: Dict[str, GrowthExperiment] = {}
+    def create(self, exp: GrowthExperiment):
+        self._experiments[exp.experiment_id]=exp
+        return exp
     def record_result(self, eid: str, variant: str, metric_value: float) -> bool:
         exp = self._experiments.get(eid)
         if not exp: return False

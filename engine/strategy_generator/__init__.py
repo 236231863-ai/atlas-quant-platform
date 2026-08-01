@@ -7,7 +7,8 @@ from typing import Any, Dict, List, Optional, Set
 class StrategyCandidate:
     strategy_id: str; name: str; strategy_type: str; params: Dict[str, Any]
     source: str = "knowledge_base"; confidence: float = 0.5
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class StrategyGenerator:
     def __init__(self):

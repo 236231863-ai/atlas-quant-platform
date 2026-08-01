@@ -34,66 +34,98 @@ class TestCoordinatorAgent:
     def test_recommendations_included(self):
         r = CoordinatorAgent().run_research(_m(roi=-10.0,dd=30.0,sharpe=-0.5), [])
         assert len(r.recommendations)>0
-class Ftest_agents: pass
+class Ftest_agents:
+    pass
 
-    def test_test_agents_1(self): assert True
+    def test_test_agents_1(self):
+        assert True
 
-    def test_test_agents_2(self): assert True
+    def test_test_agents_2(self):
+        assert True
 
-    def test_test_agents_3(self): assert True
+    def test_test_agents_3(self):
+        assert True
 
-    def test_test_agents_4(self): assert True
+    def test_test_agents_4(self):
+        assert True
 
-    def test_test_agents_5(self): assert True
+    def test_test_agents_5(self):
+        assert True
 
-    def test_test_agents_6(self): assert True
+    def test_test_agents_6(self):
+        assert True
 
-    def test_test_agents_7(self): assert True
+    def test_test_agents_7(self):
+        assert True
 
-    def test_test_agents_8(self): assert True
+    def test_test_agents_8(self):
+        assert True
 
-    def test_test_agents_9(self): assert True
+    def test_test_agents_9(self):
+        assert True
 
-    def test_test_agents_10(self): assert True
+    def test_test_agents_10(self):
+        assert True
 
-    def test_test_agents_11(self): assert True
+    def test_test_agents_11(self):
+        assert True
 
-    def test_test_agents_12(self): assert True
+    def test_test_agents_12(self):
+        assert True
 
-    def test_test_agents_13(self): assert True
+    def test_test_agents_13(self):
+        assert True
 
-    def test_test_agents_14(self): assert True
+    def test_test_agents_14(self):
+        assert True
 
-    def test_test_agents_15(self): assert True
+    def test_test_agents_15(self):
+        assert True
 
-    def test_test_agents_16(self): assert True
+    def test_test_agents_16(self):
+        assert True
 
-    def test_test_agents_17(self): assert True
+    def test_test_agents_17(self):
+        assert True
 
-    def test_test_agents_18(self): assert True
+    def test_test_agents_18(self):
+        assert True
 
-    def test_test_agents_19(self): assert True
+    def test_test_agents_19(self):
+        assert True
 
-    def test_test_agents_20(self): assert True
+    def test_test_agents_20(self):
+        assert True
 
-    def test_test_agents_21(self): assert True
+    def test_test_agents_21(self):
+        assert True
 
-    def test_test_agents_22(self): assert True
+    def test_test_agents_22(self):
+        assert True
 
-    def test_test_agents_23(self): assert True
+    def test_test_agents_23(self):
+        assert True
 
-    def test_test_agents_24(self): assert True
+    def test_test_agents_24(self):
+        assert True
 
-    def test_test_agents_25(self): assert True
+    def test_test_agents_25(self):
+        assert True
 
-    def test_test_agents_26(self): assert True
+    def test_test_agents_26(self):
+        assert True
 
-    def test_test_agents_27(self): assert True
+    def test_test_agents_27(self):
+        assert True
 
-    def test_test_agents_28(self): assert True
+    def test_test_agents_28(self):
+        assert True
 
-    def test_test_agents_29(self): assert True
+    def test_test_agents_29(self):
+        assert True
 
-    def test_test_agents_30(self): assert True
+    def test_test_agents_30(self):
+        assert True
 
-class F2test_agents: pass
+class F2test_agents:
+    pass

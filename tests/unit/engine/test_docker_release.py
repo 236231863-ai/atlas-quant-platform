@@ -45,19 +45,40 @@ class TestReleaseEngineering:
     def test_release_script_shell(self):
         c = open("scripts/release.sh").read(); assert "#!/bin/bash" in c
 class TestExtraDocker:
-    def test_d1(self): open("docker/Dockerfile"); assert True
-    def test_d2(self): open("docker/Dockerfile.frontend"); assert True
-    def test_d3(self): open("docker/docker-compose.yml"); assert True
-    def test_d4(self): open("CHANGELOG.md"); assert "v1.0.0" in open("CHANGELOG.md").read()
-    def test_d5(self): open("scripts/release.sh"); assert True
-    def test_d6(self): open("scripts/build.sh"); assert True
-    def test_d7(self): open("RELEASE_CHECKLIST.md"); assert True
-    def test_d8(self): assert True
-    def test_d9(self): assert True
+    def test_d1(self):
+        open("docker/Dockerfile")
+        assert True
+    def test_d2(self):
+        open("docker/Dockerfile.frontend")
+        assert True
+    def test_d3(self):
+        open("docker/docker-compose.yml")
+        assert True
+    def test_d4(self):
+        open("CHANGELOG.md")
+        assert "v1.0.0" in open("CHANGELOG.md").read()
+    def test_d5(self):
+        open("scripts/release.sh")
+        assert True
+    def test_d6(self):
+        open("scripts/build.sh")
+        assert True
+    def test_d7(self):
+        open("RELEASE_CHECKLIST.md")
+        assert True
+    def test_d8(self):
+        assert True
+    def test_d9(self):
+        assert True
 class TestMore5:
-    def test_m21(self): pass
-    def test_m22(self): pass
-    def test_m23(self): pass
-    def test_m24(self): pass
-    def test_m25(self): pass
+    def test_m21(self):
+        pass
+    def test_m22(self):
+        pass
+    def test_m23(self):
+        pass
+    def test_m24(self):
+        pass
+    def test_m25(self):
+        pass
 

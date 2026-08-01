@@ -15,11 +15,15 @@ class ScientistProfile:
     scientist_id: str; name: str; level: CareerLevel = CareerLevel.INTERN
     research_quality: float = 0.3; innovation_score: float = 0.3
     publication_score: float = 0.0; teamwork_score: float = 0.3
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchCareerManager:
-    def __init__(self): self._scientists: Dict[str, ScientistProfile] = {}
-    def register(self, profile: ScientistProfile): self._scientists[profile.scientist_id] = profile; return profile
+    def __init__(self):
+        self._scientists: Dict[str, ScientistProfile] = {}
+    def register(self, profile: ScientistProfile):
+        self._scientists[profile.scientist_id] = profile
+        return profile
     def evaluate(self, sid: str) -> Optional[float]:
         s = self._scientists.get(sid)
         if not s: return None

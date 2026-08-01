@@ -9,7 +9,8 @@ from engine.backtest.models import BacktestMetrics
 class BenchmarkScore:
     performance: float = 0.0; risk: float = 0.0; quality: float = 0.0
     generalization: float = 0.0; final_score: float = 0.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchBenchmarkEngine:
     @staticmethod

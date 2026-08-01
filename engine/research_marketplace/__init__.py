@@ -7,18 +7,21 @@ from typing import Any, Dict, List, Optional
 class ResearchTaskOffer:
     offer_id: str; task_description: str; required_skills: List[str]; reward: float = 1.0
     status: str = "open"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class AgentBid:
     agent_id: str; offer_id: str; bid_amount: float; estimated_time: int = 1
     status: str = "pending"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class ResearchContract:
     contract_id: str; offer: ResearchTaskOffer; bid: AgentBid; status: str = "active"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchMarketplace:
     def __init__(self):

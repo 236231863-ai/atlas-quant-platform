@@ -6,11 +6,15 @@ from typing import Any, Dict, List, Optional
 @dataclass
 class ResearchPolicy:
     policy_id: str; name: str; rules: List[str]; scope: str; priority: int = 5; status: str = "active"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchGovernanceEngine:
-    def __init__(self): self._policies: Dict[str, ResearchPolicy] = {}
-    def create_policy(self, policy: ResearchPolicy): self._policies[policy.policy_id] = policy; return policy
+    def __init__(self):
+        self._policies: Dict[str, ResearchPolicy] = {}
+    def create_policy(self, policy: ResearchPolicy):
+        self._policies[policy.policy_id] = policy
+        return policy
     def evaluate_compliance(self, activity: Dict[str, Any]) -> Dict[str, Any]:
         violations = []
         for p in self._policies.values():

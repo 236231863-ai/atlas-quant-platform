@@ -6,10 +6,18 @@ from typing import Any, Dict, List, Optional
 ENVIRONMENTS = {"normal": "Normal Environment", "high_risk": "High Risk Environment", "data_shift": "Data Shift", "unknown": "Unknown Event"}
 
 @dataclass
-class ScenarioResult: scenario_name:str; risk_level:str="normal"; volatility:float=0.5; opportunity_score:float=0.5; recommendation:str=""; def to_dict(self):return asdict(self)
+class ScenarioResult:
+    scenario_name:str
+    risk_level:str="normal"
+    volatility:float=0.5
+    opportunity_score:float=0.5
+    recommendation:str=""
+    def to_dict(self):
+        return asdict(self)
 
 class EnvironmentSimulator:
-    def __init__(self): self._scenarios: List[ScenarioResult] = []
+    def __init__(self):
+        self._scenarios: List[ScenarioResult] = []
     def create_scenario(self, name: str, risk: str="normal", vol: float=0.5) -> ScenarioResult:
         sr = ScenarioResult(scenario_name=name, risk_level=risk, volatility=vol)
         self._scenarios.append(sr); return sr

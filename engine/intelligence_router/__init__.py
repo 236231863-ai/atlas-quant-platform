@@ -6,7 +6,8 @@ from typing import Any, Dict, List, Optional
 @dataclass
 class ResearchExecutionPlan:
     agent: str; model: str; node: str; strategy: str; reason: str
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class IntelligenceRouter:
     def route(self, goal_type: str, complexity: float, risk_level: float) -> ResearchExecutionPlan:

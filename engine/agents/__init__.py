@@ -8,7 +8,8 @@ from engine.intelligence.research_upgrade import risk_assessment
 @dataclass
 class AgentReport:
     agent: str; analysis: str; recommendations: List[str]; confidence: float = 0.5
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class StatisticianAgent:
     def analyze(self, metrics: BacktestMetrics, history: List[Dict[str, Any]]) -> AgentReport:
@@ -48,7 +49,9 @@ class ReviewerAgent:
         return AgentReport(agent="Reviewer", analysis=" ".join(lines), recommendations=recs, confidence=0.7)
 
 class CoordinatorAgent:
-    def __init__(self): self._stat = StatisticianAgent(); self._opt = OptimizationAgent()
+    def __init__(self):
+        self._stat = StatisticianAgent()
+        self._opt = OptimizationAgent()
         self._risk = RiskAgent(); self._review = ReviewerAgent()
 
     def run_research(self, metrics: BacktestMetrics, history: List[Dict[str, Any]]) -> AgentReport:

@@ -8,7 +8,8 @@ from typing import Any, Dict, List, Optional
 class ResearchCycleRecord:
     cycle_id: str; phase: str; discoveries: int; experiments_created: int
     experiments_completed: int; avg_score: float; created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ContinuousResearchLoop:
     def __init__(self):

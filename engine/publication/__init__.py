@@ -8,11 +8,15 @@ class Publication:
     pub_id: str; title: str; author: str; pub_type: str = "research_paper"
     evidence: List[str] = field(default_factory=list); quality_score: float = 0.0
     status: str = "draft"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchPublicationSystem:
-    def __init__(self): self._publications: Dict[str, Publication] = {}
-    def generate(self, pub: Publication): self._publications[pub.pub_id] = pub; return pub
+    def __init__(self):
+        self._publications: Dict[str, Publication] = {}
+    def generate(self, pub: Publication):
+        self._publications[pub.pub_id] = pub
+        return pub
     def review(self, pub_id: str, score: float) -> bool:
         pub = self._publications.get(pub_id)
         if not pub: return False

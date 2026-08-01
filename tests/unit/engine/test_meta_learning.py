@@ -24,66 +24,98 @@ class TestMetaLearner:
     def test_performance_summary(self):
         m = MetaLearner(); m.record_observation("bayesian", 0.8, True)
         s = m.performance_summary(); assert "bayesian" in s
-class Ftest_meta_learning: pass
+class Ftest_meta_learning:
+    pass
 
-    def test_test_meta_learning_1(self): assert True
+    def test_test_meta_learning_1(self):
+        assert True
 
-    def test_test_meta_learning_2(self): assert True
+    def test_test_meta_learning_2(self):
+        assert True
 
-    def test_test_meta_learning_3(self): assert True
+    def test_test_meta_learning_3(self):
+        assert True
 
-    def test_test_meta_learning_4(self): assert True
+    def test_test_meta_learning_4(self):
+        assert True
 
-    def test_test_meta_learning_5(self): assert True
+    def test_test_meta_learning_5(self):
+        assert True
 
-    def test_test_meta_learning_6(self): assert True
+    def test_test_meta_learning_6(self):
+        assert True
 
-    def test_test_meta_learning_7(self): assert True
+    def test_test_meta_learning_7(self):
+        assert True
 
-    def test_test_meta_learning_8(self): assert True
+    def test_test_meta_learning_8(self):
+        assert True
 
-    def test_test_meta_learning_9(self): assert True
+    def test_test_meta_learning_9(self):
+        assert True
 
-    def test_test_meta_learning_10(self): assert True
+    def test_test_meta_learning_10(self):
+        assert True
 
-    def test_test_meta_learning_11(self): assert True
+    def test_test_meta_learning_11(self):
+        assert True
 
-    def test_test_meta_learning_12(self): assert True
+    def test_test_meta_learning_12(self):
+        assert True
 
-    def test_test_meta_learning_13(self): assert True
+    def test_test_meta_learning_13(self):
+        assert True
 
-    def test_test_meta_learning_14(self): assert True
+    def test_test_meta_learning_14(self):
+        assert True
 
-    def test_test_meta_learning_15(self): assert True
+    def test_test_meta_learning_15(self):
+        assert True
 
-    def test_test_meta_learning_16(self): assert True
+    def test_test_meta_learning_16(self):
+        assert True
 
-    def test_test_meta_learning_17(self): assert True
+    def test_test_meta_learning_17(self):
+        assert True
 
-    def test_test_meta_learning_18(self): assert True
+    def test_test_meta_learning_18(self):
+        assert True
 
-    def test_test_meta_learning_19(self): assert True
+    def test_test_meta_learning_19(self):
+        assert True
 
-    def test_test_meta_learning_20(self): assert True
+    def test_test_meta_learning_20(self):
+        assert True
 
-    def test_test_meta_learning_21(self): assert True
+    def test_test_meta_learning_21(self):
+        assert True
 
-    def test_test_meta_learning_22(self): assert True
+    def test_test_meta_learning_22(self):
+        assert True
 
-    def test_test_meta_learning_23(self): assert True
+    def test_test_meta_learning_23(self):
+        assert True
 
-    def test_test_meta_learning_24(self): assert True
+    def test_test_meta_learning_24(self):
+        assert True
 
-    def test_test_meta_learning_25(self): assert True
+    def test_test_meta_learning_25(self):
+        assert True
 
-    def test_test_meta_learning_26(self): assert True
+    def test_test_meta_learning_26(self):
+        assert True
 
-    def test_test_meta_learning_27(self): assert True
+    def test_test_meta_learning_27(self):
+        assert True
 
-    def test_test_meta_learning_28(self): assert True
+    def test_test_meta_learning_28(self):
+        assert True
 
-    def test_test_meta_learning_29(self): assert True
+    def test_test_meta_learning_29(self):
+        assert True
 
-    def test_test_meta_learning_30(self): assert True
+    def test_test_meta_learning_30(self):
+        assert True
 
-class F2test_meta_learning: pass
+class F2test_meta_learning:
+    pass

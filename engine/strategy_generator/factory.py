@@ -7,7 +7,8 @@ from engine.strategy_generator import StrategyCandidate
 @dataclass
 class StrategyTemplate:
     template_id: str; name: str; base_type: str; parameter_schema: Dict[str, Any]
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class StrategyFactory:
     def __init__(self):

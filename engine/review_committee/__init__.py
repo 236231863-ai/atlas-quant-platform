@@ -6,7 +6,8 @@ from typing import Any, Dict, List, Optional
 @dataclass
 class ReviewResult:
     review_id: str; reviewer: str; criteria: str; score: float; comment: str; decision: str = "pending"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ScientificReviewBoard:
     def __init__(self):

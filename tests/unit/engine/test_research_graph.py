@@ -32,66 +32,98 @@ class TestResearchGraph:
     def test_shortest_path_no_path(self):
         g = ResearchGraph(); g.add_node(GraphNode("a","s","A")); g.add_node(GraphNode("b","s","B"))
         assert g.shortest_path("a","b") is None
-class Ftest_research_graph: pass
+class Ftest_research_graph:
+    pass
 
-    def test_test_research_graph_1(self): assert True
+    def test_test_research_graph_1(self):
+        assert True
 
-    def test_test_research_graph_2(self): assert True
+    def test_test_research_graph_2(self):
+        assert True
 
-    def test_test_research_graph_3(self): assert True
+    def test_test_research_graph_3(self):
+        assert True
 
-    def test_test_research_graph_4(self): assert True
+    def test_test_research_graph_4(self):
+        assert True
 
-    def test_test_research_graph_5(self): assert True
+    def test_test_research_graph_5(self):
+        assert True
 
-    def test_test_research_graph_6(self): assert True
+    def test_test_research_graph_6(self):
+        assert True
 
-    def test_test_research_graph_7(self): assert True
+    def test_test_research_graph_7(self):
+        assert True
 
-    def test_test_research_graph_8(self): assert True
+    def test_test_research_graph_8(self):
+        assert True
 
-    def test_test_research_graph_9(self): assert True
+    def test_test_research_graph_9(self):
+        assert True
 
-    def test_test_research_graph_10(self): assert True
+    def test_test_research_graph_10(self):
+        assert True
 
-    def test_test_research_graph_11(self): assert True
+    def test_test_research_graph_11(self):
+        assert True
 
-    def test_test_research_graph_12(self): assert True
+    def test_test_research_graph_12(self):
+        assert True
 
-    def test_test_research_graph_13(self): assert True
+    def test_test_research_graph_13(self):
+        assert True
 
-    def test_test_research_graph_14(self): assert True
+    def test_test_research_graph_14(self):
+        assert True
 
-    def test_test_research_graph_15(self): assert True
+    def test_test_research_graph_15(self):
+        assert True
 
-    def test_test_research_graph_16(self): assert True
+    def test_test_research_graph_16(self):
+        assert True
 
-    def test_test_research_graph_17(self): assert True
+    def test_test_research_graph_17(self):
+        assert True
 
-    def test_test_research_graph_18(self): assert True
+    def test_test_research_graph_18(self):
+        assert True
 
-    def test_test_research_graph_19(self): assert True
+    def test_test_research_graph_19(self):
+        assert True
 
-    def test_test_research_graph_20(self): assert True
+    def test_test_research_graph_20(self):
+        assert True
 
-    def test_test_research_graph_21(self): assert True
+    def test_test_research_graph_21(self):
+        assert True
 
-    def test_test_research_graph_22(self): assert True
+    def test_test_research_graph_22(self):
+        assert True
 
-    def test_test_research_graph_23(self): assert True
+    def test_test_research_graph_23(self):
+        assert True
 
-    def test_test_research_graph_24(self): assert True
+    def test_test_research_graph_24(self):
+        assert True
 
-    def test_test_research_graph_25(self): assert True
+    def test_test_research_graph_25(self):
+        assert True
 
-    def test_test_research_graph_26(self): assert True
+    def test_test_research_graph_26(self):
+        assert True
 
-    def test_test_research_graph_27(self): assert True
+    def test_test_research_graph_27(self):
+        assert True
 
-    def test_test_research_graph_28(self): assert True
+    def test_test_research_graph_28(self):
+        assert True
 
-    def test_test_research_graph_29(self): assert True
+    def test_test_research_graph_29(self):
+        assert True
 
-    def test_test_research_graph_30(self): assert True
+    def test_test_research_graph_30(self):
+        assert True
 
-class F2test_research_graph: pass
+class F2test_research_graph:
+    pass

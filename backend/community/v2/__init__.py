@@ -4,14 +4,38 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class CommunityPost: post_id:str; author:str; post_type:str="strategy"; title:str=""; content:str=""; tags:List[str]=field(default_factory=list); rating:float=0.0; forks:int=0; def to_dict(self):return asdict(self)
+class CommunityPost:
+    post_id:str
+    author:str
+    post_type:str="strategy"
+    title:str=""
+    content:str=""
+    tags:List[str]=field(default_factory=list)
+    rating:float=0.0
+    forks:int=0
+    def to_dict(self):
+        return asdict(self)
 @dataclass
-class ResearchPublication: pub_id:str; author:str; pub_type:str="research_note"; title:str=""; abstract:str=""; citations:int=0; def to_dict(self):return asdict(self)
+class ResearchPublication:
+    pub_id:str
+    author:str
+    pub_type:str="research_note"
+    title:str=""
+    abstract:str=""
+    citations:int=0
+    def to_dict(self):
+        return asdict(self)
 
 class CommunityPlatformV2:
-    def __init__(self): self._posts: Dict[str, CommunityPost] = {}; self._pubs: Dict[str, ResearchPublication] = {}
-    def publish_post(self, post: CommunityPost): self._posts[post.post_id] = post; return post
-    def publish_research(self, pub: ResearchPublication): self._pubs[pub.pub_id] = pub; return pub
+    def __init__(self):
+        self._posts: Dict[str, CommunityPost] = {}
+        self._pubs: Dict[str, ResearchPublication] = {}
+    def publish_post(self, post: CommunityPost):
+        self._posts[post.post_id] = post
+        return post
+    def publish_research(self, pub: ResearchPublication):
+        self._pubs[pub.pub_id] = pub
+        return pub
     def fork_post(self, pid: str, new_author: str) -> Optional[CommunityPost]:
         orig = self._posts.get(pid)
         if not orig: return None

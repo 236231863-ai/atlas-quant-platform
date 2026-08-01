@@ -11,7 +11,8 @@ def _m(roi=5.0, sharpe=0.5, dd=10.0, wr=30.0, bets=100, consec=3):
         worst_single_return=-10,consecutive_losses=consec,max_consecutive_losses=consec)
 
 class TestResearchLoop:
-    def setup_method(self): self.engine = ResearchLoopEngine()
+    def setup_method(self):
+        self.engine = ResearchLoopEngine()
     def test_generate_hypothesis_empty(self):
         h = self.engine.generate_hypothesis([])
         assert "baseline" in h.lower() or "random" in h.lower()

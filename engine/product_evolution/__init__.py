@@ -4,10 +4,17 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class EvolutionReport: keep:List[str]=field(default_factory=list); improve:List[str]=field(default_factory=list); replace:List[str]=field(default_factory=list); remove:List[str]=field(default_factory=list); def to_dict(self):return asdict(self)
+class EvolutionReport:
+    keep:List[str]=field(default_factory=list)
+    improve:List[str]=field(default_factory=list)
+    replace:List[str]=field(default_factory=list)
+    remove:List[str]=field(default_factory=list)
+    def to_dict(self):
+        return asdict(self)
 
 class ProductEvolutionEngine:
-    def __init__(self): self._reports: List[EvolutionReport] = []
+    def __init__(self):
+        self._reports: List[EvolutionReport] = []
     def analyze_modules(self, module_values: Dict[str, float]) -> EvolutionReport:
         report = EvolutionReport()
         for mod, val in module_values.items():

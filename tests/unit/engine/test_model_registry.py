@@ -55,14 +55,25 @@ class TestModelRegistry:
         assert d["model_id"] == "m1"
         assert d["model_type"] == "rf"
 class T8:
-    def test_h1(self): assert True
-    def test_h2(self): assert True
-    def test_h3(self): assert True
-    def test_h4(self): assert True
-    def test_h5(self): assert True
-    def test_h6(self): assert True
-    def test_h7(self): assert True
-    def test_h8(self): assert True
-    def test_h9(self): assert True
-    def test_h10(self): assert True
-    def test_h11(self): assert True
+    def test_h1(self):
+        assert True
+    def test_h2(self):
+        assert True
+    def test_h3(self):
+        assert True
+    def test_h4(self):
+        assert True
+    def test_h5(self):
+        assert True
+    def test_h6(self):
+        assert True
+    def test_h7(self):
+        assert True
+    def test_h8(self):
+        assert True
+    def test_h9(self):
+        assert True
+    def test_h10(self):
+        assert True
+    def test_h11(self):
+        assert True

@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class CompetitionReport:
     competition_id: str; type: str; participants: int; results: List[Dict[str, Any]]
     winner: str; avg_score: float = 0.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchCompetitionEngine:
-    def __init__(self): self._competitions: List[Dict[str, Any]] = []
+    def __init__(self):
+        self._competitions: List[Dict[str, Any]] = []
     def create_competition(self, comp_id: str, comp_type: str = "strategy_tournament") -> Dict[str, Any]:
         comp = {"competition_id": comp_id, "type": comp_type, "status": "created"}
         self._competitions.append(comp); return comp

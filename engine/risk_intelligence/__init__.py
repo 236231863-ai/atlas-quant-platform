@@ -4,10 +4,16 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class RiskIntelligenceReport: risks:List[Dict[str,Any]]=field(default_factory=list); overall_risk:float=0.0; top_risk:str=""; def to_dict(self):return asdict(self)
+class RiskIntelligenceReport:
+    risks:List[Dict[str,Any]]=field(default_factory=list)
+    overall_risk:float=0.0
+    top_risk:str=""
+    def to_dict(self):
+        return asdict(self)
 
 class RiskIntelligenceEngine:
-    def __init__(self): self._risks: Dict[str, List[float]] = {}
+    def __init__(self):
+        self._risks: Dict[str, List[float]] = {}
     def record_risk(self, risk_id: str, value: float):
         if risk_id not in self._risks: self._risks[risk_id] = []
         self._risks[risk_id].append(value)

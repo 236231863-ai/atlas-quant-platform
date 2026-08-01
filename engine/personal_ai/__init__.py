@@ -6,10 +6,13 @@ from typing import Any, Dict, List, Optional
 @dataclass
 class AISuggestion:
     suggestion_id: str; content: str; category: str; priority: str="medium"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class PersonalResearchAssistant:
-    def __init__(self): self._history: Dict[str, List[Dict[str, Any]]] = {}; self._suggestions: Dict[str, List[AISuggestion]] = {}
+    def __init__(self):
+        self._history: Dict[str, List[Dict[str, Any]]] = {}
+        self._suggestions: Dict[str, List[AISuggestion]] = {}
     def remember_analysis(self, uid: str, analysis: Dict[str, Any]):
         if uid not in self._history: self._history[uid] = []
         self._history[uid].append(analysis)

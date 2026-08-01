@@ -4,11 +4,24 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class StrategyAsset: strategy_id:str; creator:str; version:str="1.0"; description:str=""; backtest_metrics:Dict[str,float]=field(default_factory=dict); rating:float=0.0; license:str="MIT"; status:str="published"; def to_dict(self):return asdict(self)
+class StrategyAsset:
+    strategy_id:str
+    creator:str
+    version:str="1.0"
+    description:str=""
+    backtest_metrics:Dict[str,float]=field(default_factory=dict)
+    rating:float=0.0
+    license:str="MIT"
+    status:str="published"
+    def to_dict(self):
+        return asdict(self)
 
 class StrategyMarketplace:
-    def __init__(self): self._assets: Dict[str, StrategyAsset] = {}
-    def publish(self, asset: StrategyAsset): self._assets[asset.strategy_id] = asset; return asset
+    def __init__(self):
+        self._assets: Dict[str, StrategyAsset] = {}
+    def publish(self, asset: StrategyAsset):
+        self._assets[asset.strategy_id] = asset
+        return asset
     def fork_strategy(self, sid: str, new_creator: str) -> Optional[StrategyAsset]:
         orig = self._assets.get(sid)
         if not orig: return None

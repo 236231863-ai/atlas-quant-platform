@@ -10,11 +10,14 @@ from core.types.models import DrawRecordData
 @dataclass
 class IngestionReport:
     total: int = 0; imported: int = 0; skipped: int = 0; errors: List[str] = field(default_factory=list)
-    def to_dict(self): return {"total":self.total,"imported":self.imported,"skipped":self.skipped,"errors":self.errors}
+    def to_dict(self):
+        return {"total":self.total,"imported":self.imported,"skipped":self.skipped,"errors":self.errors}
 
 class DataIngestionPipeline:
-    def __init__(self, plugin): self._plugin = plugin
-    def get_game_def(self): return self._plugin.get_lottery_type()
+    def __init__(self, plugin):
+        self._plugin = plugin
+    def get_game_def(self):
+        return self._plugin.get_lottery_type()
 
 class DataValidator:
     @staticmethod

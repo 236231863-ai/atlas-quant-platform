@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class AgentVersion:
     agent_id: str; version: int; skills: Dict[str, float]; parameters: Dict[str, Any]
     performance: Dict[str, float] = field(default_factory=dict); parent_version: Optional[int] = None
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class AgentEvolutionEngine:
-    def __init__(self): self._versions: Dict[str, List[AgentVersion]] = {}
+    def __init__(self):
+        self._versions: Dict[str, List[AgentVersion]] = {}
     def record_version(self, v: AgentVersion):
         if v.agent_id not in self._versions: self._versions[v.agent_id] = []
         self._versions[v.agent_id].append(v)

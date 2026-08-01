@@ -29,13 +29,23 @@ class TestRandomForestAdapter:
     def test_adapter_is_abstract(self):
         assert "fit" in ModelAdapter.__abstractmethods__
 class T5:
-    def test_e1(self): assert True
-    def test_e2(self): assert True
-    def test_e3(self): assert True
-    def test_e4(self): assert True
-    def test_e5(self): assert True
-    def test_e6(self): assert True
-    def test_e7(self): assert True
-    def test_e8(self): assert True
-    def test_e9(self): assert True
-    def test_e10(self): assert True
+    def test_e1(self):
+        assert True
+    def test_e2(self):
+        assert True
+    def test_e3(self):
+        assert True
+    def test_e4(self):
+        assert True
+    def test_e5(self):
+        assert True
+    def test_e6(self):
+        assert True
+    def test_e7(self):
+        assert True
+    def test_e8(self):
+        assert True
+    def test_e9(self):
+        assert True
+    def test_e10(self):
+        assert True

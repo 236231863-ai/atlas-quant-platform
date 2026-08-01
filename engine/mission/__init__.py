@@ -7,11 +7,15 @@ from typing import Any, Dict, List, Optional
 class ResearchMission:
     mission_id: str; objective: str; duration_days: int; milestones: List[str]
     resources: Dict[str, float]; status: str = "active"; progress: float = 0.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchMissionManager:
-    def __init__(self): self._missions: Dict[str, ResearchMission] = {}
-    def create_mission(self, mission: ResearchMission): self._missions[mission.mission_id] = mission; return mission
+    def __init__(self):
+        self._missions: Dict[str, ResearchMission] = {}
+    def create_mission(self, mission: ResearchMission):
+        self._missions[mission.mission_id] = mission
+        return mission
     def get_mission(self, mid: str) -> Optional[ResearchMission]: return self._missions.get(mid)
     def update_progress(self, mid: str, progress: float) -> bool:
         m = self._missions.get(mid)

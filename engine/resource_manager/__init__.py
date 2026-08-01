@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class AllocationPlan:
     experiments_allowed: int; compute_budget: float; priority_levels: Dict[str, int]
     agent_workload: Dict[str, int]
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchResourceAllocator:
-    def __init__(self): self._agents: Dict[str, float] = {}
+    def __init__(self):
+        self._agents: Dict[str, float] = {}
     def register_agent(self, agent_id: str, efficiency: float = 1.0):
         self._agents[agent_id] = efficiency
     def allocate_experiments(self, total_budget: int, agent_scores: Dict[str, float]) -> AllocationPlan:

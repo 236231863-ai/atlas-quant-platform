@@ -7,7 +7,8 @@ from typing import Any, Dict, List, Optional, Tuple
 class OptimizerRecord:
     optimizer_type: str; trials: int = 0; best_score: float = 0.0
     avg_score: float = 0.0; success_rate: float = 0.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class MetaLearner:
     def __init__(self):

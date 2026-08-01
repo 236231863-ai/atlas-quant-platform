@@ -9,7 +9,8 @@ from engine.probability.calibration import CalibrationEngine
 class EvalMetrics:
     accuracy: float = 0.0; precision: float = 0.0; recall: float = 0.0; f1_score: float = 0.0
     calibration_error: float = 0.0; overfitting_score: float = 0.0; is_overfit: bool = False
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ModelEvaluation:
     @staticmethod

@@ -5,7 +5,8 @@ from typing import Any, Dict, List, Optional
 from engine.decision import DecisionSimulator, DecisionReport
 
 class DecisionAPIService:
-    def __init__(self): self._decisions: List[DecisionReport] = []
+    def __init__(self):
+        self._decisions: List[DecisionReport] = []
     def simulate_decision(self, goal: str, actions: List[Dict[str, Any]]) -> DecisionReport:
         report = DecisionSimulator.simulate(goal, actions)
         self._decisions.append(report); return report

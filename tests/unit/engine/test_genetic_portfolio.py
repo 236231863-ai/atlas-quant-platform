@@ -37,6 +37,8 @@ class TestGeneticPortfolio:
         g = GeneticPortfolioOptimizer(list(range(1,20)), 5, pop_size=10, seed=42)
         r = g.optimize(generations=10)
         assert len(r.fitness_history) == 10
-class X2: pass
-class X3: pass
+class X2:
+    pass
+class X3:
+    pass
 

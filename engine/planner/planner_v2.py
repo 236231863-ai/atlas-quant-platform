@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class ResearchRoadmap:
     goal_id: str; weekly_plan: List[Dict[str, Any]]; monthly_plan: List[Dict[str, Any]]
     dependencies: List[str]; resource_estimate: Dict[str, float]; milestones: List[str]
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class AutonomousResearchPlanner:
-    def __init__(self): self._plans: Dict[str, ResearchRoadmap] = {}
+    def __init__(self):
+        self._plans: Dict[str, ResearchRoadmap] = {}
 
     def create_roadmap(self, goal_id: str, goal_title: str) -> ResearchRoadmap:
         roadmap = ResearchRoadmap(

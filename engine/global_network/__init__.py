@@ -7,11 +7,15 @@ from typing import Any, Dict, List, Optional
 class NetworkNode:
     node_id: str; node_type: str; status: str = "idle"; task_count: int = 0
     capabilities: List[str] = field(default_factory=list)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchNodeNetwork:
-    def __init__(self): self._nodes: Dict[str, NetworkNode] = {}
-    def register_node(self, node: NetworkNode): self._nodes[node.node_id] = node; return node
+    def __init__(self):
+        self._nodes: Dict[str, NetworkNode] = {}
+    def register_node(self, node: NetworkNode):
+        self._nodes[node.node_id] = node
+        return node
     def assign_task(self, node_id: str) -> bool:
         node = self._nodes.get(node_id)
         if not node: return False

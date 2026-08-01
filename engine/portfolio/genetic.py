@@ -9,7 +9,8 @@ from engine.portfolio.diversity import DiversityOptimizer
 class PortfolioOptimizationResult:
     best_population: List[List[int]]; generations: int; best_fitness: float
     fitness_history: List[float]; convergence_rate: float
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class GeneticPortfolioOptimizer:
     def __init__(self, pool: List[int], csize: int, pop_size: int = 50, seed: Optional[int] = None):

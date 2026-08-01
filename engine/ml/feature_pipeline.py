@@ -15,7 +15,8 @@ class FeatureVector:
         return [self.frequency_rate, self.z_score, float(self.current_gap), self.avg_gap,
                 self.gap_ratio, self.odd_even_ratio, self.high_low_ratio, self.zone_pct,
                 self.entropy_score, self.pair_strength, self.normalized_entropy]
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
     @property
     def feature_names(self) -> List[str]:
         return ["frequency_rate","z_score","current_gap","avg_gap","gap_ratio",

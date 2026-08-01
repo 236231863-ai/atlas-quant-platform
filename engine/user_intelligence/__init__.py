@@ -4,13 +4,29 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 from enum import Enum
 
-class UserLevel(str, Enum): BEGINNER="beginner"; EXPLORER="explorer"; ADVANCED="advanced"; RESEARCHER="researcher"; PROFESSIONAL="professional"; ENTERPRISE="enterprise"
+class UserLevel(str, Enum):
+    BEGINNER="beginner"
+    EXPLORER="explorer"
+    ADVANCED="advanced"
+    RESEARCHER="researcher"
+    PROFESSIONAL="professional"
+    ENTERPRISE="enterprise"
 
 @dataclass
-class UserIntelligenceProfile: user_id:str; level:UserLevel=UserLevel.BEGINNER; skill_score:float=0.0; interests:List[str]=field(default_factory=list); preferred_strategies:List[str]=field(default_factory=list); analysis_count:int=0; recommendation:str="start with basic analysis"; def to_dict(self):return asdict(self)
+class UserIntelligenceProfile:
+    user_id:str
+    level:UserLevel=UserLevel.BEGINNER
+    skill_score:float=0.0
+    interests:List[str]=field(default_factory=list)
+    preferred_strategies:List[str]=field(default_factory=list)
+    analysis_count:int=0
+    recommendation:str="start with basic analysis"
+    def to_dict(self):
+        return asdict(self)
 
 class UserIntelligenceEngine:
-    def __init__(self): self._profiles: Dict[str, UserIntelligenceProfile] = {}
+    def __init__(self):
+        self._profiles: Dict[str, UserIntelligenceProfile] = {}
     def analyze_user(self, uid: str, events: List[Dict[str, Any]]) -> UserIntelligenceProfile:
         analysis_count = sum(1 for e in events if e.get("type")=="analysis")
         profile = UserIntelligenceProfile(user_id=uid)

@@ -4,10 +4,18 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class AdaptationResult: parameter:str; before:float; after:float; adjustment:float; reason:str; def to_dict(self):return asdict(self)
+class AdaptationResult:
+    parameter:str
+    before:float
+    after:float
+    adjustment:float
+    reason:str
+    def to_dict(self):
+        return asdict(self)
 
 class AdaptiveStrategyEngine:
-    def __init__(self): self._adaptations: List[AdaptationResult] = []
+    def __init__(self):
+        self._adaptations: List[AdaptationResult] = []
     def adjust_parameter(self, param: str, current: float, feedback_error: float, learning_rate: float=0.1) -> AdaptationResult:
         adjustment = -feedback_error * learning_rate
         new_val = max(0.0, min(1.0, current + adjustment))

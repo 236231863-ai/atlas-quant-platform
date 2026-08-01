@@ -7,7 +7,8 @@ from typing import Any, Dict, List, Optional, Tuple
 class BatchExperimentReport:
     batch_id: str; total_experiments: int; results: List[Dict[str, Any]]
     success_rate: float = 0.0; avg_score: float = 0.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ExperimentBatchEngine:
     def __init__(self):

@@ -7,7 +7,8 @@ from typing import Any, Dict, List, Optional
 class CouncilDecision:
     decision_id: str; proposal: str; participants: List[str]; arguments: List[Dict[str, Any]]
     final_conclusion: str; consensus_level: float
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class AgentScientist:
     def __init__(self, name: str, specialty: str):

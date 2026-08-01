@@ -7,11 +7,15 @@ from typing import Any, Dict, List, Optional
 class ResearchFund:
     project_id: str; budget: float; risk: float; expected_value: float; status: str = "proposed"
     allocated: float = 0.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchFundingManager:
-    def __init__(self): self._funds: Dict[str, ResearchFund] = {}
-    def submit_project(self, fund: ResearchFund): self._funds[fund.project_id] = fund; return fund
+    def __init__(self):
+        self._funds: Dict[str, ResearchFund] = {}
+    def submit_project(self, fund: ResearchFund):
+        self._funds[fund.project_id] = fund
+        return fund
     def evaluate_project(self, pid: str) -> Optional[Dict[str, Any]]:
         f = self._funds.get(pid)
         if not f: return None

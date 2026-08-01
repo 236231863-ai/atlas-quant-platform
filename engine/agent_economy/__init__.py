@@ -9,10 +9,12 @@ class AgentScore:
     knowledge_score: float = 0.0; overall_score: float = 0.0
     def compute(self):
         self.overall_score = round((self.performance_score * 0.4 + self.contribution_score * 0.3 + self.knowledge_score * 0.3), 4)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class AgentEconomyEngine:
-    def __init__(self): self._scores: Dict[str, List[AgentScore]] = {}
+    def __init__(self):
+        self._scores: Dict[str, List[AgentScore]] = {}
     def record_score(self, score: AgentScore):
         score.compute()
         if score.agent_id not in self._scores: self._scores[score.agent_id] = []

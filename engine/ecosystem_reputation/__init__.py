@@ -6,11 +6,24 @@ from enum import Enum
 
 CreatorLevel = Enum("CreatorLevel", ["NEW","VERIFIED","EXPERT","ENTERPRISE"])
 @dataclass
-class CreatorReputation: creator_id:str; technical_quality:float=0.5; usage_count:int=0; satisfaction:float=0.5; stability:float=0.5; innovation:float=0.5; level:CreatorLevel=CreatorLevel.NEW; def overall(self)->float: return round((self.technical_quality+self.satisfaction+self.stability+self.innovation)/4,4); def to_dict(self):return asdict(self)
+class CreatorReputation:
+    creator_id:str
+    technical_quality:float=0.5
+    usage_count:int=0
+    satisfaction:float=0.5
+    stability:float=0.5
+    innovation:float=0.5
+    level:CreatorLevel=CreatorLevel.NEW
+    def overall(self)->float: return round((self.technical_quality+self.satisfaction+self.stability+self.innovation)/4,4)
+    def to_dict(self):
+        return asdict(self)
 
 class ReputationSystem:
-    def __init__(self): self._reputations: Dict[str, CreatorReputation] = {}
-    def register(self, r: CreatorReputation): self._reputations[r.creator_id] = r; return r
+    def __init__(self):
+        self._reputations: Dict[str, CreatorReputation] = {}
+    def register(self, r: CreatorReputation):
+        self._reputations[r.creator_id] = r
+        return r
     def promote(self, cid: str) -> bool:
         r = self._reputations.get(cid)
         if not r: return False

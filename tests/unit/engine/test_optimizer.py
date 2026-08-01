@@ -65,7 +65,8 @@ class TestRandomSearch:
         result = random_search(objective, {"x": [-10, 0, 10]}, n_trials=3, maximize=False, random_seed=1)
         assert result.objective == "minimize"
     def test_multi_param_grid(self):
-        def objective(p): return p["a"] + p["b"]
+        def objective(p):
+            return p["a"] + p["b"]
         r = grid_search(objective, {"a": [1,2], "b": [10,20]})
         assert r.best_params == {"a": 2, "b": 20}
     def test_objective_exception_handled(self):
@@ -75,7 +76,8 @@ class TestRandomSearch:
         r = grid_search(objective, {"x": [-1, 0, 1]})
         assert len(r.all_scores) == 3
     def test_random_search_more_than_params(self):
-        def objective(p): return p["x"]
+        def objective(p):
+            return p["x"]
         r = random_search(objective, {"x": [1,2,3]}, n_trials=10, random_seed=42)
         assert r.n_trials == 10
     def test_random_search_best_found(self):
@@ -86,6 +88,7 @@ class TestRandomSearch:
         r = random_search(objective, {"x": [100,200,300]}, n_trials=3, random_seed=1)
         assert r.best_score in [100,200,300]
     def test_random_search_best_params_stored(self):
-        def objective(p): return p["x"]
+        def objective(p):
+            return p["x"]
         r = random_search(objective, {"x": [100,50,25]}, n_trials=3, random_seed=1)
         assert len(r.best_params) == 1

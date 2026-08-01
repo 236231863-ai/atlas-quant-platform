@@ -7,10 +7,12 @@ from typing import Any, Dict, List, Optional
 class ResearchGoal:
     goal_id: str; title: str; reason: str; priority: float = 0.5
     expected_value: float = 0.5; risk: float = 0.3; source: str = "analysis"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchGoalGenerator:
-    def __init__(self): self._goals: Dict[str, ResearchGoal] = {}
+    def __init__(self):
+        self._goals: Dict[str, ResearchGoal] = {}
     def generate_goal(self, goal: ResearchGoal) -> ResearchGoal:
         self._goals[goal.goal_id] = goal; return goal
     def get_goal(self, gid: str) -> Optional[ResearchGoal]: return self._goals.get(gid)

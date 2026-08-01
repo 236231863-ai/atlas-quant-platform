@@ -6,12 +6,14 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 @dataclass
 class GraphNode:
     node_id: str; node_type: str; label: str; properties: Dict[str, Any] = field(default_factory=dict)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class GraphEdge:
     source: str; target: str; edge_type: str; weight: float = 1.0
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchGraph:
     def __init__(self):

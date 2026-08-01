@@ -14,5 +14,11 @@ class PlatformDirector:
         reliability = self._reliability.assess()
         security = self._security.audit()
         return {"reliability": reliability.to_dict(), "security": security.to_dict()}
-    def get_reliability(self): return self._reliability; def get_resilience(self): return self._resilience
-    def get_quality(self): return self._quality; def get_security(self): return self._security
+    def get_reliability(self):
+        return self._reliability
+        def get_resilience(self):
+            return self._resilience
+    def get_quality(self):
+        return self._quality
+        def get_security(self):
+            return self._security

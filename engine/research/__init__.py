@@ -8,10 +8,12 @@ from engine.backtest.models import BacktestMetrics
 class ResearchCycleReport:
     hypothesis: str; experiment_config: Dict[str, Any]; result_summary: Dict[str, Any]
     recommendations: List[str]; cycle_id: str = "cycle_1"
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchLoopEngine:
-    def __init__(self): self._cycle_count = 0
+    def __init__(self):
+        self._cycle_count = 0
 
     def generate_hypothesis(self, experiment_history: List[Dict[str, Any]]) -> str:
         if not experiment_history: return "Test baseline random strategy performance"

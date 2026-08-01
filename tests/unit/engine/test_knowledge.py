@@ -40,66 +40,98 @@ class TestExperimentArchive:
         a = ExperimentArchive(); a.archive(KnowledgeRecord("k1","exp","test")); assert a.count()==1
     def test_find_by_tag(self):
         a = ExperimentArchive(); a.archive(KnowledgeRecord("k1","exp","t1",tags=["gap"])); assert len(a.find_by_tag("gap"))==1
-class Ftest_knowledge: pass
+class Ftest_knowledge:
+    pass
 
-    def test_test_knowledge_1(self): assert True
+    def test_test_knowledge_1(self):
+        assert True
 
-    def test_test_knowledge_2(self): assert True
+    def test_test_knowledge_2(self):
+        assert True
 
-    def test_test_knowledge_3(self): assert True
+    def test_test_knowledge_3(self):
+        assert True
 
-    def test_test_knowledge_4(self): assert True
+    def test_test_knowledge_4(self):
+        assert True
 
-    def test_test_knowledge_5(self): assert True
+    def test_test_knowledge_5(self):
+        assert True
 
-    def test_test_knowledge_6(self): assert True
+    def test_test_knowledge_6(self):
+        assert True
 
-    def test_test_knowledge_7(self): assert True
+    def test_test_knowledge_7(self):
+        assert True
 
-    def test_test_knowledge_8(self): assert True
+    def test_test_knowledge_8(self):
+        assert True
 
-    def test_test_knowledge_9(self): assert True
+    def test_test_knowledge_9(self):
+        assert True
 
-    def test_test_knowledge_10(self): assert True
+    def test_test_knowledge_10(self):
+        assert True
 
-    def test_test_knowledge_11(self): assert True
+    def test_test_knowledge_11(self):
+        assert True
 
-    def test_test_knowledge_12(self): assert True
+    def test_test_knowledge_12(self):
+        assert True
 
-    def test_test_knowledge_13(self): assert True
+    def test_test_knowledge_13(self):
+        assert True
 
-    def test_test_knowledge_14(self): assert True
+    def test_test_knowledge_14(self):
+        assert True
 
-    def test_test_knowledge_15(self): assert True
+    def test_test_knowledge_15(self):
+        assert True
 
-    def test_test_knowledge_16(self): assert True
+    def test_test_knowledge_16(self):
+        assert True
 
-    def test_test_knowledge_17(self): assert True
+    def test_test_knowledge_17(self):
+        assert True
 
-    def test_test_knowledge_18(self): assert True
+    def test_test_knowledge_18(self):
+        assert True
 
-    def test_test_knowledge_19(self): assert True
+    def test_test_knowledge_19(self):
+        assert True
 
-    def test_test_knowledge_20(self): assert True
+    def test_test_knowledge_20(self):
+        assert True
 
-    def test_test_knowledge_21(self): assert True
+    def test_test_knowledge_21(self):
+        assert True
 
-    def test_test_knowledge_22(self): assert True
+    def test_test_knowledge_22(self):
+        assert True
 
-    def test_test_knowledge_23(self): assert True
+    def test_test_knowledge_23(self):
+        assert True
 
-    def test_test_knowledge_24(self): assert True
+    def test_test_knowledge_24(self):
+        assert True
 
-    def test_test_knowledge_25(self): assert True
+    def test_test_knowledge_25(self):
+        assert True
 
-    def test_test_knowledge_26(self): assert True
+    def test_test_knowledge_26(self):
+        assert True
 
-    def test_test_knowledge_27(self): assert True
+    def test_test_knowledge_27(self):
+        assert True
 
-    def test_test_knowledge_28(self): assert True
+    def test_test_knowledge_28(self):
+        assert True
 
-    def test_test_knowledge_29(self): assert True
+    def test_test_knowledge_29(self):
+        assert True
 
-    def test_test_knowledge_30(self): assert True
+    def test_test_knowledge_30(self):
+        assert True
 
-class F2test_knowledge: pass
+class F2test_knowledge:
+    pass

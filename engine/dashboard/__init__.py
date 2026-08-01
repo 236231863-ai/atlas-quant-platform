@@ -10,7 +10,8 @@ class DashboardData:
     strategy_evolution: List[Dict[str, Any]] = field(default_factory=list)
     benchmark_ranking: List[Dict[str, Any]] = field(default_factory=list)
     knowledge_growth: Dict[str, Any] = field(default_factory=dict)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchDashboardService:
     def __init__(self):

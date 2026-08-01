@@ -3,9 +3,12 @@ from __future__ import annotations
 import pytest
 from engine.training import TrainingPipeline, TrainingRun
 
-def feat_fn(d): return d
-def train_fn(d): return "model"
-def eval_fn(d, m): return {"accuracy": 0.85, "f1": 0.82}
+def feat_fn(d):
+    return d
+def train_fn(d):
+    return "model"
+def eval_fn(d, m):
+    return {"accuracy": 0.85, "f1": 0.82}
 
 class TestTrainingPipeline:
     def test_create_run(self):

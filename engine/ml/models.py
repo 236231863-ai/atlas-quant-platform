@@ -9,7 +9,8 @@ class ModelConfig:
     model_type: str = "random_forest"
     n_estimators: int = 100; max_depth: int = 10; random_seed: int = 42
     learning_rate: float = 0.1; n_jobs: int = -1
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ModelAdapter(ABC):
     @abstractmethod
@@ -51,9 +52,11 @@ class RandomForestAdapter(ModelAdapter):
             n_estimators=self._config.n_estimators, max_depth=self._config.max_depth,
             random_state=self._config.random_seed, n_jobs=self._config.n_jobs)
     @property
-    def name(self): return "random_forest"
+    def name(self):
+        return "random_forest"
     @property
-    def is_trained(self): return self._trained
+    def is_trained(self):
+        return self._trained
     def fit(self, X, y):
         if self._model: self._model.fit(X, y); self._trained = True
     def predict(self, X):

@@ -33,14 +33,25 @@ class TestEvalMetrics:
         s, is_overfit = ModelEvaluation.detect_overfitting(0.75, 0.72, 0.15)
         assert not is_overfit
 class T6:
-    def test_f1(self): assert True
-    def test_f2(self): assert True
-    def test_f3(self): assert True
-    def test_f4(self): assert True
-    def test_f5(self): assert True
-    def test_f6(self): assert True
-    def test_f7(self): assert True
-    def test_f8(self): assert True
-    def test_f9(self): assert True
-    def test_f10(self): assert True
-    def test_f11(self): assert True
+    def test_f1(self):
+        assert True
+    def test_f2(self):
+        assert True
+    def test_f3(self):
+        assert True
+    def test_f4(self):
+        assert True
+    def test_f5(self):
+        assert True
+    def test_f6(self):
+        assert True
+    def test_f7(self):
+        assert True
+    def test_f8(self):
+        assert True
+    def test_f9(self):
+        assert True
+    def test_f10(self):
+        assert True
+    def test_f11(self):
+        assert True

@@ -30,63 +30,93 @@ class TestScoring:
         s = ResearchScoreEngine.compute(_m(dd=40.0)); assert s.risk_score < 50
     def test_details_included(self):
         s = ResearchScoreEngine.compute(_m()); assert "roi_norm" in s.details
-    def test_ftest_scoring_1(self): assert True
+    def test_ftest_scoring_1(self):
+        assert True
 
-    def test_ftest_scoring_2(self): assert True
+    def test_ftest_scoring_2(self):
+        assert True
 
-    def test_ftest_scoring_3(self): assert True
+    def test_ftest_scoring_3(self):
+        assert True
 
-    def test_ftest_scoring_4(self): assert True
+    def test_ftest_scoring_4(self):
+        assert True
 
-    def test_ftest_scoring_5(self): assert True
+    def test_ftest_scoring_5(self):
+        assert True
 
-    def test_ftest_scoring_6(self): assert True
+    def test_ftest_scoring_6(self):
+        assert True
 
-    def test_ftest_scoring_7(self): assert True
+    def test_ftest_scoring_7(self):
+        assert True
 
-    def test_ftest_scoring_8(self): assert True
+    def test_ftest_scoring_8(self):
+        assert True
 
-    def test_ftest_scoring_9(self): assert True
+    def test_ftest_scoring_9(self):
+        assert True
 
-    def test_ftest_scoring_10(self): assert True
+    def test_ftest_scoring_10(self):
+        assert True
 
-    def test_ftest_scoring_11(self): assert True
+    def test_ftest_scoring_11(self):
+        assert True
 
-    def test_ftest_scoring_12(self): assert True
+    def test_ftest_scoring_12(self):
+        assert True
 
-    def test_ftest_scoring_13(self): assert True
+    def test_ftest_scoring_13(self):
+        assert True
 
-    def test_ftest_scoring_14(self): assert True
+    def test_ftest_scoring_14(self):
+        assert True
 
-    def test_ftest_scoring_15(self): assert True
+    def test_ftest_scoring_15(self):
+        assert True
 
-    def test_ftest_scoring_16(self): assert True
+    def test_ftest_scoring_16(self):
+        assert True
 
-    def test_ftest_scoring_17(self): assert True
+    def test_ftest_scoring_17(self):
+        assert True
 
-    def test_ftest_scoring_18(self): assert True
+    def test_ftest_scoring_18(self):
+        assert True
 
-    def test_ftest_scoring_19(self): assert True
+    def test_ftest_scoring_19(self):
+        assert True
 
-    def test_ftest_scoring_20(self): assert True
+    def test_ftest_scoring_20(self):
+        assert True
 
-    def test_ftest_scoring_21(self): assert True
+    def test_ftest_scoring_21(self):
+        assert True
 
-    def test_ftest_scoring_22(self): assert True
+    def test_ftest_scoring_22(self):
+        assert True
 
-    def test_ftest_scoring_23(self): assert True
+    def test_ftest_scoring_23(self):
+        assert True
 
-    def test_ftest_scoring_24(self): assert True
+    def test_ftest_scoring_24(self):
+        assert True
 
-    def test_ftest_scoring_25(self): assert True
+    def test_ftest_scoring_25(self):
+        assert True
 
-    def test_ftest_scoring_26(self): assert True
+    def test_ftest_scoring_26(self):
+        assert True
 
-    def test_ftest_scoring_27(self): assert True
+    def test_ftest_scoring_27(self):
+        assert True
 
-    def test_ftest_scoring_28(self): assert True
+    def test_ftest_scoring_28(self):
+        assert True
 
-    def test_ftest_scoring_29(self): assert True
+    def test_ftest_scoring_29(self):
+        assert True
 
-    def test_ftest_scoring_30(self): assert True
+    def test_ftest_scoring_30(self):
+        assert True
 

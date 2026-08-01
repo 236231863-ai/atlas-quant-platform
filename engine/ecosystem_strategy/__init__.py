@@ -4,10 +4,17 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class EcosystemStrategy: vision:str; quarterly_goals:List[str]=field(default_factory=list); resource_allocation:Dict[str,float]=field(default_factory=dict); risk_assessment:List[str]=field(default_factory=list); def to_dict(self):return asdict(self)
+class EcosystemStrategy:
+    vision:str
+    quarterly_goals:List[str]=field(default_factory=list)
+    resource_allocation:Dict[str,float]=field(default_factory=dict)
+    risk_assessment:List[str]=field(default_factory=list)
+    def to_dict(self):
+        return asdict(self)
 
 class EcosystemStrategyPlanner:
-    def __init__(self): self._strategies: List[EcosystemStrategy] = []
+    def __init__(self):
+        self._strategies: List[EcosystemStrategy] = []
     def create_strategy(self, vision: str) -> EcosystemStrategy:
         s = EcosystemStrategy(vision=vision, quarterly_goals=["Grow creator base 20%","Increase transaction volume 30%","Launch 2 new verticals"],
             resource_allocation={"creator_tools":0.3,"marketing":0.3,"infrastructure":0.2,"support":0.2}, risk_assessment=["Market competition","Regulatory changes"])

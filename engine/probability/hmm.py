@@ -10,7 +10,8 @@ from engine.probability.markov import NumberState
 class HMMResult:
     number: int; hidden_states: List[NumberState]; transition_matrix: Dict[str, Dict[str, float]]
     emission_probs: Dict[str, float]; future_distribution: Dict[str, float]; state_confidence: float
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class HMMEngine:
     STATES = ["cold", "normal", "hot"]

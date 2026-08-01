@@ -6,13 +6,32 @@ from enum import Enum
 
 Role = Enum("Role", ["OWNER","ADMIN","RESEARCHER","ANALYST","VIEWER"])
 @dataclass
-class Organization: org_id:str; name:str; owner_id:str; plan:str="free"; created_at:str=""; def to_dict(self):return asdict(self)
+class Organization:
+    org_id:str
+    name:str
+    owner_id:str
+    plan:str="free"
+    created_at:str=""
+    def to_dict(self):
+        return asdict(self)
 @dataclass
-class EnterpriseUser: user_id:str; org_id:str; email:str; role:Role=Role.VIEWER; status:str="active"; def to_dict(self):return asdict(self)
+class EnterpriseUser:
+    user_id:str
+    org_id:str
+    email:str
+    role:Role=Role.VIEWER
+    status:str="active"
+    def to_dict(self):
+        return asdict(self)
 
 class EnterpriseIdentityManager:
-    def __init__(self): self._orgs: Dict[str, Organization] = {}; self._members: Dict[str, List[EnterpriseUser]] = {}
-    def create_org(self, org: Organization): self._orgs[org.org_id] = org; self._members[org.org_id] = []; return org
+    def __init__(self):
+        self._orgs: Dict[str, Organization] = {}
+        self._members: Dict[str, List[EnterpriseUser]] = {}
+    def create_org(self, org: Organization):
+        self._orgs[org.org_id] = org
+        self._members[org.org_id] = []
+        return org
     def invite(self, org_id: str, user: EnterpriseUser) -> bool:
         if org_id not in self._members: return False; self._members[org_id].append(user); return True
     def remove(self, org_id: str, uid: str) -> bool:

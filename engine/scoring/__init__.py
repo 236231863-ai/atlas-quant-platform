@@ -9,7 +9,8 @@ from engine.backtest.models import BacktestMetrics
 class ResearchScore:
     performance_score: float = 0.0; risk_score: float = 0.0; quality_score: float = 0.0
     final_score: float = 0.0; details: Dict[str, float] = field(default_factory=dict)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchScoreEngine:
     @staticmethod

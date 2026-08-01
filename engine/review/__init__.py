@@ -16,10 +16,12 @@ class ReviewRecord:
     reviewer: str = ""; comments: List[str] = field(default_factory=list)
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     updated_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchReviewSystem:
-    def __init__(self): self._records: Dict[str, ReviewRecord] = {}
+    def __init__(self):
+        self._records: Dict[str, ReviewRecord] = {}
     def propose(self, exp_id: str) -> ReviewRecord:
         rec = ReviewRecord(experiment_id=exp_id, state=ReviewState.AI_PROPOSED)
         self._records[exp_id] = rec; return rec

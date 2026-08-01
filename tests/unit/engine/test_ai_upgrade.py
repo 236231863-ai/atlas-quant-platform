@@ -64,12 +64,21 @@ class TestRiskAssessment:
         r = risk_assessment(_m(dd=30.0, consec=15))
         assert r["risk_level"] == "high"
 class T9:
-    def test_i1(self): assert True
-    def test_i2(self): assert True
-    def test_i3(self): assert True
-    def test_i4(self): assert True
-    def test_i5(self): assert True
-    def test_i6(self): assert True
-    def test_i7(self): assert True
-    def test_i8(self): assert True
-    def test_i9(self): assert True
+    def test_i1(self):
+        assert True
+    def test_i2(self):
+        assert True
+    def test_i3(self):
+        assert True
+    def test_i4(self):
+        assert True
+    def test_i5(self):
+        assert True
+    def test_i6(self):
+        assert True
+    def test_i7(self):
+        assert True
+    def test_i8(self):
+        assert True
+    def test_i9(self):
+        assert True

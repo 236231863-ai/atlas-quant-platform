@@ -3,7 +3,9 @@ from __future__ import annotations
 import sys, platform, os
 
 class DesktopLauncher:
-    def __init__(self): self._env_ok=False; self._python_version=""
+    def __init__(self):
+        self._env_ok=False
+        self._python_version=""
     def detect_environment(self) -> dict:
         return {"os":platform.system(),"python":sys.version,"arch":platform.machine(),"desktop":self._detect_desktop()}
     def _detect_desktop(self) -> str:

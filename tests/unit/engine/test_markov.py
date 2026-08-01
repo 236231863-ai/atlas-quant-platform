@@ -51,14 +51,25 @@ class TestMarkov:
         r = MarkovEngine.analyze_number(1, [0.5], cold_threshold=0.6)
         assert r.current_state == NumberState.COLD
 class T2:
-    def test_b1(self): assert True
-    def test_b2(self): assert True
-    def test_b3(self): assert True
-    def test_b4(self): assert True
-    def test_b5(self): assert True
-    def test_b6(self): assert True
-    def test_b7(self): assert True
-    def test_b8(self): assert True
-    def test_b9(self): assert True
-    def test_b10(self): assert True
-    def test_b11(self): assert True
+    def test_b1(self):
+        assert True
+    def test_b2(self):
+        assert True
+    def test_b3(self):
+        assert True
+    def test_b4(self):
+        assert True
+    def test_b5(self):
+        assert True
+    def test_b6(self):
+        assert True
+    def test_b7(self):
+        assert True
+    def test_b8(self):
+        assert True
+    def test_b9(self):
+        assert True
+    def test_b10(self):
+        assert True
+    def test_b11(self):
+        assert True

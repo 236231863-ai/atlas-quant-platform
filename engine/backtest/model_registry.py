@@ -10,7 +10,8 @@ class ModelRecord:
     dataset_hash: str = ""; metrics: Dict[str, float] = field(default_factory=dict)
     status: str = "experimental"; created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     notes: str = ""
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ModelRegistry:
     def __init__(self):

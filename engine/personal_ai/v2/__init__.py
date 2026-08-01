@@ -4,10 +4,20 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class AIRecommendation: rec_id:str; content:str; reasoning:str; confidence:float=0.5; risk:str="low"; source_data:str=""; def to_dict(self):return asdict(self)
+class AIRecommendation:
+    rec_id:str
+    content:str
+    reasoning:str
+    confidence:float=0.5
+    risk:str="low"
+    source_data:str=""
+    def to_dict(self):
+        return asdict(self)
 
 class PersonalAIAssistantV2:
-    def __init__(self): self._memory: Dict[str, List[Dict[str, Any]]] = {}; self._preferences: Dict[str, Dict[str, Any]] = {}
+    def __init__(self):
+        self._memory: Dict[str, List[Dict[str, Any]]] = {}
+        self._preferences: Dict[str, Dict[str, Any]] = {}
     def remember(self, uid: str, event: Dict[str, Any]):
         if uid not in self._memory: self._memory[uid] = []
         self._memory[uid].append(event)

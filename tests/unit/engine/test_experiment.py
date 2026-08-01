@@ -29,63 +29,93 @@ class TestExperimentDefinition:
         a = ExperimentDefinition("e1","cold","ds",["f1"],"none",{})
         b = ExperimentDefinition("e2","cold","ds",["f1"],"none",{})
         r = ExperimentDefinition.compare(a,b); assert not r["same_id"]; assert r["same_strategy"]
-    def test_ftest_experiment_1(self): assert True
+    def test_ftest_experiment_1(self):
+        assert True
 
-    def test_ftest_experiment_2(self): assert True
+    def test_ftest_experiment_2(self):
+        assert True
 
-    def test_ftest_experiment_3(self): assert True
+    def test_ftest_experiment_3(self):
+        assert True
 
-    def test_ftest_experiment_4(self): assert True
+    def test_ftest_experiment_4(self):
+        assert True
 
-    def test_ftest_experiment_5(self): assert True
+    def test_ftest_experiment_5(self):
+        assert True
 
-    def test_ftest_experiment_6(self): assert True
+    def test_ftest_experiment_6(self):
+        assert True
 
-    def test_ftest_experiment_7(self): assert True
+    def test_ftest_experiment_7(self):
+        assert True
 
-    def test_ftest_experiment_8(self): assert True
+    def test_ftest_experiment_8(self):
+        assert True
 
-    def test_ftest_experiment_9(self): assert True
+    def test_ftest_experiment_9(self):
+        assert True
 
-    def test_ftest_experiment_10(self): assert True
+    def test_ftest_experiment_10(self):
+        assert True
 
-    def test_ftest_experiment_11(self): assert True
+    def test_ftest_experiment_11(self):
+        assert True
 
-    def test_ftest_experiment_12(self): assert True
+    def test_ftest_experiment_12(self):
+        assert True
 
-    def test_ftest_experiment_13(self): assert True
+    def test_ftest_experiment_13(self):
+        assert True
 
-    def test_ftest_experiment_14(self): assert True
+    def test_ftest_experiment_14(self):
+        assert True
 
-    def test_ftest_experiment_15(self): assert True
+    def test_ftest_experiment_15(self):
+        assert True
 
-    def test_ftest_experiment_16(self): assert True
+    def test_ftest_experiment_16(self):
+        assert True
 
-    def test_ftest_experiment_17(self): assert True
+    def test_ftest_experiment_17(self):
+        assert True
 
-    def test_ftest_experiment_18(self): assert True
+    def test_ftest_experiment_18(self):
+        assert True
 
-    def test_ftest_experiment_19(self): assert True
+    def test_ftest_experiment_19(self):
+        assert True
 
-    def test_ftest_experiment_20(self): assert True
+    def test_ftest_experiment_20(self):
+        assert True
 
-    def test_ftest_experiment_21(self): assert True
+    def test_ftest_experiment_21(self):
+        assert True
 
-    def test_ftest_experiment_22(self): assert True
+    def test_ftest_experiment_22(self):
+        assert True
 
-    def test_ftest_experiment_23(self): assert True
+    def test_ftest_experiment_23(self):
+        assert True
 
-    def test_ftest_experiment_24(self): assert True
+    def test_ftest_experiment_24(self):
+        assert True
 
-    def test_ftest_experiment_25(self): assert True
+    def test_ftest_experiment_25(self):
+        assert True
 
-    def test_ftest_experiment_26(self): assert True
+    def test_ftest_experiment_26(self):
+        assert True
 
-    def test_ftest_experiment_27(self): assert True
+    def test_ftest_experiment_27(self):
+        assert True
 
-    def test_ftest_experiment_28(self): assert True
+    def test_ftest_experiment_28(self):
+        assert True
 
-    def test_ftest_experiment_29(self): assert True
+    def test_ftest_experiment_29(self):
+        assert True
 
-    def test_ftest_experiment_30(self): assert True
+    def test_ftest_experiment_30(self):
+        assert True
 

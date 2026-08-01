@@ -5,7 +5,13 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class DecisionReport: goal:str; scenarios:List[Dict[str,Any]]; recommended:str=""; confidence:float=0.0; def to_dict(self):return asdict(self)
+class DecisionReport:
+    goal:str
+    scenarios:List[Dict[str,Any]]
+    recommended:str=""
+    confidence:float=0.0
+    def to_dict(self):
+        return asdict(self)
 
 class DecisionSimulator:
     @staticmethod

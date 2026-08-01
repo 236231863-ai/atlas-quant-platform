@@ -15,7 +15,11 @@ class InstitutionDirector:
     def get_summary(self) -> Dict[str, Any]:
         return {"policies": self._governance.count(), "departments": self._departments.count(),
                 "scientists": self._career.count(), "publications": self._publications.count()}
-    def get_governance(self): return self._governance
-    def get_departments(self): return self._departments
-    def get_career(self): return self._career
-    def get_publications(self): return self._publications
+    def get_governance(self):
+        return self._governance
+    def get_departments(self):
+        return self._departments
+    def get_career(self):
+        return self._career
+    def get_publications(self):
+        return self._publications

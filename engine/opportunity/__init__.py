@@ -4,10 +4,16 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class OpportunityRanking: opportunities:List[Dict[str,Any]]=field(default_factory=list); top_opportunity:str=""; avg_score:float=0.0; def to_dict(self):return asdict(self)
+class OpportunityRanking:
+    opportunities:List[Dict[str,Any]]=field(default_factory=list)
+    top_opportunity:str=""
+    avg_score:float=0.0
+    def to_dict(self):
+        return asdict(self)
 
 class OpportunityDiscoveryEngine:
-    def __init__(self): self._opportunities: List[Dict[str, Any]] = []
+    def __init__(self):
+        self._opportunities: List[Dict[str, Any]] = []
     def register(self, name: str, opp_type: str, impact: float, probability: float, timing: float, resource: float):
         score = round((impact*0.3 + probability*0.3 + timing*0.2 + resource*0.2), 4)
         self._opportunities.append({"name": name, "type": opp_type, "impact": impact, "probability": probability,

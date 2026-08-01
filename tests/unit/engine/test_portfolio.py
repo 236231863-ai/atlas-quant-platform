@@ -50,14 +50,25 @@ class TestPortfolioScore:
         r = PortfolioScore.compute([[1,2],[3,4]], 10)
         assert len(r.combinations) == 2
 class T7:
-    def test_g1(self): assert True
-    def test_g2(self): assert True
-    def test_g3(self): assert True
-    def test_g4(self): assert True
-    def test_g5(self): assert True
-    def test_g6(self): assert True
-    def test_g7(self): assert True
-    def test_g8(self): assert True
-    def test_g9(self): assert True
-    def test_g10(self): assert True
-    def test_g11(self): assert True
+    def test_g1(self):
+        assert True
+    def test_g2(self):
+        assert True
+    def test_g3(self):
+        assert True
+    def test_g4(self):
+        assert True
+    def test_g5(self):
+        assert True
+    def test_g6(self):
+        assert True
+    def test_g7(self):
+        assert True
+    def test_g8(self):
+        assert True
+    def test_g9(self):
+        assert True
+    def test_g10(self):
+        assert True
+    def test_g11(self):
+        assert True

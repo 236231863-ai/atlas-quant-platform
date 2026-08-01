@@ -4,10 +4,19 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 @dataclass
-class GrowthMetrics: dau:int=0; wau:int=0; retention:float=0.0; conversion:float=0.0; engagement:float=0.0; def to_dict(self):return asdict(self)
+class GrowthMetrics:
+    dau:int=0
+    wau:int=0
+    retention:float=0.0
+    conversion:float=0.0
+    engagement:float=0.0
+    def to_dict(self):
+        return asdict(self)
 
 class GrowthIntelligenceEngine:
-    def __init__(self): self._ab_tests: Dict[str, Dict[str, Any]] = {}; self._funnel: List[Dict[str, Any]] = []
+    def __init__(self):
+        self._ab_tests: Dict[str, Dict[str, Any]] = {}
+        self._funnel: List[Dict[str, Any]] = []
     def create_ab_test(self, test_id: str, variants: List[str], metric: str):
         self._ab_tests[test_id] = {"variants": variants, "metric": metric, "results": {v:0 for v in variants}}
     def record_ab_result(self, test_id: str, variant: str, value: float) -> bool:

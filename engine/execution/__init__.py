@@ -7,7 +7,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 class ExecutionResult:
     experiment_id: str; success: bool; metrics: Dict[str, float] = field(default_factory=dict)
     error: str = ""; execution_time: float = 0.0; log: List[str] = field(default_factory=list)
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ExperimentRunner:
     def __init__(self):
@@ -16,10 +17,14 @@ class ExperimentRunner:
         self._feature_fn: Optional[Callable] = None
         self._backtest_fn: Optional[Callable] = None
 
-    def set_dataset_fn(self, fn: Callable): self._dataset_fn = fn
-    def set_strategy_fn(self, fn: Callable): self._strategy_fn = fn
-    def set_feature_fn(self, fn: Callable): self._feature_fn = fn
-    def set_backtest_fn(self, fn: Callable): self._backtest_fn = fn
+    def set_dataset_fn(self, fn: Callable):
+        self._dataset_fn = fn
+    def set_strategy_fn(self, fn: Callable):
+        self._strategy_fn = fn
+    def set_feature_fn(self, fn: Callable):
+        self._feature_fn = fn
+    def set_backtest_fn(self, fn: Callable):
+        self._backtest_fn = fn
 
     def run_single(self, exp_id: str, params: Dict[str, Any]) -> ExecutionResult:
         log = [f"Starting experiment {exp_id}"]

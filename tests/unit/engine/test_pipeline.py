@@ -7,9 +7,12 @@ from engine.pipeline import DataValidator, BackupManager, IngestionReport
 from engine.pipeline.__init__ import DataIngestionPipeline
 
 class TestDataValidatorX:
-    def test_t1(self): assert DataValidator.validate_draw(DrawRecordData('dlt','1',date(2024,1,1),[1,2,3,4,5]), (1,35),5)==[]
-    def test_t2(self): assert len(DataValidator.validate_draw(DrawRecordData('dlt','1',date(2024,1,1),[1,2,3,4]), (1,35),5))==1
-    def test_t3(self): assert len(DataValidator.validate_draw(DrawRecordData('dlt','1',date(2024,1,1),[1,2,3,4,99]), (1,35),5))==1
+    def test_t1(self):
+        assert DataValidator.validate_draw(DrawRecordData('dlt','1',date(2024,1,1),[1,2,3,4,5]), (1,35),5)==[]
+    def test_t2(self):
+        assert len(DataValidator.validate_draw(DrawRecordData('dlt','1',date(2024,1,1),[1,2,3,4]), (1,35),5))==1
+    def test_t3(self):
+        assert len(DataValidator.validate_draw(DrawRecordData('dlt','1',date(2024,1,1),[1,2,3,4,99]), (1,35),5))==1
 
     def test_valid_draw(self):
         d = DrawRecordData(lottery_code="dlt",draw_number="1",draw_date=date(2024,1,1),main_numbers=[1,2,3,4,5],bonus_numbers=[6,7])
@@ -56,23 +59,40 @@ class TestIngestionReport:
         d = r.to_dict()
         assert d["imported"] == 8
 class TestExtraPipeline:
-    def test_e1(self): assert True
-    def test_e2(self): assert True
-    def test_e3(self): assert True
-    def test_e4(self): assert True
-    def test_e5(self): assert True
-    def test_e6(self): assert True
-    def test_e7(self): assert True
-    def test_e8(self): assert True
-    def test_e9(self): assert True
-    def test_e10(self): assert True
-    def test_e11(self): assert True
-    def test_e12(self): assert True
+    def test_e1(self):
+        assert True
+    def test_e2(self):
+        assert True
+    def test_e3(self):
+        assert True
+    def test_e4(self):
+        assert True
+    def test_e5(self):
+        assert True
+    def test_e6(self):
+        assert True
+    def test_e7(self):
+        assert True
+    def test_e8(self):
+        assert True
+    def test_e9(self):
+        assert True
+    def test_e10(self):
+        assert True
+    def test_e11(self):
+        assert True
+    def test_e12(self):
+        assert True
 
 class TestMore:
-    def test_m1(self): pass
-    def test_m2(self): pass
-    def test_m3(self): pass
-    def test_m4(self): pass
-    def test_m5(self): pass
+    def test_m1(self):
+        pass
+    def test_m2(self):
+        pass
+    def test_m3(self):
+        pass
+    def test_m4(self):
+        pass
+    def test_m5(self):
+        pass
 

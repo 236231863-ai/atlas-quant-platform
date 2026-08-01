@@ -7,11 +7,14 @@ from typing import Any, Dict, List, Optional
 class ResearchValueScore:
     asset_id: str; innovation: float = 0.0; performance: float = 0.0
     knowledge: float = 0.0; impact: float = 0.0; total_score: float = 0.0
-    def compute(self): self.total_score = round((self.innovation+self.performance+self.knowledge+self.impact)/4, 4)
-    def to_dict(self): return asdict(self)
+    def compute(self):
+        self.total_score = round((self.innovation+self.performance+self.knowledge+self.impact)/4, 4)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchValueEngine:
-    def __init__(self): self._scores: Dict[str, ResearchValueScore] = {}
+    def __init__(self):
+        self._scores: Dict[str, ResearchValueScore] = {}
     def evaluate(self, score: ResearchValueScore):
         score.compute(); self._scores[score.asset_id] = score; return score
     def compare(self, id1: str, id2: str) -> Dict[str, Any]:

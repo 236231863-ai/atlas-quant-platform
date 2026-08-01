@@ -8,12 +8,15 @@ from typing import Any, Dict, List, Optional, Tuple
 class ResearchPlan:
     objectives: List[str]; experiments: List[Dict[str, Any]]
     priority_order: List[str]; expected_gain: float; weekly_schedule: List[str]
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class ResearchPlanner:
-    def __init__(self): self._experiment_history: List[Dict[str, Any]] = []
+    def __init__(self):
+        self._experiment_history: List[Dict[str, Any]] = []
 
-    def add_experiment(self, exp: Dict[str, Any]): self._experiment_history.append(exp)
+    def add_experiment(self, exp: Dict[str, Any]):
+        self._experiment_history.append(exp)
 
     def generate_roadmap(self, objectives: List[str], available_experiments: List[Dict[str, Any]]) -> ResearchPlan:
         prioritized = sorted(available_experiments, key=lambda e: e.get("priority", 5), reverse=True)

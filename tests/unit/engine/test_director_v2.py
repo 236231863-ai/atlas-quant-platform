@@ -30,63 +30,93 @@ class TestDirectorV2:
     def test_pipeline_status_nonexistent(self):
         status = ResearchDirectorV2().get_pipeline_status("none")
         assert not status["sandbox_exists"]
-    def test_ftest_director_v2_1(self): assert True
+    def test_ftest_director_v2_1(self):
+        assert True
 
-    def test_ftest_director_v2_2(self): assert True
+    def test_ftest_director_v2_2(self):
+        assert True
 
-    def test_ftest_director_v2_3(self): assert True
+    def test_ftest_director_v2_3(self):
+        assert True
 
-    def test_ftest_director_v2_4(self): assert True
+    def test_ftest_director_v2_4(self):
+        assert True
 
-    def test_ftest_director_v2_5(self): assert True
+    def test_ftest_director_v2_5(self):
+        assert True
 
-    def test_ftest_director_v2_6(self): assert True
+    def test_ftest_director_v2_6(self):
+        assert True
 
-    def test_ftest_director_v2_7(self): assert True
+    def test_ftest_director_v2_7(self):
+        assert True
 
-    def test_ftest_director_v2_8(self): assert True
+    def test_ftest_director_v2_8(self):
+        assert True
 
-    def test_ftest_director_v2_9(self): assert True
+    def test_ftest_director_v2_9(self):
+        assert True
 
-    def test_ftest_director_v2_10(self): assert True
+    def test_ftest_director_v2_10(self):
+        assert True
 
-    def test_ftest_director_v2_11(self): assert True
+    def test_ftest_director_v2_11(self):
+        assert True
 
-    def test_ftest_director_v2_12(self): assert True
+    def test_ftest_director_v2_12(self):
+        assert True
 
-    def test_ftest_director_v2_13(self): assert True
+    def test_ftest_director_v2_13(self):
+        assert True
 
-    def test_ftest_director_v2_14(self): assert True
+    def test_ftest_director_v2_14(self):
+        assert True
 
-    def test_ftest_director_v2_15(self): assert True
+    def test_ftest_director_v2_15(self):
+        assert True
 
-    def test_ftest_director_v2_16(self): assert True
+    def test_ftest_director_v2_16(self):
+        assert True
 
-    def test_ftest_director_v2_17(self): assert True
+    def test_ftest_director_v2_17(self):
+        assert True
 
-    def test_ftest_director_v2_18(self): assert True
+    def test_ftest_director_v2_18(self):
+        assert True
 
-    def test_ftest_director_v2_19(self): assert True
+    def test_ftest_director_v2_19(self):
+        assert True
 
-    def test_ftest_director_v2_20(self): assert True
+    def test_ftest_director_v2_20(self):
+        assert True
 
-    def test_ftest_director_v2_21(self): assert True
+    def test_ftest_director_v2_21(self):
+        assert True
 
-    def test_ftest_director_v2_22(self): assert True
+    def test_ftest_director_v2_22(self):
+        assert True
 
-    def test_ftest_director_v2_23(self): assert True
+    def test_ftest_director_v2_23(self):
+        assert True
 
-    def test_ftest_director_v2_24(self): assert True
+    def test_ftest_director_v2_24(self):
+        assert True
 
-    def test_ftest_director_v2_25(self): assert True
+    def test_ftest_director_v2_25(self):
+        assert True
 
-    def test_ftest_director_v2_26(self): assert True
+    def test_ftest_director_v2_26(self):
+        assert True
 
-    def test_ftest_director_v2_27(self): assert True
+    def test_ftest_director_v2_27(self):
+        assert True
 
-    def test_ftest_director_v2_28(self): assert True
+    def test_ftest_director_v2_28(self):
+        assert True
 
-    def test_ftest_director_v2_29(self): assert True
+    def test_ftest_director_v2_29(self):
+        assert True
 
-    def test_ftest_director_v2_30(self): assert True
+    def test_ftest_director_v2_30(self):
+        assert True
 

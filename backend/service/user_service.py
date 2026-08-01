@@ -8,20 +8,25 @@ from typing import Any, Dict, List, Optional
 class UserData:
     username: str; email: str; role: str = "researcher"; id: Optional[str] = None
     created_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class WorkspaceData:
     name: str; user_id: str; description: str = ""; id: Optional[str] = None
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 @dataclass
 class ProjectData:
     name: str; workspace_id: str; lottery_code: str = "dlt"; description: str = ""; id: Optional[str] = None
-    def to_dict(self): return asdict(self)
+    def to_dict(self):
+        return asdict(self)
 
 class UserService:
-    def __init__(self): self._users: Dict[str, UserData] = {}; self._workspaces: Dict[str, WorkspaceData] = {}
+    def __init__(self):
+        self._users: Dict[str, UserData] = {}
+        self._workspaces: Dict[str, WorkspaceData] = {}
         self._projects: Dict[str, ProjectData] = {}
     def create_user(self, user: UserData) -> UserData: import uuid; user.id = str(uuid.uuid4()); self._users[user.id] = user; return user
     def get_user(self, uid: str) -> Optional[UserData]: return self._users.get(uid)
