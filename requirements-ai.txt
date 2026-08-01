@@ -1,0 +1,6 @@
+# Atlas Quant Platform - AI Dependencies
+-r requirements.txt
+
+# AI adapter layer（多模型适配）
+httpx>=0.26.0
+pydantic>=2.5.0

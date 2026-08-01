@@ -1,0 +1,31 @@
+# Atlas Quant Platform - Dependency Lock Constraints
+# 与 requirements*.txt 配合：requirements 定范围，constraints 定上限
+# 用途：保证构建可复现，防止意外版本升级破坏 API
+
+# Web/API
+fastapi<1.0.0
+uvicorn<1.0.0
+pydantic<3.0.0
+pydantic-settings<3.0.0
+
+# Data / DB
+sqlalchemy<3.0.0
+alembic<2.0.0
+pandas<4.0.0
+numpy<3.0.0
+
+# Engine
+scipy<2.0.0
+scikit-learn<2.0.0
+
+# Desktop
+PySide6<7.0.0
+matplotlib<4.0.0
+
+# CLI / Utilities
+click<9.0.0
+httpx<1.0.0
+
+# Dev
+pytest<9.0.0
+ruff<1.0.0

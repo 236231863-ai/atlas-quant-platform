@@ -1,4 +1,14 @@
-﻿# Dev
+# Atlas Quant Platform - Dev / Test Dependencies
 -r requirements.txt
+-r requirements-desktop.txt
+-r requirements-web.txt
+
+# Test
 pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+
+# Lint / Format
 ruff>=0.2.0
+black>=24.0.0
+mypy>=1.8.0

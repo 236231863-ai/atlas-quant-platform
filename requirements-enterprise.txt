@@ -1,0 +1,7 @@
+# Atlas Quant Platform - Enterprise Dependencies
+-r requirements.txt
+
+# Enterprise: billing / marketplace / multi-tenant
+fastapi>=0.109.0
+sqlalchemy>=2.0.0
+pydantic>=2.5.0

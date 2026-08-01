@@ -1,6 +1,22 @@
-﻿# Core
+# Atlas Quant Platform - Core Dependencies
+# 核心：跨 Desktop/Backend/Engine 的基础依赖
+
+# Web/API
 fastapi>=0.109.0
+uvicorn>=0.27.0
 pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Data / DB
 sqlalchemy>=2.0.0
+alembic>=1.13.0
 pandas>=2.1.0
 numpy>=1.26.0
+
+# Engine / Analysis
+scipy>=1.12.0
+scikit-learn>=1.4.0
+
+# CLI / Utilities
+click>=8.1.0
+httpx>=0.26.0
