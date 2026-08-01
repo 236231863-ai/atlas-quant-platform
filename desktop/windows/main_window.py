@@ -1,5 +1,5 @@
 ﻿from PySide6.QtWidgets import QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QLabel
-from desktop.windows.navigation import NavigationPanel
+from windows.navigation import NavigationPanel
 
 class MainWindow(QMainWindow):
     def __init__(self):

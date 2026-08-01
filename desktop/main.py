@@ -1,7 +1,7 @@
 ﻿"""Atlas Quant Desktop Client"""
 import sys
 from PySide6.QtWidgets import QApplication
-from desktop.windows.main_window import MainWindow
+from windows.main_window import MainWindow
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName("Atlas Quant Platform")
