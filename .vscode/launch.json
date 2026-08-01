@@ -1,0 +1,53 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Desktop (Atlas GUI)",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/desktop",
+            "module": "main",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/desktop"
+            }
+        },
+        {
+            "name": "Backend (FastAPI)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "backend.api.v1.app:app",
+                "--reload",
+                "--port",
+                "8000"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "CLI (atlas)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "tools.atlas_cli",
+            "args": [
+                "analyze",
+                "dlt",
+                "frequency"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Pytest (Current File)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "${file}"
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
