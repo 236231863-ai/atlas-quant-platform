@@ -37,3 +37,7 @@ Thumbs.db
 # Docs build
 site/
 .venv
+
+# Release artifacts（产物不入库，只入库 release/*.md 等文档）
+release/*.exe
+release/*.zip
