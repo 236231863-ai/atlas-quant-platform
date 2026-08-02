@@ -48,7 +48,7 @@ def test_main_window(qapp, tmp_path, n):
     health.clear_crash_mark()
     from windows.main_window import MainWindow
     w = MainWindow()
-    assert w.stack.count() == 6
+    assert w.stack.count() == 7
     assert w.windowTitle() == "Atlas Quant Platform v3.8.0"
 
 
