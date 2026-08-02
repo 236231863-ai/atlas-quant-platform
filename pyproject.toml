@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "atlas-quant"
-version = "3.6.1"
+version = "3.7.1"
 description = "Atlas Quant Platform - 跨领域量化研究平台"
 authors = ["Atlas Quant Team"]
 license = "MIT"

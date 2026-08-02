@@ -30,7 +30,7 @@ PAGES = [
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Atlas Quant Platform v3.7.0")
+        self.setWindowTitle("Atlas Quant Platform v3.7.1-beta")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         self._run_first_run_if_needed()
@@ -74,6 +74,18 @@ class MainWindow(QMainWindow):
         # 首次使用：自动生成第一份报告（FirstSuccessFlow）
         if getattr(self, "_is_first_run", False):
             self._run_first_success()
+
+        # 帮助中心（v3.7.1 Phase 5）
+        help_action = self.menuBar().addAction("🆘 帮助")
+        help_action.triggered.connect(self._open_help)
+
+    def _open_help(self) -> None:
+        """打开帮助中心。"""
+        try:
+            from pages.help_dialog import HelpDialog
+            HelpDialog(self).exec()
+        except Exception:
+            pass
 
     def _run_first_success(self) -> None:
         """首次成功体验：自动生成报告 + 保存历史 + 解锁成就（v3.7.0）。"""
