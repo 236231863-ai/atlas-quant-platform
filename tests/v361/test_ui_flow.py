@@ -49,7 +49,7 @@ def test_main_window(qapp, tmp_path, n):
     from windows.main_window import MainWindow
     w = MainWindow()
     assert w.stack.count() == 6
-    assert w.windowTitle() == "Atlas Quant Platform v3.7.1-beta"
+    assert w.windowTitle() == "Atlas Quant Platform v3.8.0"
 
 
 @pytest.mark.parametrize("target_idx", [0, 1, 2, 3, 4, 5])

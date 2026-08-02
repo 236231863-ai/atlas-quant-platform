@@ -1,5 +1,22 @@
 # Atlas Quant Platform Changelog
 
+## [v3.7.2] - 2026-08-02
+### User Task Understanding Fix
+### Added
+- engine/lottery_intent: LotteryIntentRouter + TicketParser + DrawResultMatcher + PrizeCalculator
+- AI assistant prize calculation flow (natural language -> prize report)
+- 312 tests (tests/v372)
+### Changed
+- Version 3.8.0 (window title)
+
+## [v3.8.0] - 2026-08-02
+### User Value Validation & Commercial Intelligence
+### Added
+- user_intelligence/v3, value_score, product_value, subscription/v2, feedback_intelligence, product_director_v2
+- personal dashboard (value score/level/AI suggestions/history)
+- docs/product 4 maps, docs/business 3 reports
+- 1008 tests (tests/v380)
+
 ## [v3.7.1-beta] - 2026-08-02
 ### Beta Launch Infrastructure
 ### Added

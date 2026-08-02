@@ -41,7 +41,7 @@ def test_setup_iss_refs_exe(filename):
 
 
 @pytest.mark.parametrize("pattern", [
-    r"3\.7\.1", r"Atlas Quant Platform",
+    r"3\.8\.0", r"Atlas Quant Platform",
 ])
 def test_setup_iss_version(pattern):
     content = _read(SETUP_ISS)
@@ -70,9 +70,9 @@ def test_desktop_spec_content(spec_file, needle):
 
 # ---------- 版本一致性 ----------
 @pytest.mark.parametrize("path,needle", [
-    ("pyproject.toml", "3.7.1"),
-    ("desktop/windows/main_window.py", "v3.7.1"),
-    ("CHANGELOG.md", "3.7.1"),
+    ("pyproject.toml", "3.8.0"),
+    ("desktop/windows/main_window.py", "v3.8.0"),
+    ("CHANGELOG.md", "3.8.0"),
 ])
 def test_version_consistency(path, needle):
     p = os.path.join(ROOT, path)
