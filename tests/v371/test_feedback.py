@@ -354,5 +354,8 @@ def test_report_all_metrics(mgr, n):
 
 @pytest.mark.parametrize("i", range(5))
 def test_add_rating_unique(mgr, i):
-    mgr.add_rating(5)
+    for _ in range(i + 1):
+        mgr.add_rating(5)
     assert mgr.count() == i + 1
+    ids = [f.feedback_id for f in mgr.list_all()]
+    assert len(set(ids)) == i + 1
