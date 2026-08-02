@@ -139,7 +139,10 @@ def test_top_pages(tracker, pages):
     for p in pages:
         tracker.page_view(p)
     r = build_behavior_report(tracker)
-    assert r.top_pages[0][0] == max(set(pages), key=pages.count)
+    # 校验最高计数正确（并列时不要求具体哪个元素）
+    assert r.top_pages[0][1] == max(pages.count(x) for x in set(pages))
+    # 且该元素确实在 pages 中
+    assert r.top_pages[0][0] in set(pages)
 
 
 @pytest.mark.parametrize("features", [

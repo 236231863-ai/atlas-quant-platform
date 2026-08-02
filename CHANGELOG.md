@@ -1,5 +1,18 @@
 # Atlas Quant Platform Changelog
 
+## [v3.7.1-beta] - 2026-08-02
+### Beta Launch Infrastructure
+### Added
+- docs/beta: Beta_Test_Plan / Beta_User_Guide / Feedback_Process
+- engine/beta: BetaUserManager (id/batch/version/feedback)
+- engine/product_analytics_v2: app events + ProductUsageReport
+- backend/feedback: Feedback/BugReport/FeatureRequest/Rating + status machine
+- release_center: version info / release notes / install guide / FAQ
+- desktop help center dialog + feedback entry
+- 528 tests (tests/v371)
+### Changed
+- Version 3.7.0 -> 3.7.1-beta
+
 ## [v3.7.0] - 2026-08-02
 ### User Validation & Product Intelligence
 ### Added
