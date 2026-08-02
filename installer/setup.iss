@@ -19,12 +19,11 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=..\release
-OutputBaseFilename=Atlas_Setup
+OutputBaseFilename=AtlasQuant-3.6.1-Setup
 SetupIconFile=..\branding\logo.ico
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=admin
-UninstallDisplayIcon={app}\{#MyAppExeName}
 WizardStyle=modern
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ; 升级支持：使用上一版本安装目录

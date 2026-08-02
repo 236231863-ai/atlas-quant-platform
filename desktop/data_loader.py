@@ -204,6 +204,8 @@ def get_data_source(lottery: str = "dlt") -> DataSourceInfo:
     note = ""
     if stype == "user":
         note = "用户导入数据"
+    elif stype == "bundled_history":
+        note = "内置真实历史数据"
     elif stype == "bundled":
         note = "内置演示数据（可在 data/raw/ 放入真实数据替换）"
     else:
