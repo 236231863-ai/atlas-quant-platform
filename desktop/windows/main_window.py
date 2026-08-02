@@ -16,6 +16,7 @@ from pages.strategy_page import StrategyPage
 from pages.backtest_page import BacktestPage
 from pages.ai_page import AIPage
 from pages.reports_page import ReportsPage
+from pages.workbench_page import WorkbenchPage
 
 PAGES = [
     "数据看板",
@@ -24,6 +25,7 @@ PAGES = [
     "回测中心",
     "AI 助手",
     "研究报告",
+    "工作台",
 ]
 
 
@@ -50,6 +52,7 @@ class MainWindow(QMainWindow):
         self.backtest = BacktestPage()
         self.ai = AIPage()
         self.reports = ReportsPage()
+        self.workbench = WorkbenchPage()
 
         for page in (
             self.dashboard,
@@ -58,6 +61,7 @@ class MainWindow(QMainWindow):
             self.backtest,
             self.ai,
             self.reports,
+            self.workbench,
         ):
             self.stack.addWidget(page)
 

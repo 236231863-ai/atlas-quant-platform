@@ -29,6 +29,12 @@ class AIPage(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.draws = load_draws()
+        # 连续对话上下文（v3.8.0 P6）
+        try:
+            from engine.user_memory import ChatContext
+            self._ctx = ChatContext()
+        except Exception:
+            self._ctx = None
         self._build()
 
     def _build(self):
@@ -99,6 +105,15 @@ class AIPage(QWidget):
             return
         self._append("user", q)
         self.input.clear()
+        # 连续对话记忆（v3.8.0 P6）
+        try:
+            if self._ctx:
+                self._ctx.remember(q)
+                nums = self._ctx.extract_numbers(q)
+                if nums:
+                    self._ctx.last_numbers = nums
+        except Exception:
+            pass
         self.profile = load_profile()
         if self.profile.ai_mode == "online" and self.profile.ai_api_key:
             reply = self._answer_online(q)
@@ -145,6 +160,12 @@ class AIPage(QWidget):
             if route.is_business:
                 guide = router.needs_more_info(q)
                 if guide:
+                    # 连续对话（v3.8.0 P6）：回看上文号码
+                    if self._ctx and self._ctx.last_numbers and route.tool == "prize":
+                        combined = f"{self._ctx.last_numbers} {q}"
+                        res = execute_intent("prize", combined)
+                        if res.success and res.text:
+                            return res.text
                     return guide
                 res = execute_intent(route.tool, q)
                 if res.success and res.text:
@@ -183,6 +204,12 @@ class AIPage(QWidget):
             if route.is_business:
                 guide = router.needs_more_info(q)
                 if guide:
+                    # 连续对话（v3.8.0 P6）：回看上文号码
+                    if self._ctx and self._ctx.last_numbers and route.tool == "prize":
+                        combined = f"{self._ctx.last_numbers} {q}"
+                        res = execute_intent("prize", combined)
+                        if res.success and res.text:
+                            return res.text
                     return guide
                 res = execute_intent(route.tool, q)
                 if res.success and res.text:
