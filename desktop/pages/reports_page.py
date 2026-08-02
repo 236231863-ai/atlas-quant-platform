@@ -117,6 +117,22 @@ class ReportsPage(QWidget):
         self.lines = lines
         self.view.setPlainText("\n".join(lines))
 
+    def show_report(self, report: dict) -> None:
+        """展示外部传入的报告（FirstSuccessFlow 自动生成的第一份报告）。"""
+        lines = report.get("lines") or []
+        title = report.get("title", "分析报告")
+        text = [f"📄 {title}", "=" * 42]
+        if report.get("latest_issue"):
+            text.append(f"最新期号：{report['latest_issue']}（{report.get('latest_date','')}）")
+        if report.get("latest_numbers"):
+            text.append(f"最新号码：{report['latest_numbers']}")
+        text += lines
+        if report.get("disclaimer"):
+            text.append("")
+            text.append(f"【免责声明】{report['disclaimer']}")
+        self.lines = text
+        self.view.setPlainText("\n".join(text))
+
     def _export(self, fmt: str) -> None:
         """导出当前报告为 MD / PDF / CSV。"""
         if not getattr(self, "lines", None):

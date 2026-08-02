@@ -71,6 +71,40 @@ class MainWindow(QMainWindow):
         elif getattr(self, "_first_run_target", None) == "reports":
             self.switch_page("Reports")
 
+        # 首次使用：自动生成第一份报告（FirstSuccessFlow）
+        if getattr(self, "_is_first_run", False):
+            self._run_first_success()
+
+    def _run_first_success(self) -> None:
+        """首次成功体验：自动生成报告 + 保存历史 + 解锁成就（v3.7.0）。"""
+        try:
+            from engine.onboarding import (
+                FirstSuccessFlow, default_report_generator,
+                default_history_saver, UserAchievement,
+            )
+            from data_loader import load_draws
+
+            lottery = getattr(self.profile, "data_lottery", "dlt")
+            draws = load_draws(lottery)
+            flow = FirstSuccessFlow(lottery=lottery)
+            flow.register("generate_report", default_report_generator(draws))
+            saver = default_history_saver()
+            flow.register("save_history", lambda: saver(flow.result.get("generate_report")))
+            flow.run_all()
+            report = flow.result.get("generate_report") or {}
+            if report and report.get("lines"):
+                self.reports.show_report(report)
+            # 成就
+            ach = UserAchievement().load()
+            ach.unlock("first_analysis")
+            ach.unlock("first_report")
+            if len(draws) >= 500:
+                ach.unlock("data_500")
+            self.switch_page("Reports")
+        except Exception:
+            # 首次成功体验失败不影响使用
+            pass
+
     def _run_first_run_if_needed(self) -> None:
         """首次启动显示引导对话框并保存用户档案。"""
         self.profile = load_profile()
@@ -90,6 +124,7 @@ class MainWindow(QMainWindow):
                 "backtest" if dlg.purpose == "backtest" or dlg.mode == "backtest"
                 else ("reports" if dlg.purpose == "reports" else "dashboard")
             )
+            self._is_first_run = True
             self.profile = load_profile()
 
     def _load_icon(self) -> QIcon:
