@@ -138,6 +138,12 @@ class ReportsPage(QWidget):
         if not getattr(self, "lines", None):
             return
         default_name = f"Atlas_报告_{self.draws[-1].number if self.draws else 'v3.6.1'}"
+        # 行为追踪
+        try:
+            from engine.user_feedback_v2 import UserFeedbackTracker
+            UserFeedbackTracker().report_export(fmt, kind="report")
+        except Exception:
+            pass
         if fmt == "md":
             path, _ = QFileDialog.getSaveFileName(self, "导出 Markdown", default_name + ".md", "Markdown (*.md)")
             if path:

@@ -147,6 +147,12 @@ class MainWindow(QMainWindow):
     def switch_page(self, name: str) -> None:
         if name in PAGES:
             self.stack.setCurrentIndex(PAGES.index(name))
+            # 用户行为追踪（v3.7.0 Phase 4）
+            try:
+                from engine.user_feedback_v2 import UserFeedbackTracker
+                UserFeedbackTracker().page_view(name)
+            except Exception:
+                pass
 
     def _run_backtest_from_strategy(self, method: str) -> None:
         self.stack.setCurrentIndex(PAGES.index("Backtest Center"))
