@@ -1,0 +1,38 @@
+{
+  "brand": {
+    "name": "Atlas Quant Platform",
+    "short_name": "Atlas Quant",
+    "tagline": "量化研究，智能决策",
+    "version": "3.6.0",
+    "edition": "Community"
+  },
+  "colors": {
+    "primary": "#1E3A8A",
+    "secondary": "#F0BE3C",
+    "accent": "#50A0FF",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "danger": "#EF4444",
+    "bg_dark": "#121A2E",
+    "text_dark": "#1A1A2E",
+    "text_light": "#FFFFFF"
+  },
+  "logo": {
+    "files": {
+      "png_256": "branding/logo_256.png",
+      "png_512": "branding/logo_512.png",
+      "png_1024": "branding/logo_1024.png",
+      "ico": "branding/logo.ico",
+      "icon_legacy": "branding/icon.ico"
+    }
+  },
+  "fonts": {
+    "primary": "Microsoft YaHei / PingFang SC",
+    "mono": "Consolas / SF Mono"
+  },
+  "usage": {
+    "installer_icon": "branding/logo.ico",
+    "desktop_icon": "branding/logo.ico",
+    "readme_badge_primary": "#1E3A8A"
+  }
+}

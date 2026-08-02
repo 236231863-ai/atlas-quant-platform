@@ -1,3 +1,6 @@
+import os
+
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -27,6 +30,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Atlas Quant Platform v3.6.0")
+        self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         central = QWidget()
         self.setCentralWidget(central)
@@ -58,6 +62,23 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.stack)
         self.nav.page_requested.connect(self.switch_page)
         self.strategy.run_backtest_requested.connect(self._run_backtest_from_strategy)
+
+    def _load_icon(self) -> QIcon:
+        """加载品牌图标（打包后从 sys._MEIPASS 定位）。"""
+        base = getattr(os.sys, "_MEIPASS", None)
+        candidates = []
+        if base:
+            candidates.append(os.path.join(base, "branding", "logo.ico"))
+        candidates.extend(
+            [
+                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "branding", "logo.ico"),
+                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "..", "branding", "icon.ico"),
+            ]
+        )
+        for p in candidates:
+            if os.path.exists(p):
+                return QIcon(p)
+        return QIcon()
 
     def switch_page(self, name: str) -> None:
         if name in PAGES:
