@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class ProductInfo:
     name: str = "Atlas Quant Platform"
-    version: str = "3.5.2"
+    version: str = "3.6.0"
     edition: str = "Community"
     build: str = "20260730"
     license: str = "MIT"
