@@ -144,6 +144,11 @@ class ReportsPage(QWidget):
             UserFeedbackTracker().report_export(fmt, kind="report")
         except Exception:
             pass
+        try:
+            from engine.user_intelligence.v3 import UserIntelligenceV3
+            UserIntelligenceV3().report_export(fmt)
+        except Exception:
+            pass
         if fmt == "md":
             path, _ = QFileDialog.getSaveFileName(self, "导出 Markdown", default_name + ".md", "Markdown (*.md)")
             if path:

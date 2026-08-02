@@ -79,6 +79,20 @@ class DashboardPage(QWidget):
         except Exception:
             pass
 
+        # 个人中心（v3.8.0 Phase 7）：价值分/研究等级/AI 建议/历史
+        try:
+            personal = self._personal_panel_text()
+            if personal:
+                p_label = QLabel(personal)
+                p_label.setWordWrap(True)
+                p_label.setStyleSheet(
+                    "background:#eef4ff;border:1px solid #d8e4ff;border-radius:8px;"
+                    "padding:10px 12px;color:#1e3a8a;font-size:12px;line-height:1.6;"
+                )
+                root.addWidget(p_label)
+        except Exception:
+            pass
+
         if not self.draws:
             tip = QLabel("暂无数据：请确认 data/raw/dlt_history.csv 或 dlt_2024_sample.csv 存在")
             tip.setStyleSheet("color:#888;font-size:14px;")
@@ -107,6 +121,49 @@ class DashboardPage(QWidget):
         row.addWidget(self._recent_table(), 3)
         row.addWidget(self._hotcold_panel(hot, cold), 2)
         root.addLayout(row, 1)
+
+    def _personal_panel_text(self) -> str:
+        """个人中心：价值分 / 研究等级 / AI 建议 / 历史（v3.8.0）。"""
+        import os
+        try:
+            from engine.user_intelligence.v3 import UserIntelligenceV3, build_behavior_summary
+            from engine.value_score import compute_value_score
+
+            ui = UserIntelligenceV3()
+            summary = build_behavior_summary(ui)
+            score = compute_value_score(
+                total_events=summary.total_events,
+                active_days=summary.active_days,
+                analysis_runs=summary.by_event.get("ANALYSIS_RUN", 0),
+                backtest_runs=summary.by_event.get("BACKTEST_RUN", 0),
+                exports=summary.by_event.get("REPORT_EXPORT", 0),
+                feedback_count=summary.by_event.get("FEEDBACK_SEND", 0),
+                strategy_saves=summary.by_event.get("STRATEGY_SAVE", 0),
+            )
+            # AI 建议（基于行为）
+            suggestions = []
+            if summary.by_event.get("BACKTEST_RUN", 0) == 0:
+                suggestions.append("建议去回测中心体验一次策略回测")
+            if summary.by_event.get("REPORT_EXPORT", 0) == 0:
+                suggestions.append("试试导出第一份报告（MD/PDF）")
+            if summary.by_event.get("ANALYSIS_RUN", 0) < 3:
+                suggestions.append("多看几次数据分析，掌握冷热号分布")
+            if not suggestions:
+                suggestions.append("使用熟练！可尝试更多策略对比")
+            # 历史
+            hist_dir = os.path.join(os.path.expanduser("~"), ".atlas", "history")
+            hist_count = len([f for f in os.listdir(hist_dir) if f.endswith(".json")]) if os.path.isdir(hist_dir) else 0
+            lines = [
+                f"👤 个人中心 · 价值分 {score.total:.0f}/100 · 研究等级：{score.level}",
+                f"· 使用 {score.usage_score:.0f} · 留存 {score.retention_score:.0f} · 研究 {score.research_score:.0f} · "
+                f"产出 {score.export_score:.0f} · 反馈 {score.feedback_score:.0f}",
+                f"· 历史报告 {hist_count} 份",
+            ]
+            for s in suggestions:
+                lines.append(f"· 💡 {s}")
+            return "\n".join(lines)
+        except Exception:
+            return ""
 
     def _daily_summary_text(self) -> str:
         """每日智能摘要：对比上次快照与当前数据。"""

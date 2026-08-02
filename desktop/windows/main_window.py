@@ -79,6 +79,13 @@ class MainWindow(QMainWindow):
         help_action = self.menuBar().addAction("🆘 帮助")
         help_action.triggered.connect(self._open_help)
 
+        # 行为事件（v3.8.0 Phase 1）
+        try:
+            from engine.user_intelligence.v3 import UserIntelligenceV3
+            UserIntelligenceV3().app_start()
+        except Exception:
+            pass
+
     def _open_help(self) -> None:
         """打开帮助中心。"""
         try:

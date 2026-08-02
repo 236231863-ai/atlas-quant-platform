@@ -139,6 +139,12 @@ class BacktestPage(QWidget):
             self.result_label.setText("数据不足")
             return
         method = self.combo.currentData()
+        # 行为事件（v3.8.0 Phase 1）
+        try:
+            from engine.user_intelligence.v3 import UserIntelligenceV3
+            UserIntelligenceV3().backtest_run(method)
+        except Exception:
+            pass
         try:
             report = run_backtest_with_evaluation(self.draws, method=method)
         except Exception as e:  # 兜底：评估失败不崩溃
