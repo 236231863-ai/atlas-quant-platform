@@ -1,5 +1,18 @@
 # Atlas Quant Platform Changelog
 
+## [v3.7.0] - 2026-08-02
+### User Validation & Product Intelligence
+### Added
+- docs/product: positioning / personas / value proposition
+- engine/onboarding: FirstSuccessFlow + UserAchievement
+- engine/daily_intelligence: DailySummary (no prediction)
+- data: 1200 DLT draws + 500 SSQ draws (official APIs), DataQualityReport updated_at
+- engine/user_feedback_v2: behavior tracker + report
+- backend/subscription: Community/Professional/Research editions + feature flags
+- 742 tests (tests/v370), 5 delivery reports, screenshots, user testing report
+### Changed
+- Version 3.6.1 -> 3.7.0 (window title)
+
 ## [v3.6.1] - 2026-08-02
 ### Product Trust & Real Usage Upgrade
 ### Added
