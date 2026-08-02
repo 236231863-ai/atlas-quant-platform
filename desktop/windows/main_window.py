@@ -30,7 +30,7 @@ PAGES = [
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Atlas Quant Platform v3.6.0")
+        self.setWindowTitle("Atlas Quant Platform v3.6.1")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         self._run_first_run_if_needed()
@@ -65,6 +65,12 @@ class MainWindow(QMainWindow):
         self.nav.page_requested.connect(self.switch_page)
         self.strategy.run_backtest_requested.connect(self._run_backtest_from_strategy)
 
+        # 首次引导后按用户选择跳转（30 秒上手）
+        if getattr(self, "_first_run_target", None) == "backtest":
+            self.switch_page("Backtest Center")
+        elif getattr(self, "_first_run_target", None) == "reports":
+            self.switch_page("Reports")
+
     def _run_first_run_if_needed(self) -> None:
         """首次启动显示引导对话框并保存用户档案。"""
         self.profile = load_profile()
@@ -73,6 +79,11 @@ class MainWindow(QMainWindow):
 
             dlg = FirstRunDialog(self.profile, self)
             dlg.exec()
+            # 记录引导选择：用途=backtest/reports 时跳对应页，其余到 Dashboard
+            self._first_run_target = (
+                "backtest" if dlg.purpose == "backtest" or dlg.mode == "backtest"
+                else ("reports" if dlg.purpose == "reports" else "dashboard")
+            )
             self.profile = load_profile()
 
     def _load_icon(self) -> QIcon:
