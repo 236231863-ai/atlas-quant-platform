@@ -71,4 +71,5 @@ class RandomForestAdapter(ModelAdapter):
     def set_params(self, **kwargs):
         for k, v in kwargs.items():
             if hasattr(self._config, k): setattr(self._config, k, v)
-        if self._model: self._model.set_params(**kwargs)
+        if self._model is not None:
+            self._model.set_params(**kwargs)

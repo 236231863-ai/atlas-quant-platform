@@ -12,7 +12,7 @@ class TestDesktopAPIClient:
 
     def test_get_dashboard_path(self):
         client = __import__("desktop.api_client", fromlist=["DesktopAPIClient"]).DesktopAPIClient()
-        assert "/dashboard/summary" in client.get_dashboard.__doc__ or True
+        assert callable(client.get_dashboard)
 
     def test_get_draws_path_format(self):
         expected = "/dlt/draws?limit=50"
@@ -28,8 +28,8 @@ class TestDesktopAPIClient:
         assert result is None
 
     def test_dashboard_response_parsing(self):
-        response = {"total_games":2,"games":[{"lottery_code":"dlt","total_draws":10}]}
-        assert len(response["games"]) == 2
+        response = {"total_games":1,"games":[{"lottery_code":"dlt","total_draws":10}]}
+        assert len(response["games"]) == 1
 
     def test_draws_response_parsing(self):
         response = [{"draw_number":"24001","main_numbers":[1,2,3,4,5]}]

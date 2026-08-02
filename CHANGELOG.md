@@ -1,3 +1,20 @@
+# Atlas Quant Platform Changelog
+
+## [v3.5.2-E2] - 2026-08-02
+### Engineering Sprint E2 - Test Technical Debt Fix
+### Fixed
+- 51 test failures resolved (76 -> 25, 67%)
+- test_analyzers: correct TradeRecord bonus fields + volatility/sharpe test data
+- test_desktop: matplotlib backend_qt5agg -> qtagg (PySide6 support)
+- test_docker_release: utf-8 encoding + current version assertions + .dockerignore
+- test_backtest_integration: complete setup (sim/agg/report)
+- test_gap/frequency/distribution: out-of-range number fixes + correct expectations
+- engine/scheduler: expose max_retries param (backward compatible)
+- engine/ml/models: fix set_params for sklearn 1.9 estimator API
+- test_frontend_api/gap: self-contradictory assertions fixed
+### Known Debt
+- 25 deep algorithm/ML assertion failures remain (sklearn 1.9 behavior, strategy/report/product_intelligence), deferred to E2b
+
 ﻿# Atlas Quant Platform Changelog
 
 ## [v3.5.2] - 2026-08-02

@@ -10,7 +10,8 @@ def _trade(win: bool = False, win_amt: float = 0.0, bet: float = 10.0,
            pnl: float = -10.0, cum_pnl: float = -10.0) -> TradeRecord:
     return TradeRecord(
         draw_date="2024-01-01", draw_number="1", lottery_code="dlt",
-        bet_main_numbers=[1, 2, 3, 4, 5], actual_main_numbers=[6, 7, 8, 9, 10],
+        bet_main_numbers=[1, 2, 3, 4, 5], bet_bonus_numbers=[1, 2],
+        actual_main_numbers=[6, 7, 8, 9, 10], actual_bonus_numbers=[3, 4],
         bet_amount=bet, win_amount=win_amt, is_win=win, prize_level=1 if win else 0,
         matched_main=5 if win else 0, matched_bonus=2 if win else 0,
         cumulative_pnl=cum_pnl, cumulative_roi=0.0,
@@ -78,12 +79,15 @@ class TestResultAggregator:
         assert m.max_drawdown_amount >= 0
 
     def test_volatility_calculated(self):
-        trades = [_trade(win=True, win_amt=20.0, bet=10.0) for _ in range(10)]
+        # 混合收益产生波动（恒定收益时 volatility 为 0 是设计行为，见 test_volatility_zero_on_constant）
+        trades = [_trade(win=True, win_amt=20.0, bet=10.0) for _ in range(8)] + \
+                 [_trade(win=True, win_amt=5.0, bet=10.0) for _ in range(2)]
         m = self.agg.analyze(trades)
         assert m.volatility > 0
 
     def test_sharpe_ratio_calculated(self):
-        trades = [_trade(win=True, win_amt=20.0, bet=10.0) for _ in range(10)]
+        trades = [_trade(win=True, win_amt=20.0, bet=10.0) for _ in range(8)] + \
+                 [_trade(win=True, win_amt=5.0, bet=10.0) for _ in range(2)]
         m = self.agg.analyze(trades)
         assert m.sharpe_ratio != 0
 
@@ -121,7 +125,9 @@ class TestResultAggregator:
         assert dd_pct > 0
 
     def test_sharpe_ratio_negative_on_losses(self):
-        trades = [_trade() for _ in range(10)]
+        # 整体亏损且收益有波动
+        trades = [_trade() for _ in range(8)] + \
+                 [_trade(win=True, win_amt=5.0, bet=10.0) for _ in range(2)]
         m = self.agg.analyze(trades)
         assert m.sharpe_ratio < 0
 

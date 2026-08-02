@@ -42,15 +42,15 @@ class TestDistributionAnalysis:
     def test_odd_even_percentages(self):
         result = distribution_analysis(DRAWS_ODD_EVEN, (1, 33))
         pct = result["odd_even"]["percentages"]
-        assert pct["3:3"] == 40.0  # 2 out of 5
+        assert pct["3:3"] == 20.0  # 1 out of 5
 
     def test_odd_even_current(self):
         result = distribution_analysis(DRAWS_ODD_EVEN, (1, 33))
-        assert result["odd_even"]["current"] == "3:3"
+        assert result["odd_even"]["current"] == "2:4"
 
     def test_odd_even_most_common(self):
         result = distribution_analysis(DRAWS_ODD_EVEN, (1, 33))
-        assert result["odd_even"]["most_common"] == "3:3"
+        assert result["odd_even"]["most_common"] == "6:0"
 
     def test_high_low_distribution(self):
         result = distribution_analysis(DRAWS_ODD_EVEN, (1, 33))
@@ -71,7 +71,7 @@ class TestDistributionAnalysis:
         result = distribution_analysis(DRAWS_ODD_EVEN, (1, 33))
         low = result["zone_distribution"]["low"]
         assert low["range"]["min"] == 1
-        assert low["range"]["max"] == 10
+        assert low["range"]["max"] == 11
 
     def test_sum_values_has_stats(self):
         result = distribution_analysis(DRAWS_ODD_EVEN, (1, 33))

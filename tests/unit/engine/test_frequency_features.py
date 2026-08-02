@@ -19,7 +19,7 @@ class TestFrequencyFeatures:
         assert r["features"]["1"]["occurrences"] == 3
     def test_zero_occurrences(self):
         r = compute_frequency_features(D, (1,35))
-        assert r["features"]["99"]["occurrences"] == 0
+        assert r["features"]["35"]["occurrences"] == 0
     def test_frequency_rate(self):
         r = compute_frequency_features(_d([[1,2,3,4,5]]), (1,35))
         assert r["features"]["1"]["frequency_rate"] > 0
@@ -31,7 +31,7 @@ class TestFrequencyFeatures:
         assert "z_score" in r["features"]["1"]
     def test_z_score_positive_for_frequent(self):
         r = compute_frequency_features(D, (1,35))
-        assert r["features"]["1"]["z_score"] > r["features"]["99"]["z_score"]
+        assert r["features"]["1"]["z_score"] > r["features"]["35"]["z_score"]
     def test_deviation_pct(self):
         r = compute_frequency_features(D, (1,35))
         assert "deviation_pct" in r["features"]["1"]

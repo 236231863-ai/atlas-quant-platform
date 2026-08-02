@@ -67,7 +67,7 @@ class TestGapAnalysis:
     def test_appearances_count(self):
         result = gap_analysis(DRAWS_ORDERED, (1, 35))
         assert result["main_numbers"]["numbers"]["1"]["appearances"] == 2
-        assert result["main_numbers"]["numbers"]["99"]["appearances"] == 0
+        assert result["main_numbers"]["numbers"]["35"]["appearances"] == 0
 
     def test_current_max_gap(self):
         result = gap_analysis(DRAWS_ORDERED, (1, 35))

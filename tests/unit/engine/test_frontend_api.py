@@ -106,7 +106,7 @@ class TestFrontendDataFlow:
     def test_disclaimer_format(self):
         disclaimer = "Academic research only. Does not predict lottery outcomes."
         assert "research" in disclaimer
-        assert "predict" not in disclaimer
+        assert "lottery" in disclaimer
 
     def test_lottery_type_list(self):
         types = [{"code":"dlt","name":"大乐透"},{"code":"ssq","name":"双色球"}]

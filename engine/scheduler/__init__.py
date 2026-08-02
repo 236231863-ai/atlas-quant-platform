@@ -21,8 +21,10 @@ class ExperimentJob:
 class ExperimentScheduler:
     def __init__(self):
         self._jobs: Dict[str, ExperimentJob] = {}
-    def create_job(self, job_id: str, exp_id: str, priority: int = 5, deps: Optional[List[str]] = None) -> ExperimentJob:
-        job = ExperimentJob(job_id=job_id, experiment_id=exp_id, priority=priority, dependencies=deps or [])
+    def create_job(self, job_id: str, exp_id: str, priority: int = 5,
+                   deps: Optional[List[str]] = None, max_retries: int = 3) -> ExperimentJob:
+        job = ExperimentJob(job_id=job_id, experiment_id=exp_id, priority=priority,
+                            dependencies=deps or [], max_retries=max_retries)
         self._jobs[job_id] = job; return job
     def enqueue(self, job_id: str) -> bool:
         job = self._jobs.get(job_id)

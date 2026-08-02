@@ -124,6 +124,9 @@ class TestFullPipeline:
 class TestBacktestReport:
     def setup_method(self):
         self.gen = ReportGenerator()
+        self.report = ReportGenerator()
+        self.sim = TradeSimulator()
+        self.agg = ResultAggregator()
         self.metrics = BacktestMetrics(
             total_investment=100.0, total_return=50.0, roi=-50.0,
             win_count=3, total_bets=10, win_rate=30.0,
