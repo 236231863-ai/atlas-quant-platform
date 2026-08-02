@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
 )
 from windows.navigation import NavigationPanel
 
+from user_profile import load_profile, save_profile
 from pages.dashboard_page import DashboardPage
 from pages.analysis_page import AnalysisPage
 from pages.strategy_page import StrategyPage
@@ -32,6 +33,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Atlas Quant Platform v3.6.0")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
+        self._run_first_run_if_needed()
         central = QWidget()
         self.setCentralWidget(central)
         layout = QHBoxLayout(central)
@@ -62,6 +64,16 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.stack)
         self.nav.page_requested.connect(self.switch_page)
         self.strategy.run_backtest_requested.connect(self._run_backtest_from_strategy)
+
+    def _run_first_run_if_needed(self) -> None:
+        """首次启动显示引导对话框并保存用户档案。"""
+        self.profile = load_profile()
+        if not self.profile.first_run_completed:
+            from pages.first_run_dialog import FirstRunDialog
+
+            dlg = FirstRunDialog(self.profile, self)
+            dlg.exec()
+            self.profile = load_profile()
 
     def _load_icon(self) -> QIcon:
         """加载品牌图标（打包后从 sys._MEIPASS 定位）。"""
