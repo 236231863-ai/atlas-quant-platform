@@ -17,6 +17,7 @@ from pages.backtest_page import BacktestPage
 from pages.ai_page import AIPage
 from pages.reports_page import ReportsPage
 from pages.workbench_page import WorkbenchPage
+from pages.quant_page import QuantPage
 
 PAGES = [
     "数据看板",
@@ -26,13 +27,14 @@ PAGES = [
     "AI 助手",
     "研究报告",
     "工作台",
+    "量化中心",
 ]
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Atlas Quant Platform v3.8.2")
+        self.setWindowTitle("Atlas Quant Platform v3.9.0")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         self._run_first_run_if_needed()
@@ -53,6 +55,7 @@ class MainWindow(QMainWindow):
         self.ai = AIPage()
         self.reports = ReportsPage()
         self.workbench = WorkbenchPage()
+        self.quant = QuantPage()
 
         for page in (
             self.dashboard,
@@ -62,12 +65,14 @@ class MainWindow(QMainWindow):
             self.ai,
             self.reports,
             self.workbench,
+            self.quant,
         ):
             self.stack.addWidget(page)
 
         layout.addWidget(self.stack)
         self.nav.page_requested.connect(self.switch_page)
         self.strategy.run_backtest_requested.connect(self._run_backtest_from_strategy)
+        self.workbench.quant_requested.connect(lambda: self.switch_page("量化中心"))
 
         # 首次引导后按用户选择跳转（30 秒上手）
         if getattr(self, "_first_run_target", None) == "backtest":

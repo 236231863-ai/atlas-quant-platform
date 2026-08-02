@@ -1,5 +1,22 @@
 # Atlas Quant Platform Changelog
 
+## [v3.9.0] - 2026-08-02
+### Lottery Quant Intelligence Layer
+### Added
+- engine/lottery_quant: probability / structure / simulation / risk / portfolio / backtest / report
+- Probability engine: DLT/SSQ prize odds (1/21,425,712 / 1/17,721,088), 125 tests
+- Structure analyzer: parity/size/zone/sum/span/consecutive/duplicate/historical deviation, 155 tests
+- Monte Carlo simulation: 100k-draw coverage, 247 tests
+- Risk engine: annual investment / max loss / expected return / loss probability / risk level A-D, 112 tests
+- Portfolio analyzer: duplicate rate / correlation / coverage / concentration, 171 tests
+- Strategy backtest: hot/cold/balanced/random vs random baseline, 210 tests
+- AI assistant quant_analyze tool (priority: PendingTask > prize > quant > LLM), 253 tests
+- Desktop quant center page (workbench 🎯 entry), 26 UI tests
+- Quant report generator (Markdown/PDF/PNG), 83 tests
+- All outputs carry randomness disclaimer; no prediction claims
+### Changed
+- Version 3.9.0 (window title), 8 navigation pages
+
 ## [v3.8.2-P1] - 2026-08-02
 ### AI Assistant Prize Task State Recovery
 ### Added

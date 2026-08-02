@@ -122,20 +122,86 @@ def _report_handler(query: str, user_id: str = "default") -> ToolResult:
     return ToolResult(tool="report", text="报告工具：请到「研究报告」页面一键生成并导出。")
 
 
+def _quant_analyze_handler(query: str, user_id: str = "default") -> ToolResult:
+    """彩票量化分析工具（v3.9.0 Phase 7）。
+
+    支持：结构分析 / 概率模型 / 蒙特卡洛模拟 / 资金风险 / 组合分析。
+    从输入解析号码，或读取票据系统已保存票据。
+    """
+    from engine.lottery_quant.quant_director import QuantDirector
+    from engine.lottery_intent.ticket_parser import TicketParser
+    from engine.lottery_intent.intent_router import LotteryIntentRouter
+
+    parse = TicketParser.parse(query)
+    tickets = parse.to_ticket_dicts()
+    lottery = parse.lottery or LotteryIntentRouter.detect(query).lottery or "dlt"
+
+    # 无号码 → 读取票据系统
+    source = "input"
+    if not tickets:
+        try:
+            from engine.ticket_system import TicketManager
+            mgr = TicketManager()
+            saved = mgr.list_all()
+            if saved:
+                tickets = [{"front": t.front, "back": t.back} for t in saved[:30]]
+                lottery = saved[0].lottery
+                source = "tickets"
+        except Exception:
+            pass
+
+    # 概率分析不需要号码（理论概率固定）
+    if not tickets and any(k in query for k in ("概率",)):
+        r = QuantDirector.probability_report(lottery)
+        return ToolResult(tool="quant_analyze", text=r["report_text"],
+                          data={"lottery": lottery, "source": "probability"})
+
+    if not tickets:
+        return ToolResult(tool="quant_analyze", success=False,
+                          text="未找到可分析的号码。请提供号码，或在「工作台」保存票据后分析。",
+                          missing=["numbers"])
+
+    # 子意图路由：明确子意图走专项，否则完整量化报告（v3.9.0 验收）
+    ql = query
+    if any(k in ql for k in ("风险", "投入", "亏损")):
+        r = QuantDirector.risk_report(tickets, lottery)
+    elif any(k in ql for k in ("模拟", "覆盖", "中奖情况")):
+        r = QuantDirector.simulation_report(tickets, lottery)
+    elif any(k in ql for k in ("重复", "集中", "相关性")):
+        r = QuantDirector.portfolio_report(tickets, lottery)
+    elif any(k in ql for k in ("概率",)):
+        r = QuantDirector.probability_report(lottery)
+    else:
+        r = QuantDirector.full_report(tickets, lottery)
+
+    return ToolResult(tool="quant_analyze", text=r["report_text"], data={
+        "lottery": r.get("lottery"), "tickets": r.get("tickets", len(tickets)),
+        "score": r.get("score"), "coverage_rate": r.get("coverage_rate"),
+        "risk_level": r.get("risk_level"), "source": source,
+    })
+
+
 # 能力地图：工具 → 触发关键词
 TOOL_KEYWORDS = {
     "prize": ["中了", "中奖", "兑奖", "奖金", "多少钱", "中了吗", "算算", "赚了", "中没中", "有没有中", "中了没"],
+    "quant_analyze": ["分析", "评分", "量化", "组合评分", "概率分析", "资金风险", "重复率",
+                      "结构分析", "组合分析", "模拟", "风险", "覆盖", "我的号码", "号码结构",
+                      "分析号码", "分析我的"],
     "hot_cold": ["热号", "冷号", "热码", "冷码"],
     "recommend": ["推荐", "号码", "一注", "选号", "选几个", "选一些"],
     "backtest": ["回测", "验证策略", "策略表现"],
     "report": ["报告", "生成报告", "分析报告"],
 }
 
+# 量化强意图词（路由加权，优先于兑奖小词）
+QUANT_STRONG_WORDS = ["风险", "模拟", "结构", "重复率", "覆盖", "组合评分", "资金风险", "概率分析", "分析"]
+
 
 def register_tools() -> ToolRegistry:
     """注册全部业务工具。"""
     reg = ToolRegistry()
     reg.register(Tool(name="prize", description="兑奖计算", handler=_prize_handler, keywords=TOOL_KEYWORDS["prize"]))
+    reg.register(Tool(name="quant_analyze", description="彩票量化分析", handler=_quant_analyze_handler, keywords=TOOL_KEYWORDS["quant_analyze"]))
     reg.register(Tool(name="hot_cold", description="热号/冷号查询", handler=_hot_numbers_handler, keywords=TOOL_KEYWORDS["hot_cold"]))
     reg.register(Tool(name="recommend", description="号码推荐", handler=_recommend_handler, keywords=TOOL_KEYWORDS["recommend"]))
     reg.register(Tool(name="backtest", description="回测指引", handler=_backtest_handler, keywords=TOOL_KEYWORDS["backtest"]))

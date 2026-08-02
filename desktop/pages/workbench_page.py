@@ -1,7 +1,8 @@
 """彩票工作台页面（v3.8.0 P4）。
 
-个人彩票工作台：我的票据 / 最近报告 / 追号观察 / 偏好。
+个人彩票工作台：我的票据 / 最近报告 / 追号观察 / 偏好 / 量化中心入口（v3.9.0）。
 """
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QFrame, QPushButton,
     QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
@@ -12,6 +13,8 @@ from data_loader import load_draws
 
 class WorkbenchPage(QWidget):
     """个人彩票工作台。"""
+
+    quant_requested = Signal()   # v3.9.0：跳转量化中心
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -64,6 +67,16 @@ class WorkbenchPage(QWidget):
         self.overview.setWordWrap(True)
         self.overview.setStyleSheet("background:#fff8ee;border-radius:8px;border:1px solid #f0e0c0;padding:10px;color:#7a5c1e;font-size:12px;")
         root.addWidget(self.overview)
+
+        # 🎯 彩票量化分析入口（v3.9.0 Phase 8）
+        quant_btn = QPushButton("🎯 彩票量化分析")
+        quant_btn.setStyleSheet(
+            "QPushButton{background:linear-gradient(90deg,#2a6df4,#6a4df4);color:white;border:none;"
+            "padding:12px 20px;border-radius:8px;font-size:14px;font-weight:bold;}"
+            "QPushButton:hover{background:#1e56c8;}"
+        )
+        quant_btn.clicked.connect(self.quant_requested.emit)
+        root.addWidget(quant_btn)
 
         self._refresh()
 
