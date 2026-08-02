@@ -162,6 +162,14 @@ class AIPage(QWidget):
             return f"⚠️ 在线调用失败：{exc}\n请检查网络或 API Key，可继续使用离线模式。"
 
     def _answer(self, q):
+        # 兑奖计算意图（v3.7.2）：先于常规问答
+        try:
+            from engine.lottery_intent import compute_prize_report
+            report = compute_prize_report(q)
+            if report.get("is_prize"):
+                return report["report_text"]
+        except Exception:
+            pass
         if not self.draws:
             return "暂无数据，无法分析。"
         ql = q.lower()
