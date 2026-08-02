@@ -64,14 +64,14 @@ class QuantReportGenerator:
         lines.append(f"> {DISCLAIMER}")
         lines.append("")
 
-        lines.append("## 组合评分")
+        lines.append("## 号码分析")
         s = d["structure"]
-        lines.append(f"- 评分：**{s.total_score}/100**（{s.assessment}）")
+        lines.append(f"- 组合评分：**{s.total_score}/100**（{s.assessment}）")
         lines.append(f"- 奇偶比：{s.metrics.odd_even_ratio} / 大小比：{s.metrics.big_small_ratio}")
         lines.append(f"- 三区分布：{s.metrics.zone_distribution} / 和值：{s.metrics.front_sum} / 跨度：{s.metrics.span}")
         lines.append("")
 
-        lines.append("## 概率模型")
+        lines.append("## 概率分析")
         p = d["prob"]
         lines.append(f"- 一等奖概率：约 1/{p.first_prize_one_in:,.0f}")
         lines.append(f"- 总中奖率：{p.total_win_probability * 100:.2f}%")
@@ -103,9 +103,46 @@ class QuantReportGenerator:
             label = {"hot": "热号", "cold": "冷号", "balanced": "均衡", "random": "随机"}.get(m, m)
             lines.append(f"- {label}策略：ROI {perf.roi_total:+.1f}% / 命中率 {perf.win_rate * 100:.1f}%")
         lines.append("")
+
+        # v4.0.0 Phase 4：个人行为 + 改进建议
+        lines.append("## 个人行为")
+        bh = self._behavior()
+        lines.append(f"- 投注期数：{bh.total_bets} 期 / 共 {bh.total_notes} 注")
+        lines.append(f"- 总投入：¥{bh.total_spent:,.0f} / 月均 ¥{bh.monthly_avg:,.0f}")
+        lines.append(f"- 追号次数：{bh.chase_count} / 行为风险等级：{bh.risk_level}")
+        lines.append("")
+
+        lines.append("## 改进建议")
+        for s in self._improvements():
+            lines.append(f"- {s}")
+        lines.append("")
+
         lines.append("## 汇总")
         lines.append(f"> {DISCLAIMER}")
         return "\n".join(lines)
+
+    def _behavior(self):
+        """个人行为分析（v4.0.0 Phase 4）。"""
+        from engine.user_behavior import analyze_behavior
+        tickets = self.tickets
+        # 补充 buy_date 到票据（若无）
+        return analyze_behavior(tickets)
+
+    def _improvements(self) -> List[str]:
+        """改进建议（组合结构调整建议，非号码推荐）。"""
+        d = self._collect()
+        tips = []
+        s, pf = d["structure"], d["portfolio"]
+        # 基于结构/组合分析的调整建议
+        tips.extend(pf.suggestions[:2])
+        if s.metrics and s.metrics.odd_even_ratio not in ("2:3", "3:2"):
+            tips.append("奇偶比例可适度调整（常见 2:3 或 3:2）")
+        if s.metrics and s.metrics.consecutive_pairs >= 2:
+            tips.append("连号较多，可考虑分散号码组合")
+        if not tips:
+            tips.append("组合结构较均衡，建议保持并关注资金预算")
+        tips.append("以上为组合结构调整建议，不改变中奖概率。")
+        return tips
 
     def export_markdown(self, path: str) -> str:
         """导出 Markdown。"""

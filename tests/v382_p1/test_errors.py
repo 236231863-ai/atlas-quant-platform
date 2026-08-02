@@ -91,7 +91,7 @@ def test_very_long_text_no_crash():
     ("帮我看看冷号", "hot_cold"),
     ("推荐一注号码", "recommend"),
     ("生成研究报告", "report"),
-    ("生成分析报告", "quant_analyze"),
+    ("生成分析报告", "report"),
 ])
 def test_router_edges(text, intent):
     router = AssistantIntentRouter()

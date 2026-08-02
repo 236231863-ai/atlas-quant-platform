@@ -30,3 +30,15 @@ class BehaviorAnalyzer:
         recent_analysis = sum(1 for e in recent if "analysis" in e.event_type)
         return max(0.0, 1.0 - recent_analysis / max(len(recent), 1))
     def count(self) -> int: return len(self._events)
+
+# ---- v4.0.0 Phase 1：投注行为分析（基于票据）----
+from .behavior import (  # noqa: E402
+    BetBehaviorAnalyzer,
+    UserBehaviorReport,
+    analyze_behavior,
+)
+
+__all__ = [
+    "UserBehaviorEvent", "BehaviorAnalyzer", "EVENT_TYPES",
+    "BetBehaviorAnalyzer", "UserBehaviorReport", "analyze_behavior",
+]

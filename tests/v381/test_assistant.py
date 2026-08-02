@@ -29,10 +29,10 @@ def test_tool_descriptions(registry, name):
     t = registry.get(name)
     assert t.description and t.keywords
 
-@pytest.mark.parametrize("n", [1, 3, 5, 6])
+@pytest.mark.parametrize("n", [1, 3, 5, 6, 7])
 def test_tool_count(registry, n):
-    assert len(registry.all()) == 6
-    assert len(registry.names()) == 6
+    assert len(registry.all()) == 7
+    assert len(registry.names()) == 7
 
 # ---------- 路由 ----------
 @pytest.mark.parametrize("query,expected", [

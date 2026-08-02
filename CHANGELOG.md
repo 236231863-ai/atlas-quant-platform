@@ -1,5 +1,18 @@
 # Atlas Quant Platform Changelog
 
+## [v4.0.0] - 2026-08-03
+### Personal Decision Intelligence Layer
+### Added
+- engine/user_behavior: BetBehaviorAnalyzer (投注/月年投入/追号/高频周期/停止率/风险等级), 256 tests
+- engine/budget_manager: BudgetPlanner (月/年预算、占比、超额提醒、健康度), 239 tests
+- engine/personal_review: PersonalReviewEngine (历史复盘/中奖/收益比/最高周期), 308 tests
+- QuantReport 升级个人视角（号码/概率/资金/行为/改进建议 5 部分），禁止推荐号码, 232 tests
+- AI 助手 personal_analyze 工具（PendingTask>兑奖>个人>量化>LLM）, 376 tests
+- 个人中心页面（我的票据/投入/中奖/风险/报告/趋势）, 110 tests
+- 真实用户流程验证（30 秒闭环）, 216 tests
+### Changed
+- Version 4.0.0 (window title), 9 navigation pages
+
 ## [v3.9.0] - 2026-08-02
 ### Lottery Quant Intelligence Layer
 ### Added

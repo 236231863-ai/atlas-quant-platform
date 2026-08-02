@@ -122,6 +122,53 @@ def _report_handler(query: str, user_id: str = "default") -> ToolResult:
     return ToolResult(tool="report", text="报告工具：请到「研究报告」页面一键生成并导出。")
 
 
+def _personal_analyze_handler(query: str, user_id: str = "default") -> ToolResult:
+    """个人决策分析工具（v4.0.0 Phase 5）。
+
+    支持：行为分析 / 预算管理 / 历史复盘。
+    数据源：TicketManager 票据 + BudgetPlanner 预算。
+    """
+    # 从票据系统读取
+    tickets = []
+    try:
+        from engine.ticket_system import TicketManager
+        mgr = TicketManager()
+        tickets = [t.__dict__ for t in mgr.list_all()]
+    except Exception:
+        pass
+
+    if not tickets:
+        return ToolResult(tool="personal_analyze", success=False,
+                          text="暂无投注数据。请在「工作台」保存票据后分析个人行为。",
+                          missing=["tickets"])
+
+    ql = query
+    # 复盘
+    if any(k in ql for k in ("复盘", "中奖情况", "收益")):
+        from engine.personal_review import PersonalReviewEngine
+        r = PersonalReviewEngine.review(tickets)
+        return ToolResult(tool="personal_analyze", text=r.summary_text(),
+                          data={"type": "review", "net_profit": r.net_profit,
+                                "win_rate": r.win_rate,
+                                "total_investment": r.total_investment,
+                                "total_winnings": r.total_winnings,
+                                "win_count": r.win_count})
+    # 预算/花费
+    if any(k in ql for k in ("预算", "花了多少", "花多少钱", "投入多少", "一年花")):
+        from engine.budget_manager import BudgetPlanner
+        bp = BudgetPlanner()
+        r = bp.evaluate_tickets(tickets)
+        return ToolResult(tool="personal_analyze", text=r.summary_text(),
+                          data={"type": "budget", "month_spent": r.month_spent,
+                                "year_spent": r.year_spent, "health_score": r.health_score})
+    # 行为分析
+    from engine.user_behavior import analyze_behavior
+    r = analyze_behavior(tickets)
+    return ToolResult(tool="personal_analyze", text=r.summary_text(),
+                      data={"type": "behavior", "risk_level": r.risk_level,
+                            "total_spent": r.total_spent, "chase_count": r.chase_count})
+
+
 def _quant_analyze_handler(query: str, user_id: str = "default") -> ToolResult:
     """彩票量化分析工具（v3.9.0 Phase 7）。
 
@@ -187,6 +234,10 @@ TOOL_KEYWORDS = {
     "quant_analyze": ["分析", "评分", "量化", "组合评分", "概率分析", "资金风险", "重复率",
                       "结构分析", "组合分析", "模拟", "风险", "覆盖", "我的号码", "号码结构",
                       "分析号码", "分析我的"],
+    "personal_analyze": ["复盘", "我最近", "我一年", "花了多少", "花多少钱", "预算",
+                         "我的行为", "投注情况", "买彩票情况", "习惯", "行为分析",
+                         "个人报告", "投入多少", "中奖情况", "收益",
+                         "买彩票", "投注行为", "近期投注", "最近买彩票", "投注"],
     "hot_cold": ["热号", "冷号", "热码", "冷码"],
     "recommend": ["推荐", "号码", "一注", "选号", "选几个", "选一些"],
     "backtest": ["回测", "验证策略", "策略表现"],
@@ -194,13 +245,18 @@ TOOL_KEYWORDS = {
 }
 
 # 量化强意图词（路由加权，优先于兑奖小词）
-QUANT_STRONG_WORDS = ["风险", "模拟", "结构", "重复率", "覆盖", "组合评分", "资金风险", "概率分析", "分析"]
+QUANT_STRONG_WORDS = ["风险", "模拟", "结构", "重复率", "覆盖", "组合评分", "资金风险", "概率分析"]
+
+# 个人分析强意图词（优先于量化）
+PERSONAL_STRONG_WORDS = ["复盘", "预算", "花了多少", "花多少钱", "我一年", "我最近",
+                         "我的行为", "投注情况", "习惯"]
 
 
 def register_tools() -> ToolRegistry:
-    """注册全部业务工具。"""
+    """注册全部业务工具（v4.0.0：personal_analyze 在 quant 之前）。"""
     reg = ToolRegistry()
     reg.register(Tool(name="prize", description="兑奖计算", handler=_prize_handler, keywords=TOOL_KEYWORDS["prize"]))
+    reg.register(Tool(name="personal_analyze", description="个人决策分析", handler=_personal_analyze_handler, keywords=TOOL_KEYWORDS["personal_analyze"]))
     reg.register(Tool(name="quant_analyze", description="彩票量化分析", handler=_quant_analyze_handler, keywords=TOOL_KEYWORDS["quant_analyze"]))
     reg.register(Tool(name="hot_cold", description="热号/冷号查询", handler=_hot_numbers_handler, keywords=TOOL_KEYWORDS["hot_cold"]))
     reg.register(Tool(name="recommend", description="号码推荐", handler=_recommend_handler, keywords=TOOL_KEYWORDS["recommend"]))

@@ -30,7 +30,8 @@ def test_markdown_has_disclaimer(gen):
 
 
 @pytest.mark.parametrize("section", [
-    "免责声明", "组合评分", "概率模型", "蒙特卡洛模拟", "组合分析", "资金风险", "策略回测", "汇总",
+    "免责声明", "号码分析", "概率分析", "蒙特卡洛模拟", "组合分析", "资金风险",
+    "个人行为", "改进建议", "策略回测", "汇总",
 ])
 def test_markdown_sections(gen, section):
     assert section in gen.to_markdown()
