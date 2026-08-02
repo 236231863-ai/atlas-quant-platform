@@ -2,7 +2,7 @@
 ; 生成 Atlas_Setup.exe：安装向导 / 桌面快捷方式 / 开始菜单 / 卸载 / 升级
 
 #define MyAppName "Atlas Quant Platform"
-#define MyAppVersion "3.5.2"
+#define MyAppVersion "3.6.0"
 #define MyAppPublisher "Atlas Quant Team"
 #define MyAppExeName "Atlas.exe"
 #define MyAppURL "https://github.com/236231863-ai/atlas-quant-platform"
@@ -30,6 +30,7 @@ UsePreviousAppDir=yes
 UsePreviousTasks=yes
 
 [Languages]
+Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
