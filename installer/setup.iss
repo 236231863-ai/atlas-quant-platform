@@ -2,7 +2,7 @@
 ; 生成 Atlas_Setup.exe：安装向导 / 桌面快捷方式 / 开始菜单 / 卸载 / 升级
 
 #define MyAppName "Atlas Quant Platform"
-#define MyAppVersion "3.7.1"
+#define MyAppVersion "3.8.0"
 #define MyAppPublisher "Atlas Quant Team"
 #define MyAppExeName "Atlas.exe"
 #define MyAppURL "https://github.com/236231863-ai/atlas-quant-platform"
@@ -19,7 +19,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=..\release
-OutputBaseFilename=AtlasQuant-3.7.1-beta-Setup
+OutputBaseFilename=AtlasQuant-3.8.0-Setup
 SetupIconFile=..\branding\logo.ico
 Compression=lzma
 SolidCompression=yes
