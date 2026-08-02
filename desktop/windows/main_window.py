@@ -74,6 +74,12 @@ class MainWindow(QMainWindow):
     def _run_first_run_if_needed(self) -> None:
         """首次启动显示引导对话框并保存用户档案。"""
         self.profile = load_profile()
+        # 崩溃恢复提示（v3.6.1 Phase 5）
+        try:
+            from health import show_crash_recovery_dialog
+            show_crash_recovery_dialog(self)
+        except Exception:
+            pass
         if not self.profile.first_run_completed:
             from pages.first_run_dialog import FirstRunDialog
 
