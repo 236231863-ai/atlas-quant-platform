@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (
 
 from data_loader import load_draws, get_data_source, get_data_quality
 from stats import front_frequency, hot_numbers, cold_numbers, front_sums
+from engine.data_center_v2 import DrawRecord
 
 
 def _card(title, value, subtitle=""):
@@ -64,6 +65,20 @@ class DashboardPage(QWidget):
         root.addWidget(src_label)
         root.addWidget(trust_label)
 
+        # 每日智能摘要（v3.7.0 Phase 2）
+        try:
+            daily = self._daily_summary_text()
+            if daily:
+                daily_label = QLabel(daily)
+                daily_label.setWordWrap(True)
+                daily_label.setStyleSheet(
+                    "background:#f8f9fd;border:1px solid #e8ecf2;border-radius:8px;"
+                    "padding:10px 12px;color:#445;font-size:12px;line-height:1.6;"
+                )
+                root.addWidget(daily_label)
+        except Exception:
+            pass
+
         if not self.draws:
             tip = QLabel("暂无数据：请确认 data/raw/dlt_history.csv 或 dlt_2024_sample.csv 存在")
             tip.setStyleSheet("color:#888;font-size:14px;")
@@ -92,6 +107,40 @@ class DashboardPage(QWidget):
         row.addWidget(self._recent_table(), 3)
         row.addWidget(self._hotcold_panel(hot, cold), 2)
         root.addLayout(row, 1)
+
+    def _daily_summary_text(self) -> str:
+        """每日智能摘要：对比上次快照与当前数据。"""
+        import json
+        import os
+        from datetime import datetime
+        from engine.daily_intelligence import build_summary
+
+        snap_dir = os.path.join(os.path.expanduser("~"), ".atlas")
+        snap_path = os.path.join(snap_dir, "daily_snapshot.json")
+        prev_draws = []
+        if os.path.exists(snap_path):
+            try:
+                with open(snap_path, encoding="utf-8") as f:
+                    prev = json.load(f)
+                prev_draws = [
+                    DrawRecord(str(d.get("number", "")), d.get("date", ""),
+                               d.get("front", []), d.get("back", []), 0)
+                    for d in prev if d.get("number")
+                ]
+            except (json.JSONDecodeError, OSError):
+                prev_draws = []
+        s = build_summary(prev_draws, self.draws, datetime.now().strftime("%Y-%m-%d"))
+        # 更新快照（保留最近 30 期作为对比基线）
+        try:
+            os.makedirs(snap_dir, exist_ok=True)
+            with open(snap_path, "w", encoding="utf-8") as f:
+                json.dump([
+                    {"number": d.number, "date": d.draw_date, "front": d.front, "back": d.back}
+                    for d in self.draws[-30:]
+                ], f, ensure_ascii=False)
+        except OSError:
+            pass
+        return s.to_text()
 
     def _recent_table(self):
         box = QFrame()
