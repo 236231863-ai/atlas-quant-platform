@@ -91,17 +91,35 @@ def _user_data_dir() -> str:
 def _find_data_file(lottery: str) -> tuple:
     """按优先级查找数据文件，返回 (path, source_type)。
 
-    优先级：用户导入文件 > 项目文件 > 打包内置文件。
+    优先级：用户导入文件 > 项目真实历史数据(history) > 内置样例。
     """
     prefix = f"{lottery}_"
-    # 1. 项目 data/raw 下的用户文件（非 _sample 后缀）
+    # 1. 项目 data/raw 下的用户导入文件（非 _sample 后缀，history 优先）
     project_raw = _user_data_dir()
     if os.path.isdir(project_raw):
         for fn in sorted(os.listdir(project_raw)):
-            if fn.startswith(prefix) and fn.endswith(".csv") and "_sample" not in fn:
+            if (
+                fn.startswith(prefix) and fn.endswith(".csv")
+                and "_sample" not in fn
+            ):
+                p = os.path.join(project_raw, fn)
+                # 真实历史数据（history 或非样例）优先
+                if "history" in fn:
+                    return p, "user"
+        # 2. 无 history 时，任何非样例 CSV 视为用户数据
+        for fn in sorted(os.listdir(project_raw)):
+            if (
+                fn.startswith(prefix) and fn.endswith(".csv")
+                and "_sample" not in fn
+            ):
                 p = os.path.join(project_raw, fn)
                 return p, "user"
-    # 2. 内置样例/演示文件
+    # 3. 内置真实历史数据（打包进 exe）
+    history_rel = os.path.join("data", "raw", f"{lottery}_history.csv")
+    p = _resource_path(history_rel)
+    if p:
+        return p, "bundled_history"
+    # 4. 内置样例/演示文件
     bundled_rel = os.path.join("data", "raw", f"{lottery}_2024_sample.csv")
     p = _resource_path(bundled_rel)
     if p:
@@ -110,7 +128,13 @@ def _find_data_file(lottery: str) -> tuple:
 
 
 def _parse_csv(path: str, lottery: str) -> List[DrawRecord]:
-    """解析彩种 CSV。支持列名 front_1..N / back_1..M 或 main_1..N / bonus_1..M。"""
+    """解析彩种 CSV。
+
+    支持三种格式：
+      1. front_1..N / back_1..M      （列式样例）
+      2. main_1..N / bonus_1..M      （列式样例变体）
+      3. numbers 列（如 "10 11 18 22 35|06 12" 或 "10 11 18 22 35 06 12"）
+    """
     spec = LOTTERY_SPECS.get(lottery, LOTTERY_SPECS["dlt"])
     front_n, back_n = spec["front_n"], spec["back_n"]
     draws: List[DrawRecord] = []
@@ -121,22 +145,45 @@ def _parse_csv(path: str, lottery: str) -> List[DrawRecord]:
                 if f"front_1" in row:
                     front = [int(row[f"front_{i}"]) for i in range(1, front_n + 1)]
                     back = [int(row[f"back_{i}"]) for i in range(1, back_n + 1)]
+                    num = str(row.get("draw_number", "")).strip()
+                    date = str(row.get("draw_date", "")).strip()
+                    pool = float(row.get("pool_amount") or 0)
                 elif f"main_1" in row:
                     front = [int(row[f"main_{i}"]) for i in range(1, front_n + 1)]
                     back = [int(row[f"bonus_{i}"]) for i in range(1, back_n + 1)]
+                    num = str(row.get("draw_number", "")).strip()
+                    date = str(row.get("draw_date", "")).strip()
+                    pool = float(row.get("pool_amount") or 0)
                 else:
-                    continue
+                    # 统一格式：issue,date,numbers,pool
+                    num = str(row.get("issue", "") or row.get("number", "")).strip()
+                    date = str(row.get("date", "") or row.get("draw_date", "")).strip()
+                    numbers = row.get("numbers", "") or row.get("result", "")
+                    if not num or not numbers:
+                        continue
+                    if "|" in numbers:
+                        f_part, b_part = numbers.split("|", 1)
+                        front = [int(x) for x in f_part.split()]
+                        back = [int(x) for x in b_part.split()]
+                    else:
+                        parts = [int(x) for x in numbers.split()]
+                        front = parts[:front_n]
+                        back = parts[front_n : front_n + back_n]
+                    try:
+                        pool = float(str(row.get("pool", "")).replace(",", "") or 0)
+                    except ValueError:
+                        pool = 0.0
                 draws.append(
                     DrawRecord(
-                        number=str(row.get("draw_number", "")).strip(),
-                        draw_date=str(row.get("draw_date", "")).strip(),
+                        number=num,
+                        draw_date=date,
                         front=front,
                         back=back,
-                        pool=float(row.get("pool_amount") or 0),
+                        pool=pool,
                         lottery=lottery,
                     )
                 )
-            except (ValueError, KeyError, IndexError):
+            except (ValueError, KeyError, IndexError, TypeError):
                 continue
     draws.sort(key=lambda d: d.number)
     return draws
@@ -168,3 +215,45 @@ def get_data_source(lottery: str = "dlt") -> DataSourceInfo:
         draw_count=len(draws),
         note=note,
     )
+
+
+def _trust_level(total: int) -> str:
+    """可信等级：A(>=500) B(>=200) C(>=50) D(<50)。"""
+    if total >= 500:
+        return "A"
+    if total >= 200:
+        return "B"
+    if total >= 50:
+        return "C"
+    return "D"
+
+
+def get_data_quality(lottery: str = "dlt") -> dict:
+    """数据质量报告（数量/时间范围/可信等级/是否达标/UI 文案）。
+
+    供 Dashboard 等页面展示「数据不足警告」。
+    """
+    draws = load_draws(lottery)
+    total = len(draws)
+    dates = [d.draw_date for d in draws if d.draw_date]
+    date_from = min(dates) if dates else ""
+    date_to = max(dates) if dates else ""
+    level = _trust_level(total)
+    labels = {"A": "可信", "B": "基本可用", "C": "数据不足", "D": "严重不足"}
+    sufficient = total >= 500
+    if sufficient:
+        message = f"数据充足：{total} 期（{date_from} ~ {date_to}）· 可信等级 {level}"
+    else:
+        message = (
+            f"⚠️ 数据不足：仅 {total} 期（最低标准 500 期），统计结论可能不稳健 · 可信等级 {level}"
+        )
+    return {
+        "lottery": lottery,
+        "total": total,
+        "date_from": date_from,
+        "date_to": date_to,
+        "trust_level": level,
+        "trust_label": labels.get(level, "未知"),
+        "sufficient": sufficient,
+        "message": message,
+    }

@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
 )
 
-from data_loader import load_draws, get_data_source
+from data_loader import load_draws, get_data_source, get_data_quality
 from stats import front_frequency, hot_numbers, cold_numbers, front_sums
 
 
@@ -48,12 +48,24 @@ class DashboardPage(QWidget):
         root.addWidget(header)
 
         src = get_data_source("dlt")
-        src_label = QLabel(f"数据来源：{src.note}（{src.draw_count} 期）")
-        src_label.setStyleSheet("color:#8a94a6;font-size:12px;")
+        quality = get_data_quality("dlt")
+
+        # 数据来源 + 可信等级（数据不足时高亮警告）
+        if quality["sufficient"]:
+            src_label = QLabel(f"数据来源：{src.note}（{quality['total']} 期 · {quality['date_from']} ~ {quality['date_to']}）")
+            src_label.setStyleSheet("color:#8a94a6;font-size:12px;")
+            trust_label = QLabel(f"✅ 数据可信等级 {quality['trust_level']}（{quality['trust_label']}）")
+            trust_label.setStyleSheet("color:#2e9e5b;font-size:12px;font-weight:bold;")
+        else:
+            src_label = QLabel(f"数据来源：{src.note}（{quality['total']} 期）")
+            src_label.setStyleSheet("color:#8a94a6;font-size:12px;")
+            trust_label = QLabel(quality["message"])
+            trust_label.setStyleSheet("color:#e34d3d;font-size:12px;font-weight:bold;")
         root.addWidget(src_label)
+        root.addWidget(trust_label)
 
         if not self.draws:
-            tip = QLabel("暂无数据：请确认 data/raw/dlt_2024_sample.csv 存在")
+            tip = QLabel("暂无数据：请确认 data/raw/dlt_history.csv 或 dlt_2024_sample.csv 存在")
             tip.setStyleSheet("color:#888;font-size:14px;")
             root.addWidget(tip)
             return
