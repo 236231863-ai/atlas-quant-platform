@@ -1,6 +1,6 @@
 """Reports 研究报告页面"""
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QPushButton,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QPushButton, QFileDialog,
 )
 
 from data_loader import load_draws
@@ -8,6 +8,7 @@ from stats import (
     front_frequency, back_frequency, hot_numbers, cold_numbers, parity_stats,
     front_sums, front_spans, consecutive_pairs,
 )
+from engine.export import MarkdownExporter, PDFExporter, CSVExporter
 
 
 class ReportsPage(QWidget):
@@ -35,7 +36,22 @@ class ReportsPage(QWidget):
         )
         gen.clicked.connect(self._generate)
         row.addWidget(gen)
-        row.addWidget(QLabel("基于本地开奖数据自动生成，可复制保存"))
+
+        btn_md = QPushButton("⬇ 导出 Markdown")
+        btn_pdf = QPushButton("⬇ 导出 PDF")
+        btn_csv = QPushButton("⬇ 导出 CSV")
+        for b in (btn_md, btn_pdf, btn_csv):
+            b.setStyleSheet(
+                "QPushButton{background:#eef4ff;color:#1e56c8;border:none;padding:8px 14px;border-radius:8px;font-weight:bold;}"
+                "QPushButton:hover{background:#dbe9ff;}"
+            )
+        btn_md.clicked.connect(lambda: self._export("md"))
+        btn_pdf.clicked.connect(lambda: self._export("pdf"))
+        btn_csv.clicked.connect(lambda: self._export("csv"))
+        row.addWidget(btn_md)
+        row.addWidget(btn_pdf)
+        row.addWidget(btn_csv)
+        row.addWidget(QLabel("所有分析结果可保存"))
         row.addStretch()
         root.addLayout(row)
 
@@ -98,4 +114,32 @@ class ReportsPage(QWidget):
                          f"{' '.join(f'{n:02d}' for n in rec['back'])}")
         lines.append("")
         lines.append("【免责声明】本报告基于历史数据统计，彩票开奖为随机事件，结果仅供研究参考。")
+        self.lines = lines
         self.view.setPlainText("\n".join(lines))
+
+    def _export(self, fmt: str) -> None:
+        """导出当前报告为 MD / PDF / CSV。"""
+        if not getattr(self, "lines", None):
+            return
+        default_name = f"Atlas_报告_{self.draws[-1].number if self.draws else 'v3.6.1'}"
+        if fmt == "md":
+            path, _ = QFileDialog.getSaveFileName(self, "导出 Markdown", default_name + ".md", "Markdown (*.md)")
+            if path:
+                MarkdownExporter.export(self.view.toPlainText(), path)
+        elif fmt == "pdf":
+            path, _ = QFileDialog.getSaveFileName(self, "导出 PDF", default_name + ".pdf", "PDF (*.pdf)")
+            if path:
+                PDFExporter.export_report(
+                    "Atlas 数据分析报告",
+                    self.lines,
+                    path,
+                )
+        elif fmt == "csv":
+            path, _ = QFileDialog.getSaveFileName(self, "导出 CSV", default_name + ".csv", "CSV (*.csv)")
+            if path:
+                # 将报告文本存为单列 CSV（便于通用工具打开）
+                CSVExporter.export(
+                    ["line"],
+                    [[l] for l in self.lines],
+                    path,
+                )

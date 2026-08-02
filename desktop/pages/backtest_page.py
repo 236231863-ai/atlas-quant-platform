@@ -10,11 +10,13 @@ from matplotlib.figure import Figure
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QFrame, QPushButton,
     QComboBox, QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
+    QFileDialog,
 )
 
 from data_loader import load_draws
 from stats import recommendation, front_frequency, back_frequency
 from engine.evaluation_v2 import run_backtest_with_evaluation, get_short_disclaimer
+from engine.export import CSVExporter, PDFExporter, PNGExporter
 
 # 大乐透中奖规则（简化奖金）
 PRIZES = [
@@ -77,6 +79,22 @@ class BacktestPage(QWidget):
         )
         self.run_btn.clicked.connect(self.run_backtest)
         ctrl.addWidget(self.run_btn)
+
+        btn_csv = QPushButton("⬇ 明细 CSV")
+        btn_pdf = QPushButton("⬇ 报告 PDF")
+        btn_png = QPushButton("⬇ 图表 PNG")
+        for b in (btn_csv, btn_pdf, btn_png):
+            b.setStyleSheet(
+                "QPushButton{background:#eef4ff;color:#1e56c8;border:none;padding:7px 12px;border-radius:7px;font-weight:bold;font-size:12px;}"
+                "QPushButton:hover{background:#dbe9ff;}"
+            )
+        btn_csv.clicked.connect(lambda: self._export("csv"))
+        btn_pdf.clicked.connect(lambda: self._export("pdf"))
+        btn_png.clicked.connect(lambda: self._export("png"))
+        ctrl.addWidget(btn_csv)
+        ctrl.addWidget(btn_pdf)
+        ctrl.addWidget(btn_png)
+
         self.result_label = QLabel("尚未运行回测")
         self.result_label.setStyleSheet("color:#8a94a6;font-size:13px;")
         ctrl.addWidget(self.result_label)
@@ -160,6 +178,38 @@ class BacktestPage(QWidget):
                 item = QTableWidgetItem(val)
                 item.setTextAlignment(0x0004 | 0x0080)
                 self.table.setItem(row, col, item)
+        self._report = report
+
+    def _export(self, fmt: str) -> None:
+        """导出回测结果：CSV 明细 / PDF 报告 / PNG 图表。"""
+        report = getattr(self, "_report", None)
+        if report is None or not report.records:
+            self.result_label.setText("请先运行回测")
+            return
+        base = f"Atlas_回测_{report.method}"
+        if fmt == "csv":
+            path, _ = QFileDialog.getSaveFileName(self, "导出明细 CSV", base + ".csv", "CSV (*.csv)")
+            if path:
+                CSVExporter.export_records(report.records, path)
+                self.result_label.setText("明细已导出 CSV")
+        elif fmt == "pdf":
+            path, _ = QFileDialog.getSaveFileName(self, "导出报告 PDF", base + ".pdf", "PDF (*.pdf)")
+            if path:
+                summary = [
+                    f"策略: {report.method}",
+                    f"投注 {report.n_bets_total} 期（样本内 {report.n_bets_train}/样本外 {report.n_bets_oos}）",
+                    f"总 ROI {report.roi_total:+.1f}% | 样本外 ROI {report.roi_oos:+.1f}%",
+                    f"随机基准 ROI 均值 {report.baseline_roi_mean:+.1f}%",
+                    f"结论: {'高于随机基准，需谨慎' if report.better_than_random else '未显著优于随机选号'}",
+                    get_short_disclaimer(),
+                ]
+                PDFExporter.export_backtest(report.records, summary, path)
+                self.result_label.setText("报告已导出 PDF")
+        elif fmt == "png":
+            path, _ = QFileDialog.getSaveFileName(self, "保存图表 PNG", base + ".png", "PNG (*.png)")
+            if path:
+                PNGExporter.export_canvas(self.canvas, path)
+                self.result_label.setText("图表已保存 PNG")
 
     def _draw_curves(self, equity, records):
         fig = self.canvas.figure
