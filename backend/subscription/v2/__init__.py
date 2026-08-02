@@ -3,8 +3,8 @@
 版本：FREE / PRO / ENTERPRISE + 功能门槛 + 转化跟踪。
 """
 from .plans import (
-    SubscriptionManager, SubscriptionPlan, FREE, PRO, ENTERPRISE,
+    SubscriptionManager, SubscriptionPlan, FREE, PRO, ENTERPRISE, PLANS,
     can_access, upgrade_hint,
 )
 
-__all__ = ["SubscriptionManager", "SubscriptionPlan", "FREE", "PRO", "ENTERPRISE", "can_access", "upgrade_hint"]
+__all__ = ["SubscriptionManager", "SubscriptionPlan", "FREE", "PRO", "ENTERPRISE", "PLANS", "can_access", "upgrade_hint"]

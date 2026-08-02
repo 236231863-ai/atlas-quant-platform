@@ -41,7 +41,7 @@ def test_setup_iss_refs_exe(filename):
 
 
 @pytest.mark.parametrize("pattern", [
-    r"3\.6\.1", r"Atlas Quant Platform",
+    r"3\.7\.1", r"Atlas Quant Platform",
 ])
 def test_setup_iss_version(pattern):
     content = _read(SETUP_ISS)
