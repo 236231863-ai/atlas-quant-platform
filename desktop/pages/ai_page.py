@@ -1,9 +1,22 @@
-"""AI Assistant 智能分析助手页面（本地统计驱动）"""
+"""AI Assistant 智能分析助手页面。
+
+支持两种模式：
+- 在线模式：配置 API Key 后接入真实大模型对话
+- 离线模式：基于本地开奖统计的规则问答（默认）
+"""
+import json
+import urllib.request
+
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTextEdit, QPushButton,
+    QInputDialog, QMessageBox,
 )
 
 from data_loader import load_draws
+from user_profile import load_profile, save_profile
+
+_DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
+_DEEPSEEK_MODEL = "deepseek-chat"
 from stats import (
     front_frequency, back_frequency, hot_numbers, cold_numbers, parity_stats,
     front_sums, front_spans, consecutive_pairs, recommendation,
@@ -26,6 +39,22 @@ class AIPage(QWidget):
         header = QLabel("🤖 AI 智能助手")
         header.setStyleSheet("font-size:22px;font-weight:bold;color:#1a1a2e;")
         root.addWidget(header)
+
+        # 模式行：状态标签 + 配置按钮
+        self.profile = load_profile()
+        mode_row = QHBoxLayout()
+        self.mode_label = QLabel(self._mode_text())
+        self.mode_label.setStyleSheet("color:#2a6df4;font-size:12px;font-weight:bold;")
+        mode_row.addWidget(self.mode_label)
+        set_btn = QPushButton("⚙ 配置 API")
+        set_btn.setStyleSheet(
+            "QPushButton{background:white;color:#444;border:1px solid #d8dee8;"
+            "padding:4px 12px;border-radius:6px;font-size:12px;}"
+        )
+        set_btn.clicked.connect(self._configure_api)
+        mode_row.addWidget(set_btn)
+        mode_row.addStretch()
+        root.addLayout(mode_row)
 
         self.chat = QTextEdit()
         self.chat.setReadOnly(True)
@@ -70,7 +99,67 @@ class AIPage(QWidget):
             return
         self._append("user", q)
         self.input.clear()
-        self._append("assistant", self._answer(q))
+        self.profile = load_profile()
+        if self.profile.ai_mode == "online" and self.profile.ai_api_key:
+            reply = self._answer_online(q)
+        else:
+            reply = self._answer(q)
+        self._append("assistant", reply)
+
+    def _mode_text(self) -> str:
+        if self.profile.ai_mode == "online" and self.profile.ai_api_key:
+            return "🟢 在线模式（已连接大模型）"
+        return "⚪ 离线模式（本地统计问答，可配置 API 升级）"
+
+    def _configure_api(self):
+        """配置 DeepSeek API Key（本地保存）。"""
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QLabel
+
+        self.profile = load_profile()
+        key, ok = QInputDialog.getText(
+            self, "配置 AI 服务",
+            "输入 DeepSeek API Key（本地保存，仅用于 AI 对话）：",
+            QLineEdit.Password,
+            self.profile.ai_api_key,
+        )
+        if ok and key.strip():
+            self.profile.ai_api_key = key.strip()
+            self.profile.ai_mode = "online"
+            save_profile(self.profile)
+            self.mode_label.setText(self._mode_text())
+            self._append("assistant", "✅ 已切换到在线模式，AI 将使用真实大模型回答。")
+        elif ok:
+            # 清空 key 则回退离线
+            self.profile.ai_api_key = ""
+            self.profile.ai_mode = "offline"
+            save_profile(self.profile)
+            self.mode_label.setText(self._mode_text())
+            self._append("assistant", "已回退到离线模式。")
+
+    def _answer_online(self, q: str) -> str:
+        """调用 DeepSeek 大模型在线回答。"""
+        try:
+            payload = json.dumps({
+                "model": _DEEPSEEK_MODEL,
+                "messages": [
+                    {"role": "system", "content": "你是 Atlas Quant Platform 的量化研究助手，回答简洁专业。"},
+                    {"role": "user", "content": q},
+                ],
+                "max_tokens": 500,
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                _DEEPSEEK_URL,
+                data=payload,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {self.profile.ai_api_key}",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            return data["choices"][0]["message"]["content"].strip()
+        except Exception as exc:  # noqa: BLE001
+            return f"⚠️ 在线调用失败：{exc}\n请检查网络或 API Key，可继续使用离线模式。"
 
     def _answer(self, q):
         if not self.draws:

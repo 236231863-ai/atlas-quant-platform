@@ -23,6 +23,8 @@ class UserProfile:
     theme: str = "light"
     first_run_completed: bool = False
     data_lottery: str = "dlt"
+    ai_api_key: str = ""
+    ai_mode: str = "offline"  # offline / online
     created_at: str = ""
     updated_at: str = ""
 
