@@ -18,6 +18,7 @@ from pages.ai_page import AIPage
 from pages.reports_page import ReportsPage
 from pages.workbench_page import WorkbenchPage
 from pages.quant_page import QuantPage
+from pages.profile_page import ProfilePage
 
 PAGES = [
     "数据看板",
@@ -28,13 +29,14 @@ PAGES = [
     "研究报告",
     "工作台",
     "量化中心",
+    "个人中心",
 ]
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Atlas Quant Platform v3.9.0")
+        self.setWindowTitle("Atlas Quant Platform v4.0.0")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         self._run_first_run_if_needed()
@@ -56,6 +58,7 @@ class MainWindow(QMainWindow):
         self.reports = ReportsPage()
         self.workbench = WorkbenchPage()
         self.quant = QuantPage()
+        self.profile = ProfilePage()
 
         for page in (
             self.dashboard,
@@ -66,6 +69,7 @@ class MainWindow(QMainWindow):
             self.reports,
             self.workbench,
             self.quant,
+            self.profile,
         ):
             self.stack.addWidget(page)
 

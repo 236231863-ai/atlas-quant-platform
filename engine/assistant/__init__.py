@@ -47,7 +47,8 @@ def handle_query(query: str, user_id: str = "default") -> str:
         if guide:
             return guide
         res = execute_intent(route.tool, query, user_id=user_id)
-        if res.success and res.text:
+        if res.text:
+            # 成功返回结果；失败时返回引导文案（如"暂无投注数据"）
             return res.text
 
     # 4) 普通聊天 → 调用方处理

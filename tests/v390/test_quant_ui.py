@@ -27,8 +27,8 @@ def test_pages_include_quant(window):
     assert "量化中心" in window.nav._pages
 
 
-def test_stack_count_8(window):
-    assert window.stack.count() == 8
+def test_stack_count_9(window):
+    assert window.stack.count() == 9
 
 
 def test_quant_page_exists(window):
@@ -41,7 +41,7 @@ def test_switch_to_quant(window):
 
 
 def test_nav_all_pages(window):
-    assert len(window.nav._pages) == 8
+    assert len(window.nav._pages) == 9
 
 
 # ---------- 工作台入口 ----------
