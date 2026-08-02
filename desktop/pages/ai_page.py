@@ -137,7 +137,20 @@ class AIPage(QWidget):
             self._append("assistant", "已回退到离线模式。")
 
     def _answer_online(self, q: str) -> str:
-        """调用 DeepSeek 大模型在线回答。"""
+        """调用 DeepSeek 大模型在线回答（业务任务优先走本地工具，v3.8.1）。"""
+        try:
+            from engine.assistant import AssistantIntentRouter, execute_intent
+            router = AssistantIntentRouter()
+            route = router.route(q)
+            if route.is_business:
+                guide = router.needs_more_info(q)
+                if guide:
+                    return guide
+                res = execute_intent(route.tool, q)
+                if res.success and res.text:
+                    return res.text
+        except Exception:
+            pass
         try:
             payload = json.dumps({
                 "model": _DEEPSEEK_MODEL,
@@ -162,12 +175,18 @@ class AIPage(QWidget):
             return f"⚠️ 在线调用失败：{exc}\n请检查网络或 API Key，可继续使用离线模式。"
 
     def _answer(self, q):
-        # 兑奖计算意图（v3.7.2）：先于常规问答
+        # 工具路由（v3.8.1）：业务任务优先，AI 助手=任务执行助手
         try:
-            from engine.lottery_intent import compute_prize_report
-            report = compute_prize_report(q)
-            if report.get("is_prize"):
-                return report["report_text"]
+            from engine.assistant import AssistantIntentRouter, execute_intent
+            router = AssistantIntentRouter()
+            route = router.route(q)
+            if route.is_business:
+                guide = router.needs_more_info(q)
+                if guide:
+                    return guide
+                res = execute_intent(route.tool, q)
+                if res.success and res.text:
+                    return res.text
         except Exception:
             pass
         if not self.draws:
