@@ -29,7 +29,7 @@ class Tool:
 
     name: str
     description: str
-    handler: Callable[[str], ToolResult]
+    handler: Callable[[str, str], ToolResult]   # (query, user_id)
     keywords: List[str] = field(default_factory=list)  # 触发关键词
 
 
@@ -51,36 +51,45 @@ class ToolRegistry:
     def names(self) -> List[str]:
         return list(self._tools.keys())
 
-    def execute(self, name: str, query: str) -> ToolResult:
+    def execute(self, name: str, query: str, user_id: str = "default") -> ToolResult:
         t = self._tools.get(name)
         if not t:
             return ToolResult(tool=name, success=False, text=f"未知工具：{name}")
         try:
-            return t.handler(query)
+            return t.handler(query, user_id)
+        except TypeError:
+            # 兼容单参数 handler（旧签名 Callable[[str], ToolResult]）
+            try:
+                return t.handler(query)
+            except Exception as e:
+                return ToolResult(tool=name, success=False, text=f"工具执行失败：{e}")
         except Exception as e:
             return ToolResult(tool=name, success=False, text=f"工具执行失败：{e}")
 
 
 # ---------------- 工具处理器 ----------------
-def _prize_handler(query: str) -> ToolResult:
-    """兑奖计算工具。"""
+def _prize_handler(query: str, user_id: str = "default") -> ToolResult:
+    """兑奖计算工具（v3.8.2-P1：支持 PendingTask 确认上下文）。"""
     from engine.lottery_intent import compute_prize_report
-    r = compute_prize_report(query)
+    r = compute_prize_report(query, user_id=user_id)
     if not r.get("is_prize"):
         return ToolResult(tool="prize", text=r.get("report_text", "未识别到兑奖意图。"))
     if r.get("tickets", 0) == 0:
         return ToolResult(
             tool="prize", success=False,
-            text="未解析到有效号码。请提供号码，例如：01 02 03 04 05 + 06 07。",
+            text="未解析到有效号码。请提供号码，例如：01 02 03 04 05 + 06 07，或连续号码串 13212326330112。",
             missing=["numbers"],
         )
     return ToolResult(tool="prize", text=r["report_text"], data={
         "lottery": r.get("lottery"), "tickets": r.get("tickets"),
         "won": r.get("won_notes"), "total": r.get("total"),
+        "need_confirm": r.get("need_confirm", False),
+        "purchase_date": r.get("purchase_date"),
+        "draw_date": r.get("draw_date"),
     })
 
 
-def _hot_numbers_handler(query: str) -> ToolResult:
+def _hot_numbers_handler(query: str, user_id: str = "default") -> ToolResult:
     from data_loader import load_draws
     from stats import hot_numbers, cold_numbers
     draws = load_draws()
@@ -93,7 +102,7 @@ def _hot_numbers_handler(query: str) -> ToolResult:
     return ToolResult(tool="hot_cold", text="近期热号（前区）：" + " ".join(f"{n:02d}({c}次)" for n, c in hot))
 
 
-def _recommend_handler(query: str) -> ToolResult:
+def _recommend_handler(query: str, user_id: str = "default") -> ToolResult:
     from data_loader import load_draws
     from stats import recommendation
     draws = load_draws()
@@ -105,11 +114,11 @@ def _recommend_handler(query: str) -> ToolResult:
     return ToolResult(tool="recommend", text=f"{label}推荐：{' '.join(f'{n:02d}' for n in rec['front'])} + {' '.join(f'{n:02d}' for n in rec['back'])}")
 
 
-def _backtest_handler(query: str) -> ToolResult:
+def _backtest_handler(query: str, user_id: str = "default") -> ToolResult:
     return ToolResult(tool="backtest", text="回测工具：请在「回测中心」页面选择策略运行，这里仅提示。")
 
 
-def _report_handler(query: str) -> ToolResult:
+def _report_handler(query: str, user_id: str = "default") -> ToolResult:
     return ToolResult(tool="report", text="报告工具：请到「研究报告」页面一键生成并导出。")
 
 
@@ -134,9 +143,10 @@ def register_tools() -> ToolRegistry:
     return reg
 
 
-def execute_intent(intent: str, query: str, registry: Optional[ToolRegistry] = None) -> ToolResult:
-    """按意图执行工具。"""
+def execute_intent(intent: str, query: str, registry: Optional[ToolRegistry] = None,
+                   user_id: str = "default") -> ToolResult:
+    """按意图执行工具（v3.8.2-P1：支持 user_id 上下文）。"""
     reg = registry or register_tools()
     if intent in reg.names():
-        return reg.execute(intent, query)
+        return reg.execute(intent, query, user_id=user_id)
     return ToolResult(tool=intent, success=False, text=f"未知意图：{intent}")

@@ -1,5 +1,19 @@
 # Atlas Quant Platform Changelog
 
+## [v3.8.2-P1] - 2026-08-02
+### AI Assistant Prize Task State Recovery
+### Added
+- engine/task_context: PendingTaskManager (user_id/task_type/lottery/tickets/dates/expiry)
+- Confirm-reply recovery: 是/好的/确认/按这个算 -> auto-resume pending prize task
+- Continuous-number ticket parsing: 13212326330112 -> 13 21 23 26 33 + 01 12 (15/30/100 notes)
+- Prize report enhancement: purchase/draw date, issue, note count, won notes, per-note detail
+- 476 tests (tests/v382_p1)
+### Fixed
+- Confirm reply ("是的") no longer lost to chat; auto-resumes pending task
+- No more "请提供开奖结果/请输入更多信息/我无法计算" in the confirmed flow
+### Changed
+- Version 3.8.2 (window title)
+
 ## [v3.7.2] - 2026-08-02
 ### User Task Understanding Fix
 ### Added

@@ -152,24 +152,12 @@ class AIPage(QWidget):
             self._append("assistant", "已回退到离线模式。")
 
     def _answer_online(self, q: str) -> str:
-        """调用 DeepSeek 大模型在线回答（业务任务优先走本地工具，v3.8.1）。"""
+        """调用 DeepSeek 大模型在线回答（业务任务优先走本地工具，v3.8.2-P1 确认恢复）。"""
         try:
-            from engine.assistant import AssistantIntentRouter, execute_intent
-            router = AssistantIntentRouter()
-            route = router.route(q)
-            if route.is_business:
-                guide = router.needs_more_info(q)
-                if guide:
-                    # 连续对话（v3.8.0 P6）：回看上文号码
-                    if self._ctx and self._ctx.last_numbers and route.tool == "prize":
-                        combined = f"{self._ctx.last_numbers} {q}"
-                        res = execute_intent("prize", combined)
-                        if res.success and res.text:
-                            return res.text
-                    return guide
-                res = execute_intent(route.tool, q)
-                if res.success and res.text:
-                    return res.text
+            from engine.assistant import handle_query
+            reply = handle_query(q)
+            if reply:
+                return reply
         except Exception:
             pass
         try:
@@ -196,24 +184,12 @@ class AIPage(QWidget):
             return f"⚠️ 在线调用失败：{exc}\n请检查网络或 API Key，可继续使用离线模式。"
 
     def _answer(self, q):
-        # 工具路由（v3.8.1）：业务任务优先，AI 助手=任务执行助手
+        # 工具路由（v3.8.2-P1）：确认恢复 → 业务任务 → 普通规则
         try:
-            from engine.assistant import AssistantIntentRouter, execute_intent
-            router = AssistantIntentRouter()
-            route = router.route(q)
-            if route.is_business:
-                guide = router.needs_more_info(q)
-                if guide:
-                    # 连续对话（v3.8.0 P6）：回看上文号码
-                    if self._ctx and self._ctx.last_numbers and route.tool == "prize":
-                        combined = f"{self._ctx.last_numbers} {q}"
-                        res = execute_intent("prize", combined)
-                        if res.success and res.text:
-                            return res.text
-                    return guide
-                res = execute_intent(route.tool, q)
-                if res.success and res.text:
-                    return res.text
+            from engine.assistant import handle_query
+            reply = handle_query(q)
+            if reply:
+                return reply
         except Exception:
             pass
         if not self.draws:

@@ -32,7 +32,7 @@ PAGES = [
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Atlas Quant Platform v3.8.0")
+        self.setWindowTitle("Atlas Quant Platform v3.8.2")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         self._run_first_run_if_needed()
