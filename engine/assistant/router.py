@@ -86,13 +86,16 @@ class AssistantIntentRouter:
         if confirm is not None:
             return confirm
 
-        # 优先级 2：业务工具
+        # 优先级 2：业务工具（quant 强意图词加权）
+        from .registry import QUANT_STRONG_WORDS
         ql = query.lower()
         best_tool = ""
         best_hits = 0
         matched = []
         for tool in self.registry.all():
             hits = sum(1 for k in tool.keywords if k in ql)
+            if tool.name == "quant_analyze":
+                hits += sum(1 for k in QUANT_STRONG_WORDS if k in ql)
             if hits > best_hits:
                 best_hits = hits
                 best_tool = tool.name

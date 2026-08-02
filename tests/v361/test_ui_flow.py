@@ -48,8 +48,8 @@ def test_main_window(qapp, tmp_path, n):
     health.clear_crash_mark()
     from windows.main_window import MainWindow
     w = MainWindow()
-    assert w.stack.count() == 7
-    assert w.windowTitle() == "Atlas Quant Platform v3.8.2"
+    assert w.stack.count() == 8
+    assert w.windowTitle() == "Atlas Quant Platform v3.9.0"
 
 
 @pytest.mark.parametrize("target_idx", [0, 1, 2, 3, 4, 5])

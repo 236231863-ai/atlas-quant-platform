@@ -23,6 +23,7 @@ class NavigationPanel(QWidget):
             "AI 助手",
             "研究报告",
             "工作台",
+            "量化中心",
         ]
         for name in self._pages:
             b = QPushButton(name)
