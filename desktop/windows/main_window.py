@@ -18,12 +18,12 @@ from pages.ai_page import AIPage
 from pages.reports_page import ReportsPage
 
 PAGES = [
-    "Dashboard",
-    "Data Analysis",
-    "Strategy Lab",
-    "Backtest Center",
-    "AI Assistant",
-    "Reports",
+    "数据看板",
+    "数据分析",
+    "策略实验室",
+    "回测中心",
+    "AI 助手",
+    "研究报告",
 ]
 
 
@@ -67,9 +67,9 @@ class MainWindow(QMainWindow):
 
         # 首次引导后按用户选择跳转（30 秒上手）
         if getattr(self, "_first_run_target", None) == "backtest":
-            self.switch_page("Backtest Center")
+            self.switch_page("回测中心")
         elif getattr(self, "_first_run_target", None) == "reports":
-            self.switch_page("Reports")
+            self.switch_page("研究报告")
 
         # 首次使用：自动生成第一份报告（FirstSuccessFlow）
         if getattr(self, "_is_first_run", False):
@@ -112,7 +112,7 @@ class MainWindow(QMainWindow):
             ach.unlock("first_report")
             if len(draws) >= 500:
                 ach.unlock("data_500")
-            self.switch_page("Reports")
+            self.switch_page("研究报告")
         except Exception:
             # 首次成功体验失败不影响使用
             pass
@@ -167,5 +167,5 @@ class MainWindow(QMainWindow):
                 pass
 
     def _run_backtest_from_strategy(self, method: str) -> None:
-        self.stack.setCurrentIndex(PAGES.index("Backtest Center"))
+        self.stack.setCurrentIndex(PAGES.index("回测中心"))
         self.backtest.run_strategy(method)

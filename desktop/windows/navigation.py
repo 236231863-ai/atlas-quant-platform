@@ -16,12 +16,12 @@ class NavigationPanel(QWidget):
         )
         layout.addWidget(title)
         self._pages = [
-            "Dashboard",
-            "Data Analysis",
-            "Strategy Lab",
-            "Backtest Center",
-            "AI Assistant",
-            "Reports",
+            "数据看板",
+            "数据分析",
+            "策略实验室",
+            "回测中心",
+            "AI 助手",
+            "研究报告",
         ]
         for name in self._pages:
             b = QPushButton(name)
