@@ -59,6 +59,12 @@ class WorkbenchPage(QWidget):
         row.addWidget(self.reports, 1)
         root.addLayout(row)
 
+        # 产品概览（决策层入口，v3.8.0 原则整改）
+        self.overview = QLabel("产品概览加载中…")
+        self.overview.setWordWrap(True)
+        self.overview.setStyleSheet("background:#fff8ee;border-radius:8px;border:1px solid #f0e0c0;padding:10px;color:#7a5c1e;font-size:12px;")
+        root.addWidget(self.overview)
+
         self._refresh()
 
     def _refresh(self):
@@ -99,5 +105,30 @@ class WorkbenchPage(QWidget):
                 self.reports.setText("\n".join(lines))
             else:
                 self.reports.setText("📄 暂无兑奖报告（在 AI 助手输入号码兑奖后自动保存）")
+            # 产品概览（决策层入口）
+            try:
+                from engine.user_intelligence.v3 import UserIntelligenceV3, build_behavior_summary
+                from engine.intelligence.product_director_v2 import ProductDirectorV2
+                from backend.feedback import FeedbackManager
+                ui = UserIntelligenceV3()
+                s = build_behavior_summary(ui)
+                fb = [{"content": f.content, "status": f.status} for f in FeedbackManager().list_all()]
+                ass = ProductDirectorV2.assess(
+                    total_events=s.total_events, active_days=s.active_days,
+                    analysis_runs=s.by_event.get("ANALYSIS_RUN", 0),
+                    backtest_runs=s.by_event.get("BACKTEST_RUN", 0),
+                    exports=s.by_event.get("REPORT_EXPORT", 0),
+                    feedback_count=s.by_event.get("FEEDBACK_SEND", 0),
+                    feedback_items=fb,
+                )
+                lines = ["🏢 产品概览"]
+                lines.append(f"· 健康分 {ass.health_score:.0f}/100 · 用户价值 {ass.user_value.total:.0f}（{ass.user_value.level}）")
+                for issue in ass.issues[:2]:
+                    lines.append(f"· ⚠ {issue}")
+                for rcmd in ass.roadmap[:2]:
+                    lines.append(f"· → {rcmd}")
+                self.overview.setText("\n".join(lines))
+            except Exception:
+                self.overview.setText("🏢 产品概览暂不可用")
         except Exception as e:
             self.stats.setText(f"工作台加载异常：{e}")
