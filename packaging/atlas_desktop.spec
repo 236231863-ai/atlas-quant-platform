@@ -64,6 +64,8 @@ a = Analysis(
         'engine.ticket_system.manager',
         'engine.ticket_system.date_parser',
         'engine.ticket_system.schedule',
+        'engine.task_context',
+        'engine.task_context.manager',
         'engine.report_center',
         'engine.report_center.center',
         'engine.chase_analysis',
