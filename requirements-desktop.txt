@@ -6,3 +6,6 @@ PySide6>=6.6.0
 
 # Charts
 matplotlib>=3.8.0
+
+# Export (v3.6.1)
+fpdf2>=2.7.0

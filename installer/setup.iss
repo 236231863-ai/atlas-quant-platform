@@ -2,7 +2,7 @@
 ; 生成 Atlas_Setup.exe：安装向导 / 桌面快捷方式 / 开始菜单 / 卸载 / 升级
 
 #define MyAppName "Atlas Quant Platform"
-#define MyAppVersion "3.6.0"
+#define MyAppVersion "3.6.1"
 #define MyAppPublisher "Atlas Quant Team"
 #define MyAppExeName "Atlas.exe"
 #define MyAppURL "https://github.com/236231863-ai/atlas-quant-platform"
@@ -23,6 +23,8 @@ OutputBaseFilename=Atlas_Setup
 SetupIconFile=..\branding\logo.ico
 Compression=lzma
 SolidCompression=yes
+PrivilegesRequired=admin
+UninstallDisplayIcon={app}\{#MyAppExeName}
 WizardStyle=modern
 UninstallDisplayIcon={app}\{#MyAppExeName}
 ; 升级支持：使用上一版本安装目录

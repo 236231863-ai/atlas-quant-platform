@@ -1,5 +1,19 @@
 # Atlas Quant Platform Changelog
 
+## [v3.6.1] - 2026-08-02
+### Product Trust & Real Usage Upgrade
+### Added
+- engine/data_center_v2: DataSourceManager (CSV/Excel/API/Database) + DataQualityReport
+- 520 real DLT draws from official sporttery API (2023-02 ~ 2026-08)
+- engine/evaluation_v2: temporal sample split + random baseline + performance report + disclaimer
+- engine/export: Markdown/CSV/PNG/PDF exporters
+- desktop/health: global excepthook + crash recovery + log export + health check
+- Onboarding 3-step wizard (purpose -> lottery -> mode)
+- Dashboard data sufficiency warning + trust level
+- 800+ engineering tests (tests/v361)
+### Changed
+- Version 3.6.0 -> 3.6.1
+
 ## [v3.5.2-E2] - 2026-08-02
 ### Engineering Sprint E2 - Test Technical Debt Fix
 ### Fixed
