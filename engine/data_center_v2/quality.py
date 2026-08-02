@@ -7,6 +7,7 @@ DataQualityReport：量化数据质量，输出
 from __future__ import annotations
 
 import dataclasses
+from datetime import datetime
 from typing import List
 
 from .models import DrawRecord
@@ -33,6 +34,7 @@ class DataQualityReport:
     format_errors: int = 0
     source_type: str = "unknown"
     source_path: str = ""
+    updated_at: str = ""        # 更新时间（v3.7.0）
 
     # ---- 派生 ----
     @property
@@ -89,6 +91,7 @@ class DataQualityReport:
             format_errors=0,
             source_type=source_type,
             source_path=source_path,
+            updated_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         )
 
     def summary_dict(self) -> dict:
@@ -104,4 +107,5 @@ class DataQualityReport:
             "sufficient": self.is_sufficient,
             "source_type": self.source_type,
             "source_path": self.source_path,
+            "updated_at": self.updated_at,
         }

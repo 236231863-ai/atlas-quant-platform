@@ -59,7 +59,7 @@ def fetch_all(game_no: str, target: int = 520) -> list:
 def main() -> None:
     for game_no, (code, name) in GAMES.items():
         print(f"抓取 {name} (gameNo={game_no}) ...")
-        rows = fetch_all(game_no, target=520)
+        rows = fetch_all(game_no, target=1200)
         RAW_DIR.mkdir(parents=True, exist_ok=True)
         out = RAW_DIR / f"{code}_history.csv"
         with open(out, "w", newline="", encoding="utf-8") as f:

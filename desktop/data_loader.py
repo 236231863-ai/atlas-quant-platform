@@ -158,7 +158,7 @@ def _parse_csv(path: str, lottery: str) -> List[DrawRecord]:
                     # 统一格式：issue,date,numbers,pool
                     num = str(row.get("issue", "") or row.get("number", "")).strip()
                     date = str(row.get("date", "") or row.get("draw_date", "")).strip()
-                    numbers = row.get("numbers", "") or row.get("result", "")
+                    numbers = (row.get("numbers", "") or row.get("result", "")).replace(",", " ")
                     if not num or not numbers:
                         continue
                     if "|" in numbers:

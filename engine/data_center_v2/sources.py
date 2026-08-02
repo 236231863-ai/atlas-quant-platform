@@ -27,7 +27,11 @@ DLT_GAME_NO = "85"
 
 
 def _parse_numbers(text: str, front_n: int, back_n: int) -> tuple[List[int], List[int]]:
-    """'10 11 18 22 35|06 12' 或 '10 11 18 22 35 06 12' -> (front, back)。"""
+    """'10 11 18 22 35|06 12' / '10 11 18 22 35 06 12' / '04,06,10,18,23,31|11' -> (front, back)。
+
+    支持空格与逗号分隔。
+    """
+    text = text.replace(",", " ")
     if "|" in text:
         f_part, b_part = text.split("|", 1)
     else:
@@ -235,6 +239,8 @@ class DataSourceManager:
                 combined = rows
                 used = src
                 break  # 优先第一个有数据的源（用户数据目录优先）
+        # 统一按时序升序排序（旧 → 新）
+        combined = sorted(combined, key=lambda d: d.number)
         self.draws = combined
         self.report = DataQualityReport.build(
             self.lottery, combined,
