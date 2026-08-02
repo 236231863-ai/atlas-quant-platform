@@ -62,6 +62,8 @@ a = Analysis(
         'engine.assistant.router',
         'engine.ticket_system',
         'engine.ticket_system.manager',
+        'engine.ticket_system.date_parser',
+        'engine.ticket_system.schedule',
         'engine.report_center',
         'engine.report_center.center',
         'engine.chase_analysis',
