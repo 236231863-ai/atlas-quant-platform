@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
 
 from data_loader import load_draws
 from stats import recommendation, front_frequency, back_frequency
+from engine.evaluation_v2 import run_backtest_with_evaluation, get_short_disclaimer
 
 # 大乐透中奖规则（简化奖金）
 PRIZES = [
@@ -120,51 +121,40 @@ class BacktestPage(QWidget):
             self.result_label.setText("数据不足")
             return
         method = self.combo.currentData()
-        equity = 0.0
-        records = []
-        hit_counts = []
-        # 从第 3 期开始，用前面所有期数做推荐
-        for i in range(3, len(self.draws)):
-            hist = self.draws[:i]
-            rec = recommendation(hist, method)
-            actual = self.draws[i]
-            front_hit = len(set(rec["front"]) & set(actual.front))
-            back_hit = len(set(rec["back"]) & set(actual.back))
-            name, amount = _grade(front_hit, back_hit)
-            equity += amount - TICKET_COST
-            hit_counts.append(front_hit)
-            records.append((actual, rec, front_hit, back_hit, name, amount, equity))
+        try:
+            report = run_backtest_with_evaluation(self.draws, method=method)
+        except Exception as e:  # 兜底：评估失败不崩溃
+            self.result_label.setText(f"回测异常：{e}")
+            return
 
-        # 指标
-        total_bets = len(records)
-        win_bets = sum(1 for r in records if r[4])
-        total_revenue = sum(r[5] for r in records)
-        total_cost = total_bets * TICKET_COST
-        roi = (total_revenue - total_cost) / total_cost * 100 if total_cost else 0
-        max_dd, dd_start = self._max_drawdown([0.0] + [r[6] for r in records])
-        avg_hit = sum(hit_counts) / len(hit_counts)
+        n = report.n_bets_total
+        win_bets = sum(1 for r in report.records if r.prize_name)
+        self.result_label.setText(f"回测完成：{n} 期，命中率 {win_bets}/{n}")
 
-        self.result_label.setText(f"回测完成：{total_bets} 期，命中率 {win_bets}/{total_bets}")
         self.summary.setText(
             f"**回测结果（{method} 策略）**\n"
-            f"· 投注 {total_bets} 期，投入 ¥{total_cost}\n"
-            f"· 中奖 {win_bets} 期，奖金 ¥{total_revenue:,.0f}\n"
-            f"· 净收益 ¥{total_revenue - total_cost:+,.0f}\n"
-            f"· 收益率 {roi:+.1f}%\n"
-            f"· 平均前区命中 {avg_hit:.2f} 码\n"
-            f"· 最大回撤 ¥{max_dd:,.0f}\n"
+            f"· 投注 {n} 期（样本内 {report.n_bets_train} / 样本外 {report.n_bets_oos}）\n"
+            f"· 总收益率 {report.roi_total:+.1f}%\n"
+            f"· 样本内 ROI {report.roi_train:+.1f}% / 样本外 ROI {report.roi_oos:+.1f}%\n"
+            f"· 随机基准 ROI 均值 {report.baseline_roi_mean:+.1f}%\n"
+            f"  （90% 区间 {report.baseline_roi_p5:+.1f}% ~ {report.baseline_roi_p95:+.1f}%）\n"
+            f"· 超额收益 {report.excess_roi:+.1f}%\n"
+            f"· 平均前区命中 {report.avg_front_hit:.2f} 码 / 最大回撤 ¥{report.max_drawdown:,.0f}\n"
+            f"· 结论：{'高于随机基准区间，但需谨慎' if report.better_than_random else '未显著优于随机选号'}\n\n"
+            f"{get_short_disclaimer()}"
         )
-        self._draw_curves([0.0] + [r[6] for r in records], records)
+        equities = [0.0] + [r.equity for r in report.records]
+        self._draw_curves(equities, report.records)
 
-        self.table.setRowCount(len(records))
-        for row, (d, rec, fh, bh, name, amount, eq) in enumerate(records):
+        self.table.setRowCount(len(report.records))
+        for row, r in enumerate(report.records):
             values = [
-                d.number,
-                " ".join(f"{n:02d}" for n in rec["front"]),
-                d.format_front(),
-                f"{fh}+{bh}",
-                f"{name} ¥{amount}" if name else "-",
-                f"{eq:+,.0f}",
+                r.issue,
+                r.recommended,
+                r.actual,
+                f"{r.front_hit}+{r.back_hit}",
+                f"{r.prize_name} ¥{r.amount:,.0f}" if r.prize_name else "-",
+                f"{r.equity:+,.0f}",
             ]
             for col, val in enumerate(values):
                 item = QTableWidgetItem(val)

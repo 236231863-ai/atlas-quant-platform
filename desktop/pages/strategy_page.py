@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (
 
 from data_loader import load_draws
 from stats import hot_numbers, cold_numbers, parity_stats, consecutive_pairs
+from engine.evaluation_v2 import get_short_disclaimer
 
 STRATEGIES = [
     {
@@ -51,6 +52,10 @@ class StrategyPage(QWidget):
         sub = QLabel("选择策略并进入回测中心验证历史表现。策略基于前区号码统计特征设计。")
         sub.setStyleSheet("color:#8a94a6;font-size:13px;")
         root.addWidget(sub)
+
+        disclaimer = QLabel(get_short_disclaimer())
+        disclaimer.setStyleSheet("color:#b08d2a;font-size:12px;font-style:italic;")
+        root.addWidget(disclaimer)
 
         if not self.draws:
             root.addWidget(QLabel("暂无数据"))
