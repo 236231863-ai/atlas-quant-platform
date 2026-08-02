@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
 )
 
-from data_loader import load_draws
+from data_loader import load_draws, get_data_source
 from stats import front_frequency, hot_numbers, cold_numbers, front_sums
 
 
@@ -46,6 +46,11 @@ class DashboardPage(QWidget):
         header = QLabel("📊 数据看板")
         header.setStyleSheet("font-size:22px;font-weight:bold;color:#1a1a2e;")
         root.addWidget(header)
+
+        src = get_data_source("dlt")
+        src_label = QLabel(f"数据来源：{src.note}（{src.draw_count} 期）")
+        src_label.setStyleSheet("color:#8a94a6;font-size:12px;")
+        root.addWidget(src_label)
 
         if not self.draws:
             tip = QLabel("暂无数据：请确认 data/raw/dlt_2024_sample.csv 存在")
