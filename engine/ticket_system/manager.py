@@ -24,6 +24,7 @@ class TicketRecord:
     draw_date: str = ""
     cost: float = 2.0
     saved_at: str = field(default_factory=_now)
+    claimed: bool = False
 
     def to_text(self) -> str:
         return (f"[{self.ticket_id}] {self.lottery} "
@@ -92,6 +93,14 @@ class TicketManager:
 
     def count(self) -> int:
         return len(self._tickets)
+
+    def set_claimed(self, ticket_id: str, claimed: bool = True) -> bool:
+        """v4.3 P2：标记票据已兑奖（持久化）。"""
+        if ticket_id in self._tickets:
+            self._tickets[ticket_id].claimed = claimed
+            self._save()
+            return True
+        return False
 
     def delete(self, ticket_id: str) -> bool:
         if ticket_id in self._tickets:

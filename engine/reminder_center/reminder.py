@@ -13,6 +13,36 @@ DISCLAIMER = "提醒仅为开奖日程与票据管理，不涉及预测。彩票
 
 
 @dataclass
+class DrawCountdown:
+    """下一开奖倒计时（v4.3 P1）。"""
+
+    lottery: str = ""
+    lottery_name: str = ""
+    next_draw_date: str = ""
+    days: int = 0
+    hours: int = 0
+
+    @property
+    def is_soon(self) -> bool:
+        """未来 48 小时内开奖。"""
+        return self.days <= 2
+
+    def text(self) -> str:
+        if not self.next_draw_date:
+            return "暂无开奖日程"
+        if self.days <= 0 and self.hours <= 0:
+            return f"📅 {self.lottery_name} 今日开奖"
+        if self.days <= 0:
+            return f"📅 {self.lottery_name} 今日开奖（约 {self.hours} 小时后）"
+        return f"📅 {self.lottery_name} 距开奖 {self.days} 天（{self.next_draw_date}）"
+
+    def to_dict(self) -> dict:
+        return {"lottery": self.lottery, "lottery_name": self.lottery_name,
+                "next_draw_date": self.next_draw_date, "days": self.days,
+                "hours": self.hours}
+
+
+@dataclass
 class TodayReminder:
     """今日提醒报告（v4.1.1：票据状态机 + 通知文本）。"""
 
@@ -23,6 +53,7 @@ class TodayReminder:
     chase_notes: List[dict] = field(default_factory=list)    # 追号提醒
     next_draws: List[dict] = field(default_factory=list)     # 未来开奖
     ticket_status: dict = field(default_factory=dict)        # 状态机计数
+    countdown: Optional[DrawCountdown] = None                # v4.3 P1 下一开奖倒计时
     disclaimer: str = DISCLAIMER
 
     def notify_text(self) -> str:
@@ -67,6 +98,8 @@ class TodayReminder:
             lines.append("· 📅 下次开奖：")
             for nd in self.next_draws[:3]:
                 lines.append(f"  - {nd['lottery_name']} {nd['date']}")
+        if self.countdown and self.countdown.next_draw_date:
+            lines.append(f"· {self.countdown.text()}")
         if not self.has_anything:
             lines.append("· 今天没有紧急事项，可查看个人报告或设置预算")
         lines.append(f"· {self.disclaimer}")
@@ -116,6 +149,36 @@ class ReminderEngine:
                 if LotterySchedule.is_draw_day(lot, d):
                     out.append({"lottery": lot, "lottery_name": name, "date": d})
         return out
+
+    @classmethod
+    def next_countdown(cls, lottery: str = "dlt") -> DrawCountdown:
+        """下一开奖倒计时（v4.3 P1）。"""
+        from engine.ticket_system.schedule import LotterySchedule
+        name = "大乐透" if lottery == "dlt" else ("双色球" if lottery == "ssq" else lottery)
+        today = date.today()
+        for offset in range(0, 8):
+            d = today + timedelta(days=offset)
+            if LotterySchedule.is_draw_day(lottery, d.isoformat()):
+                days = offset
+                hours = 24 - datetime.now().hour if offset == 0 else offset * 24
+                return DrawCountdown(lottery=lottery, lottery_name=name,
+                                     next_draw_date=d.isoformat(),
+                                     days=days, hours=hours)
+        return DrawCountdown(lottery=lottery, lottery_name=name)
+
+    @classmethod
+    def notify_and_record(cls, notifier, title: str, message: str) -> bool:
+        """桌面通知 + 记录用户提醒事件（v4.3 验收：用户行为发生）。"""
+        ok = bool(notifier and getattr(notifier, "notify", None))
+        shown = notifier.notify(title, message) if ok else False
+        try:
+            from engine.user_events import EventTracker
+            EventTracker().record("reminder_shown", {
+                "title": title, "message": message, "shown": shown,
+            })
+        except Exception:
+            pass
+        return shown
 
     @classmethod
     def _ticket_reminders(cls, tickets: List[dict]) -> tuple:
@@ -173,8 +236,9 @@ class ReminderEngine:
         return status
 
     @classmethod
-    def build(cls, tickets: List[dict], today: Optional[str] = None) -> TodayReminder:
-        """构建今日提醒（v4.1.1：含票据状态机）。"""
+    def build(cls, tickets: List[dict], today: Optional[str] = None,
+              lottery: str = "dlt") -> TodayReminder:
+        """构建今日提醒（v4.1.1：状态机；v4.3：开奖倒计时）。"""
         t = today or cls._today()
         prize_due, unclaimed = cls._ticket_reminders(tickets)
         return TodayReminder(
@@ -185,9 +249,10 @@ class ReminderEngine:
             chase_notes=cls._chase_reminders(tickets),
             next_draws=cls._next_draws(),
             ticket_status=cls.ticket_status(tickets, t),
+            countdown=cls.next_countdown(lottery),
         )
 
 
-def today_reminders(tickets: List[dict]) -> TodayReminder:
-    """便捷函数：今日提醒。"""
-    return ReminderEngine.build(tickets)
+def today_reminders(tickets: List[dict], lottery: str = "dlt") -> TodayReminder:
+    """便捷函数：今日提醒（v4.3 支持指定彩种倒计时）。"""
+    return ReminderEngine.build(tickets, lottery=lottery)

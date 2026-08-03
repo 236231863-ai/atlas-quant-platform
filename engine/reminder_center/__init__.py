@@ -8,6 +8,6 @@
 
 复用 LotterySchedule 开奖日程。
 """
-from .reminder import ReminderEngine, TodayReminder, today_reminders
+from .reminder import ReminderEngine, TodayReminder, DrawCountdown, today_reminders
 
-__all__ = ["ReminderEngine", "TodayReminder", "today_reminders"]
+__all__ = ["ReminderEngine", "TodayReminder", "DrawCountdown", "today_reminders"]

@@ -70,6 +70,14 @@ class ProfilePage(QWidget):
             "padding:10px 12px;color:#1e3a8a;font-size:12px;line-height:1.7;")
         root.addWidget(self.archive_area)
 
+        # v4.3 P3：彩票资产中心（累计购买/中奖/净收益/中奖率/风险等级 + 风险提示）
+        self.asset_area = QLabel("资产加载中…")
+        self.asset_area.setWordWrap(True)
+        self.asset_area.setStyleSheet(
+            "background:#fff3f0;border:1px solid #ffd0c4;border-radius:8px;"
+            "padding:10px 12px;color:#7a1f0d;font-size:12px;line-height:1.7;")
+        root.addWidget(self.asset_area)
+
         # v4.2 Phase 5：Atlas Premium 会员状态
         self.premium_area = QLabel("会员加载中…")
         self.premium_area.setWordWrap(True)
@@ -164,6 +172,17 @@ class ProfilePage(QWidget):
             except Exception:
                 self.archive_area.setText("档案加载中…")
 
+            # v4.3 P3：彩票资产中心（含风险提示）
+            try:
+                from engine.asset_center import AssetCenter
+                rep = AssetCenter.build(tickets)
+                txt = rep.summary_text()
+                if tickets:
+                    txt += "\n" + AssetCenter.risk_line(rep)
+                self.asset_area.setText(txt)
+            except Exception:
+                self.asset_area.setText("资产加载中…")
+
             # v4.2 Phase 5：Atlas Premium 会员状态
             try:
                 from engine.premium import PremiumManager, PremiumPlan
@@ -240,6 +259,16 @@ class ProfilePage(QWidget):
                     lines.append(f"\n· 购彩健康指数：{h.level_text}（{h.overall_score}/100）")
                     for d in h.dimensions:
                         lines.append(f"  - {d.name}：{d.score}/100")
+                except Exception:
+                    pass
+                # v4.3 P4：Atlas 使用成长（真实事件驱动）
+                try:
+                    from engine.growth_system import GrowthEngine
+                    g2 = GrowthEngine.build()
+                    lines.append(
+                        f"\n· Atlas 使用：保存 {g2.tickets_saved} 次 · 兑奖 {g2.claims_completed} 次 · "
+                        f"报告 {g2.reports_viewed} 次\n"
+                        f"· 连续使用 {g2.streak_weeks} 周 · 成长等级 {g2.level}")
                 except Exception:
                     pass
                 self.growth_area.setText("\n".join(lines))

@@ -1,5 +1,21 @@
 # Atlas Quant Platform Changelog
 
+## [v4.3.0] - 2026-08-03
+### User Retention Loop（留存闭环，不新增大量功能）
+### Added
+- engine/user_events: EventTracker 用户行为事件（ticket_saved/reminder_shown/claim_viewed/claim_confirmed/report_generated）, 验收「用户行为发生」
+- engine/claim_center: 自动兑奖中心（4 状态机：等待开奖/已开奖待查看/已查看/已兑奖 + auto_claim 自动匹配通知）, 299 tests
+- engine/asset_center: 彩票资产中心（累计购买/中奖/中奖率/净收益/最大单次中奖 + 风险等级 A-D + 年度报告）, 181 tests
+- engine/growth_system: 用户成长系统（保存/兑奖/报告次数 + 连续使用周数 + 成长等级 + 年度 Atlas Report）, 101 tests
+- 首页重构第二版（3 秒价值首屏，移除平均和值/奇偶/冷热研究指标）, 112 tests
+- 真开奖提醒系统 P1（桌面通知 + 倒计时 + 提醒事件）, 153 tests
+### Changed
+- TicketRecord 新增 claimed 字段（修复重启丢失兑奖状态 bug）
+- 首页每日智能摘要（研究指标）移至「数据分析」页
+- Version 4.3.0 (window title)
+### Tests
+- tests/v43 新增 846 场景（≥800），全量回归待统计
+
 ## [v4.0.0] - 2026-08-03
 ### Personal Decision Intelligence Layer
 ### Added

@@ -83,6 +83,22 @@ class DashboardPage(QWidget):
         except Exception:
             pass
 
+        # v4.3 P2：我的待兑奖列表（4 状态机：等待开奖/已开奖待查看/已查看/已兑奖）
+        try:
+            from engine.claim_center import ClaimCenter
+            from engine.ticket_system import TicketManager
+            tks = [t.__dict__ for t in TicketManager().list_all()]
+            pending = ClaimCenter.pending_text(tks)
+            if tks:
+                p_label = QLabel("🧾 " + pending)
+                p_label.setWordWrap(True)
+                p_label.setStyleSheet(
+                    "background:#fff8ec;border:1px solid #ffe0b2;border-radius:8px;"
+                    "padding:10px 12px;color:#7a4a00;font-size:12px;line-height:1.7;")
+                root.addWidget(p_label)
+        except Exception:
+            pass
+
         # v4.1.1 Phase 3：首次引导（无票据时）
         try:
             from engine.ticket_system import TicketManager
@@ -122,19 +138,7 @@ class DashboardPage(QWidget):
         src_row.addStretch()
         root.addLayout(src_row)
 
-        # 每日智能摘要（v3.7.0 Phase 2）
-        try:
-            daily = self._daily_summary_text()
-            if daily:
-                daily_label = QLabel(daily)
-                daily_label.setWordWrap(True)
-                daily_label.setStyleSheet(
-                    "background:#f8f9fd;border:1px solid #e8ecf2;border-radius:8px;"
-                    "padding:10px 12px;color:#445;font-size:12px;line-height:1.6;"
-                )
-                root.addWidget(daily_label)
-        except Exception:
-            pass
+        # v4.3 P5：每日智能摘要（含平均和值/奇偶比等研究指标）已从首页移除，移至「数据分析」研究中心
 
         # 个人中心（v3.8.0 Phase 7）：价值分/研究等级/AI 建议/历史
         try:
@@ -157,26 +161,25 @@ class DashboardPage(QWidget):
             return
 
         last = self.draws[-1]
-        freq = front_frequency(self.draws)
-        hot = hot_numbers(self.draws, 8)
-        cold = cold_numbers(self.draws, 8)
-        sums = front_sums(self.draws)
 
-        # 指标卡片行
+        # 数据概览（3 秒价值已由上方「我的彩票」价值面板承载；此处仅保留开奖数据源透明）
         grid = QHBoxLayout()
         grid.setSpacing(12)
         grid.addWidget(_card("总期数", str(len(self.draws)), "大乐透样本"))
         grid.addWidget(_card("最新期号", last.number, last.draw_date))
         grid.addWidget(_card("最新奖池", last.format_pool(), "滚存"))
-        grid.addWidget(_card("平均和值", f"{sum(sums) / len(sums):.0f}", f"最新和值 {last.front_sum}"))
-        grid.addWidget(_card("最高频号码", f"{hot[0][0]:02d}", f"出现 {hot[0][1]} 次"))
         root.addLayout(grid)
 
-        # 最新开奖 + 冷热号
+        # v4.3 P5：首页重构第二版 —— 最近开奖表保留，研究指标（平均和值/奇偶/冷热）移入「数据分析」页
         row = QHBoxLayout()
         row.setSpacing(16)
         row.addWidget(self._recent_table(), 3)
-        row.addWidget(self._hotcold_panel(hot, cold), 2)
+        study = QLabel("📊 研究分析\n（号码频率 · 分布统计 · 区间规律）\n请到「数据分析」页查看")
+        study.setWordWrap(True)
+        study.setStyleSheet(
+            "background:#f4f6fa;border:1px dashed #d8dee9;border-radius:8px;"
+            "padding:12px;color:#8a94a6;font-size:12px;line-height:1.7;")
+        row.addWidget(study, 2)
         root.addLayout(row, 1)
 
     # ---------- v4.1.1 Phase 2：我的彩票价值面板（6 项个人价值）----------

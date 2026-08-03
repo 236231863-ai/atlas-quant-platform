@@ -36,7 +36,7 @@ PAGES = [
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Atlas Quant Platform v4.0.0")
+        self.setWindowTitle("Atlas Quant Platform v4.3.0")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         self._run_first_run_if_needed()
@@ -92,34 +92,39 @@ class MainWindow(QMainWindow):
         help_action = self.menuBar().addAction("🆘 帮助")
         help_action.triggered.connect(self._open_help)
 
-        # 行为事件（v3.8.0 Phase 1）
+        # 行为事件（v3.8.0 Phase 1）+ v4.3 用户行为事件
         try:
             from engine.user_intelligence.v3 import UserIntelligenceV3
             UserIntelligenceV3().app_start()
         except Exception:
             pass
+        try:
+            from engine.user_events import EventTracker
+            EventTracker().record("app_opened", {"source": "launch"})
+        except Exception:
+            pass
 
-        # v4.1.1 Phase 1：开奖桌面通知（启动时提醒）
+        # v4.1.1 Phase 1：开奖桌面通知（启动时提醒；v4.3 记录用户提醒事件）
         try:
             from pages.reminder_notifier import ReminderNotifier
             from engine.ticket_system import TicketManager
-            from engine.reminder_center import today_reminders
+            from engine.reminder_center import today_reminders, ReminderEngine
             self.notifier = ReminderNotifier()
             self.notifier.set_on_click(lambda: self.switch_page("AI 助手"))
             tickets = [t.__dict__ for t in TicketManager().list_all()]
             r = today_reminders(tickets)
             if r.draw_today or r.prize_due > 0 or r.unclaimed > 0:
-                self.notifier.show_draw_reminder(r.notify_text())
+                ReminderEngine.notify_and_record(
+                    self.notifier, "🔔 Atlas 开奖提醒", r.notify_text())
         except Exception:
             pass
 
-        # v4.2 Phase 2：自动复盘通知（开奖后主动告诉用户结果）
+        # v4.3 P2：自动兑奖中心（开奖后自动匹配票据 → 通知 → 记录 auto_claim_run 事件）
         try:
-            from engine.auto_review import AutoReviewEngine
-            reports = AutoReviewEngine.check_draws(tickets)
-            for rep in reports[:1]:
-                if rep.participated:
-                    self.notifier.notify("📊 Atlas 自动复盘", rep.notify_text())
+            from engine.claim_center import ClaimCenter
+            for lottery in ("dlt", "ssq"):
+                rep = ClaimCenter.auto_claim(tickets, lottery=lottery,
+                                             notifier=self.notifier)
         except Exception:
             pass
 
