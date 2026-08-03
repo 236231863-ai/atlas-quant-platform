@@ -29,7 +29,9 @@ class IncrementalUpdater:
 
     def __init__(self, lottery: str = "dlt", storage_dir: Optional[str] = None):
         self.lottery = lottery
-        self.storage_dir = storage_dir or os.path.join(os.path.expanduser("~"), ".atlas")
+        self.storage_dir = (storage_dir
+                            or os.environ.get("ATLAS_STORAGE_DIR")
+                            or os.path.join(os.path.expanduser("~"), ".atlas"))
         self.raw_dir = os.path.join(self.storage_dir, "raw")
         self.meta_path = os.path.join(self.storage_dir, f"data_last_update_{lottery}.json")
 
@@ -137,10 +139,24 @@ class IncrementalUpdater:
                 continue
         return []
 
+    # ---------- 校验 ----------
+    @staticmethod
+    def _valid_remote(rec, lottery: str) -> bool:
+        """远程记录合法性：号码数量与范围符合彩种规则。"""
+        if lottery == "ssq":
+            if len(rec.front) != 6 or len(rec.back) != 1:
+                return False
+            return all(1 <= n <= 33 for n in rec.front) and all(1 <= n <= 16 for n in rec.back)
+        # dlt
+        if len(rec.front) != 5 or len(rec.back) != 2:
+            return False
+        return all(1 <= n <= 35 for n in rec.front) and all(1 <= n <= 12 for n in rec.back)
+
     # ---------- 更新 ----------
     def update(self, force: bool = False, pages: int = 1) -> dict:
         """增量更新：拉取官方最近开奖 → 合并 → 写缓存。
 
+        核心安全：**无新增期号时不写文件**（增量只补新，绝不覆盖已有正确数据）。
         返回 {updated, added, total, error}。任何异常静默降级（error 记录）。
         """
         if not force and not self.should_update():
@@ -153,6 +169,9 @@ class IncrementalUpdater:
             local_issues = {r["issue"] for r in local}
             src = APIDatasource(lottery=self.lottery, pages=pages, page_size=30)
             remote_records = src.load()
+            # 过滤非法记录（号码数量/范围），防脏数据覆盖
+            remote_records = [r for r in remote_records
+                              if self._valid_remote(r, self.lottery)]
             remote = []
             for rec in remote_records:
                 numbers = " ".join(f"{n:02d}" for n in rec.front) + "|" + \
@@ -166,10 +185,14 @@ class IncrementalUpdater:
                 return {"updated": False, "added": 0, "total": len(local),
                         "error": "api_empty", "reason": "no_remote_data"}
             merged = self._merge(local, remote)
-            added = len([r for r in merged if r["issue"] not in local_issues])
+            added = [r for r in merged if r["issue"] not in local_issues]
+            if not added:
+                # 无新增期号 → 不写文件，保护已有正确数据
+                return {"updated": False, "added": 0, "total": len(local),
+                        "error": None, "reason": "no_new"}
             self.save_local(merged)
-            self._mark_updated(len(merged), added)
-            return {"updated": True, "added": added, "total": len(merged),
+            self._mark_updated(len(merged), len(added))
+            return {"updated": True, "added": len(added), "total": len(merged),
                     "error": None}
         except Exception as e:  # noqa: BLE001 静默降级
             return {"updated": False, "added": 0, "total": len(self.load_local()),
