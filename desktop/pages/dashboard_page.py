@@ -181,7 +181,7 @@ class DashboardPage(QWidget):
             ("累计投入", f"¥{rv.total_investment:,.0f}"),
             ("累计中奖", f"¥{rv.total_winnings:,.0f}"),
             ("ROI", roi),
-            ("本月预算", f"{budget.month_ratio * 100:.0f}%"),
+            ("预算预警", budget.warning_level),
         ]
 
     def _value_headline(self, metrics, rv, budget):

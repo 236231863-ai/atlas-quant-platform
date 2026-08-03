@@ -33,7 +33,7 @@ def test_metrics_seven(value_panel):
 
 
 @pytest.mark.parametrize("title", ["我的票据", "今日开奖", "待兑奖", "累计投入",
-                                   "累计中奖", "ROI", "本月预算"])
+                                   "累计中奖", "ROI", "预算预警"])
 def test_metric_titles(value_panel, title):
     titles = [t for t, _ in value_panel._value_metrics()]
     assert title in titles
@@ -95,7 +95,7 @@ def test_budget_ratio(value_panel, ticket_storage):
     mgr.clear()
     mgr.add("dlt", [1, 2, 3, 4, 5], [6, 7], buy_date="2026-08-01", cost=100.0)
     m = dict(value_panel._value_metrics())
-    assert "%" in m["本月预算"]
+    assert m["预算预警"] in ("正常", "预警", "超支")
     mgr.clear()
 
 
@@ -132,11 +132,11 @@ def test_headline_budget_over(value_panel, ticket_storage):
     # 直接构造：有票据 + 非开奖日 + 超预算 → 预算话术
     metrics = [("我的票据", "1 张"), ("今日开奖", "无"), ("待兑奖", "0 张"),
                ("累计投入", "¥600"), ("累计中奖", "¥0"), ("ROI", "-100%"),
-               ("本月预算", "120%")]
+               ("预算预警", "120%")]
     rv = PersonalReviewEngine.review([])
     rv.total_tickets = 1
     rv.total_investment = 600.0
-    b = BudgetPlanner().evaluate(600, 600, 500, 6000)
+    b = BudgetPlanner().evaluate(0, 600, 600, 120, 500, 6000)
     h = value_panel._value_headline(metrics, rv, b)
     assert "预算" in h or "控制" in h
 
@@ -171,7 +171,7 @@ def test_metrics_stability(seed, value_panel, ticket_storage):
     m = dict(value_panel._value_metrics())
     assert "张" in m["我的票据"]
     assert "¥" in m["累计投入"]
-    assert "%" in m["本月预算"] or "0%" in m["本月预算"]
+    assert m["预算预警"] in ("正常", "预警", "超支")
     mgr.clear()
 
 
