@@ -81,6 +81,8 @@ a = Analysis(
         'engine.budget_manager.budget',
         'engine.personal_review',
         'engine.personal_review.review',
+        'engine.reminder_center',
+        'engine.reminder_center.reminder',
         'engine.report_center',
         'engine.report_center.center',
         'engine.chase_analysis',

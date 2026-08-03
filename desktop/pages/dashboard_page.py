@@ -54,6 +54,17 @@ class DashboardPage(QWidget):
         except Exception:
             pass
 
+        # v4.1 阶段2：今日提醒（开奖/兑奖/未兑奖/追号）
+        try:
+            reminder_label = QLabel(self._today_reminder_text())
+            reminder_label.setWordWrap(True)
+            reminder_label.setStyleSheet(
+                "background:#f0f7ff;border:1px solid #cfe4ff;border-radius:8px;"
+                "padding:10px 12px;color:#1e3a8a;font-size:12px;line-height:1.7;")
+            root.addWidget(reminder_label)
+        except Exception:
+            pass
+
         src = get_data_source("dlt")
         quality = get_data_quality("dlt")
 
@@ -235,6 +246,15 @@ class DashboardPage(QWidget):
             row.addWidget(c)
         lay.addLayout(row)
         return frame
+
+    def _today_reminder_text(self) -> str:
+        """今日提醒（v4.1 阶段2）：开奖/兑奖/未兑奖/追号。"""
+        from engine.ticket_system import TicketManager
+        from engine.reminder_center import today_reminders
+        tm = TicketManager()
+        tickets = [t.__dict__ for t in tm.list_all()]
+        r = today_reminders(tickets)
+        return r.summary_text()
 
     def _personal_panel_text(self) -> str:
         """个人中心：价值分 / 研究等级 / AI 建议 / 历史（v3.8.0）。"""
