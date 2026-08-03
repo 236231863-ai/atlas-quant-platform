@@ -103,15 +103,14 @@ def _hot_numbers_handler(query: str, user_id: str = "default") -> ToolResult:
 
 
 def _recommend_handler(query: str, user_id: str = "default") -> ToolResult:
-    from data_loader import load_draws
-    from stats import recommendation
-    draws = load_draws()
-    if not draws:
-        return ToolResult(tool="recommend", success=False, text="暂无数据。", missing=["data"])
-    method = "cold" if "冷" in query else "balanced" if "均衡" in query else "hot"
-    rec = recommendation(draws, method)
-    label = {"hot": "热号", "cold": "冷号", "balanced": "奇偶均衡"}[method]
-    return ToolResult(tool="recommend", text=f"{label}推荐：{' '.join(f'{n:02d}' for n in rec['front'])} + {' '.join(f'{n:02d}' for n in rec['back'])}")
+    # v4.2 红线：不推荐号码。开奖完全随机，任何「推荐」都不可信。
+    return ToolResult(
+        tool="recommend",
+        text=("⚠️ 我不能推荐或预测号码。彩票开奖完全随机，任何号码组合的中奖概率都相同。\n"
+              "· 想核对已购彩票 → 输入号码（如：大乐透 10 11 18 22 35 + 06 12）\n"
+              "· 想看历史统计 → 问「热号有哪些」「和值分布」\n"
+              "· 想管理购彩 → 到「工作台」保存票据，Atlas 帮你兑奖和复盘"),
+    )
 
 
 def _backtest_handler(query: str, user_id: str = "default") -> ToolResult:

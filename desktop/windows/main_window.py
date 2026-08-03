@@ -113,6 +113,16 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
 
+        # v4.2 Phase 2：自动复盘通知（开奖后主动告诉用户结果）
+        try:
+            from engine.auto_review import AutoReviewEngine
+            reports = AutoReviewEngine.check_draws(tickets)
+            for rep in reports[:1]:
+                if rep.participated:
+                    self.notifier.notify("📊 Atlas 自动复盘", rep.notify_text())
+        except Exception:
+            pass
+
     def _open_help(self) -> None:
         """打开帮助中心。"""
         try:

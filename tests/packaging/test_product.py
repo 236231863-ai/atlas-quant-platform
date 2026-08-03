@@ -12,7 +12,7 @@ class TestBranding:
     def test_name(self):
         assert "Atlas" in Branding.get_app_name()
     def test_version(self):
-        assert Branding.get_version()=="3.5.1"
+        assert Branding.get_version()=="4.2.0"
 class TestLauncher:
     def test_detect(self):
         l=DesktopLauncher()

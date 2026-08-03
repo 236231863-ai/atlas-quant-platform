@@ -25,7 +25,7 @@ async def client():
 class TestExpandedAPI:
     async def test_health(self, client):
         r = await client.get("/health"); assert r.status_code == 200
-        assert r.json()["version"] == "0.7.0"
+        assert r.json()["version"] == "1.0.0"
     async def test_dashboard_summary(self, client):
         r = await client.get("/api/v1/dashboard/summary"); assert r.status_code == 200
         data = r.json(); assert "total_games" in data

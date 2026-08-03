@@ -2,6 +2,7 @@
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QFrame,
     QTableWidget, QTableWidgetItem, QHeaderView, QAbstractItemView,
+    QScrollArea,
 )
 
 from data_loader import load_draws, get_data_source, get_data_quality
@@ -40,9 +41,26 @@ class DashboardPage(QWidget):
         self._build()
 
     def _build(self):
-        root = QVBoxLayout(self)
+        # v4.2 UI 优化：可滚动容器，内容多时滚动查看，避免拥挤
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setStyleSheet(
+            "QScrollArea{background:transparent;border:none;}"
+            "QScrollBar:vertical{width:8px;background:#f0f2f5;border-radius:4px;}"
+            "QScrollBar::handle:vertical{background:#c3cbd6;border-radius:4px;min-height:30px;}"
+            "QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical{height:0px;}"
+        )
+        container = QWidget()
+        container.setStyleSheet("background:transparent;")
+        outer.addWidget(scroll)
+        scroll.setWidget(container)
+
+        root = QVBoxLayout(container)
         root.setContentsMargins(24, 20, 24, 20)
-        root.setSpacing(16)
+        root.setSpacing(12)
 
         header = QLabel("🎯 我的彩票")
         header.setStyleSheet("font-size:22px;font-weight:bold;color:#1a1a2e;")
@@ -86,19 +104,23 @@ class DashboardPage(QWidget):
         src = get_data_source("dlt")
         quality = get_data_quality("dlt")
 
-        # 数据来源 + 可信等级（数据不足时高亮警告）
+        # 数据来源 + 可信等级（合并一行，减少垂直占用）
+        src_row = QHBoxLayout()
+        src_row.setSpacing(8)
         if quality["sufficient"]:
-            src_label = QLabel(f"数据来源：{src.note}（{quality['total']} 期 · {quality['date_from']} ~ {quality['date_to']}）")
-            src_label.setStyleSheet("color:#8a94a6;font-size:12px;")
-            trust_label = QLabel(f"✅ 数据可信等级 {quality['trust_level']}（{quality['trust_label']}）")
-            trust_label.setStyleSheet("color:#2e9e5b;font-size:12px;font-weight:bold;")
+            src_label = QLabel(f"数据：{src.note} · {quality['total']} 期（{quality['date_from']}~{quality['date_to']}）")
+            src_label.setStyleSheet("color:#8a94a6;font-size:11px;")
+            trust_label = QLabel(f"✅ 可信 {quality['trust_level']} {quality['trust_label']}")
+            trust_label.setStyleSheet("color:#2e9e5b;font-size:11px;font-weight:bold;")
         else:
-            src_label = QLabel(f"数据来源：{src.note}（{quality['total']} 期）")
-            src_label.setStyleSheet("color:#8a94a6;font-size:12px;")
+            src_label = QLabel(f"数据：{src.note} · {quality['total']} 期")
+            src_label.setStyleSheet("color:#8a94a6;font-size:11px;")
             trust_label = QLabel(quality["message"])
-            trust_label.setStyleSheet("color:#e34d3d;font-size:12px;font-weight:bold;")
-        root.addWidget(src_label)
-        root.addWidget(trust_label)
+            trust_label.setStyleSheet("color:#e34d3d;font-size:11px;font-weight:bold;")
+        src_row.addWidget(src_label)
+        src_row.addWidget(trust_label)
+        src_row.addStretch()
+        root.addLayout(src_row)
 
         # 每日智能摘要（v3.7.0 Phase 2）
         try:

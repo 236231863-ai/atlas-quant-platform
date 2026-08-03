@@ -35,7 +35,9 @@ class TicketManager:
     """票据管理器（本地 JSON）。"""
 
     def __init__(self, storage_dir: Optional[str] = None):
-        self._dir = storage_dir or os.path.join(os.path.expanduser("~"), ".atlas")
+        self._dir = (storage_dir
+                     or os.environ.get("ATLAS_STORAGE_DIR")
+                     or os.path.join(os.path.expanduser("~"), ".atlas"))
         self._path = os.path.join(self._dir, "tickets_v2.json")
         self._tickets: dict = {}
         self._load()
