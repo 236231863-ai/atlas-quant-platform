@@ -83,6 +83,8 @@ a = Analysis(
         'engine.personal_review.review',
         'engine.reminder_center',
         'engine.reminder_center.reminder',
+        'engine.personal_growth',
+        'engine.personal_growth.growth',
         'engine.report_center',
         'engine.report_center.center',
         'engine.chase_analysis',
