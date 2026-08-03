@@ -78,36 +78,36 @@ def test_file_created(task_storage):
 
 # ---------- evaluate 公式 ----------
 def test_evaluate_ratio():
-    r = BudgetPlanner.evaluate(month_spent=250, year_spent=3000,
+    r = BudgetPlanner.evaluate(week_spent=0, month_spent=250, year_spent=3000, week_budget=120,
                                month_budget=500, year_budget=6000)
     assert r.month_ratio == pytest.approx(0.5)
     assert r.year_ratio == pytest.approx(0.5)
 
 
 def test_evaluate_over_month():
-    r = BudgetPlanner.evaluate(600, 3000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 600, 3000, 120, 500, 6000)
     assert r.month_over is True
     assert r.month_ratio == pytest.approx(1.2)
 
 
 def test_evaluate_over_year():
-    r = BudgetPlanner.evaluate(200, 6500, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 200, 6500, 120, 500, 6000)
     assert r.year_over is True
 
 
 def test_evaluate_not_over():
-    r = BudgetPlanner.evaluate(100, 1000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 100, 1000, 120, 500, 6000)
     assert not r.month_over
     assert not r.year_over
 
 
 def test_evaluate_exceed_amount():
-    r = BudgetPlanner.evaluate(600, 3000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 600, 3000, 120, 500, 6000)
     assert r.exceed_amount == pytest.approx(100)
 
 
 def test_evaluate_no_exceed():
-    r = BudgetPlanner.evaluate(200, 1000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 200, 1000, 120, 500, 6000)
     assert r.exceed_amount == 0
 
 
@@ -115,24 +115,24 @@ def test_evaluate_no_exceed():
     (100, 1200), (250, 3000), (500, 6000), (750, 9000), (0, 0),
 ])
 def test_evaluate_ratio_consistency(month, year):
-    r = BudgetPlanner.evaluate(month, year, 500, 6000)
+    r = BudgetPlanner.evaluate(0, month, year, 120, 500, 6000)
     assert r.month_ratio == pytest.approx(month / 500)
     assert r.year_ratio == pytest.approx(year / 6000)
 
 
 # ---------- 健康度 ----------
 def test_health_full():
-    r = BudgetPlanner.evaluate(0, 0, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 0, 0, 120, 500, 6000)
     assert r.health_score == 100
 
 
 def test_health_deducted():
-    r = BudgetPlanner.evaluate(450, 3600, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 450, 3600, 120, 500, 6000)
     assert r.health_score < 100
 
 
 def test_health_over():
-    r = BudgetPlanner.evaluate(1000, 10000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 1000, 10000, 120, 500, 6000)
     assert r.health_score < 50
 
 
@@ -140,7 +140,7 @@ def test_health_over():
     (0, 0), (200, 2000), (400, 4800), (600, 6500), (1000, 12000),
 ])
 def test_health_range(month, year):
-    r = BudgetPlanner.evaluate(month, year, 500, 6000)
+    r = BudgetPlanner.evaluate(0, month, year, 120, 500, 6000)
     assert 0 <= r.health_score <= 100
 
 
@@ -150,7 +150,7 @@ def _tk(buy_date, cost=2.0):
 
 
 def test_spent_empty():
-    m, y = BudgetPlanner.spent_from_tickets([])
+    w, m, y = BudgetPlanner.spent_from_tickets([])
     assert m == 0 and y == 0
 
 
@@ -158,7 +158,7 @@ def test_spent_this_year():
     from datetime import date
     today = date.today()
     tickets = [_tk(f"{today.year}-01-15"), _tk(f"{today.year}-07-01")]
-    m, y = BudgetPlanner.spent_from_tickets(tickets)
+    w, m, y = BudgetPlanner.spent_from_tickets(tickets)
     assert y == pytest.approx(4.0)
 
 
@@ -166,7 +166,7 @@ def test_spent_last_year_ignored():
     from datetime import date
     today = date.today()
     tickets = [_tk(f"{today.year - 1}-07-01")]
-    m, y = BudgetPlanner.spent_from_tickets(tickets)
+    w, m, y = BudgetPlanner.spent_from_tickets(tickets)
     assert y == 0
 
 
@@ -177,7 +177,7 @@ def test_spent_matrix(i):
     tickets = []
     for _ in range(5):
         tickets.append(_tk(f"{today.year}-{i % 12 + 1:02d}-15", cost=4.0))
-    m, y = BudgetPlanner.spent_from_tickets(tickets)
+    w, m, y = BudgetPlanner.spent_from_tickets(tickets)
     assert y == pytest.approx(20.0)
 
 
@@ -195,7 +195,7 @@ def test_evaluate_tickets(task_storage):
 
 # ---------- 报告结构 ----------
 def test_report_type():
-    r = BudgetPlanner.evaluate(0, 0)
+    r = BudgetPlanner.evaluate(0, 0, 0, 120, 500, 6000)
     assert isinstance(r, BudgetHealthReport)
 
 
@@ -203,48 +203,48 @@ def test_report_type():
                                "year_spent", "month_ratio", "year_ratio",
                                "month_over", "year_over", "health_score"])
 def test_report_fields(f):
-    r = BudgetPlanner.evaluate(0, 0)
+    r = BudgetPlanner.evaluate(0, 0, 0, 120, 500, 6000)
     assert hasattr(r, f)
 
 
 @pytest.mark.parametrize("f", ["month_budget", "month_ratio", "health_score"])
 def test_report_dict_keys(f):
-    r = BudgetPlanner.evaluate(0, 0)
+    r = BudgetPlanner.evaluate(0, 0, 0, 120, 500, 6000)
     assert f in r.to_dict()
 
 
 def test_summary_fields():
-    r = BudgetPlanner.evaluate(100, 1000)
+    r = BudgetPlanner.evaluate(0, 100, 1000, 120, 500, 6000)
     t = r.summary_text()
-    for kw in ("月预算", "年预算", "预算占比", "健康度"):
+    for kw in ("本周", "本月", "今年", "亏损率", "预警级别"):
         assert kw in t
 
 
 # ---------- 建议 ----------
 def test_suggestions_over():
-    r = BudgetPlanner.evaluate(600, 3000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 600, 3000, 120, 500, 6000)
     assert any("超" in s or "暂停" in s for s in r.suggestions)
 
 
 def test_suggestions_warning():
-    r = BudgetPlanner.evaluate(450, 3000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 450, 3000, 120, 500, 6000)
     assert any("注意" in s or "控制" in s for s in r.suggestions)
 
 
 def test_suggestions_ok():
-    r = BudgetPlanner.evaluate(100, 1000, 500, 6000)
+    r = BudgetPlanner.evaluate(0, 100, 1000, 120, 500, 6000)
     assert any("良好" in s or "保持" in s for s in r.suggestions)
 
 
 # ---------- 免责声明 ----------
 def test_disclaimer():
-    r = BudgetPlanner.evaluate(0, 0)
+    r = BudgetPlanner.evaluate(0, 0, 0, 120, 500, 6000)
     assert "随机性" in r.disclaimer
     assert "预测" not in r.disclaimer
 
 
 def test_summary_has_disclaimer():
-    r = BudgetPlanner.evaluate(0, 0)
+    r = BudgetPlanner.evaluate(0, 0, 0, 120, 500, 6000)
     assert "随机性" in r.summary_text()
 
 
@@ -256,7 +256,7 @@ def test_budget_param_matrix(seed):
     mb = rng.choice([100, 200, 500, 1000])
     yb = mb * 12
     spent = rng.randint(0, int(mb * 1.5))
-    r = BudgetPlanner.evaluate(spent, spent * 6, mb, yb)
+    r = BudgetPlanner.evaluate(0, spent, spent * 6, 120, mb, yb)
     assert r.month_budget == mb
     assert r.month_ratio >= 0
     assert 0 <= r.health_score <= 100
@@ -268,7 +268,7 @@ def test_over_flag_matrix(seed):
     rng = random.Random(1000 + seed)
     mb = 500
     spent = rng.randint(int(mb * 0.5), int(mb * 1.5))
-    r = BudgetPlanner.evaluate(spent, 1000, mb, 6000)
+    r = BudgetPlanner.evaluate(0, spent, 1000, 120, mb, 6000)
     assert r.month_over == (spent > mb)
 
 
@@ -290,7 +290,7 @@ def test_evaluate_health_matrix(seed):
     yb = mb * 12
     for _ in range(3):
         spent = rng.randint(0, int(mb * 2))
-        r = BudgetPlanner.evaluate(spent, spent * 6, mb, yb)
+        r = BudgetPlanner.evaluate(0, spent, spent * 6, 120, mb, yb)
         assert 0 <= r.health_score <= 100
         assert r.month_ratio == pytest.approx(spent / mb, abs=0.001)
 
@@ -303,13 +303,13 @@ def test_spent_dates_matrix(seed):
     today = date.today()
     tickets = [_tk(f"{today.year}-{rng.randint(1, 12):02d}-{rng.randint(1, 28):02d}",
                    cost=2.0 * rng.randint(1, 5)) for _ in range(5)]
-    m, y = BudgetPlanner.spent_from_tickets(tickets)
+    w, m, y = BudgetPlanner.spent_from_tickets(tickets)
     assert y == pytest.approx(sum(t["cost"] for t in tickets))
     assert 0 <= m <= y
 
 
 @pytest.mark.parametrize("mb", [100, 200, 500, 1000, 2000])
 def test_over_detection_boundary(mb):
-    r = BudgetPlanner.evaluate(mb, mb * 12, mb, mb * 12)
+    r = BudgetPlanner.evaluate(0, mb, mb * 12, 120, mb, mb * 12)
     assert r.month_ratio == pytest.approx(1.0)
     assert not r.month_over  # 正好等于预算不算超额

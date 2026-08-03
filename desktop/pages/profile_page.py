@@ -65,6 +65,13 @@ class ProfilePage(QWidget):
         row.addWidget(self.trend_area, 1)
         root.addLayout(row, 1)
 
+        # 个人成长（v4.1 阶段4）
+        self.growth_area = QLabel("成长加载中…")
+        self.growth_area.setWordWrap(True)
+        self.growth_area.setStyleSheet(
+            "background:#f4f8ff;border:1px solid #d8e4ff;border-radius:8px;padding:10px;color:#1e3a8a;font-size:12px;")
+        root.addWidget(self.growth_area)
+
         self.disclaimer = QLabel("⚠️ 彩票开奖结果具有随机性。本中心帮助你了解投注行为并管理风险，不涉及预测。")
         self.disclaimer.setWordWrap(True)
         self.disclaimer.setStyleSheet("color:#8a6d1a;font-size:11px;")
@@ -145,6 +152,19 @@ class ProfilePage(QWidget):
                 bp = BudgetPlanner()
                 b = bp.evaluate_tickets(tickets)
                 self.report_area.setText(self.report_area.text() + f"\n· 预算健康度：{b.health_score}/100")
+            except Exception:
+                pass
+
+            # 个人成长（v4.1 阶段4）
+            try:
+                from engine.personal_growth import growth_report
+                g = growth_report(tickets)
+                self.growth_area.setText(
+                    f"🌱 个人成长\n"
+                    f"· 购彩记录：{g.total_days} 天\n"
+                    f"· 当前连续购买：{g.current_streak} 天 / 最长 {g.max_streak} 天\n"
+                    f"· 连续中奖：{g.consecutive_wins} 期"
+                )
             except Exception:
                 pass
         except Exception as e:  # noqa: BLE001

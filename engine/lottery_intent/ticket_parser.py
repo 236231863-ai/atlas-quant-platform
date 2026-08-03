@@ -109,8 +109,11 @@ class TicketParser:
 
     @staticmethod
     def _split_notes(text: str) -> List[str]:
-        """按分号/换行/注 拆分多注。"""
-        text = re.sub(r"[；;]", "\n", text)
+        """按分号/斜杠/换行/注 拆分多注（v4.0.1：支持 '/' 分隔）。
+
+        注意：调用前需先 _strip_dates，避免 "7/31" 被误拆。
+        """
+        text = re.sub(r"[；;/]", "\n", text)
         text = re.sub(r"注\d*\s*[:：]", "\n", text)
         parts = [p.strip() for p in text.split("\n") if p.strip()]
         return parts or [text]
