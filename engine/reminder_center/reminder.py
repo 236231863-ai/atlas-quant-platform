@@ -14,7 +14,7 @@ DISCLAIMER = "提醒仅为开奖日程与票据管理，不涉及预测。彩票
 
 @dataclass
 class TodayReminder:
-    """今日提醒报告。"""
+    """今日提醒报告（v4.1.1：票据状态机 + 通知文本）。"""
 
     today: str = ""
     draw_today: List[str] = field(default_factory=list)      # 今日开奖彩种
@@ -22,7 +22,21 @@ class TodayReminder:
     unclaimed: int = 0                                       # 未兑奖票据数
     chase_notes: List[dict] = field(default_factory=list)    # 追号提醒
     next_draws: List[dict] = field(default_factory=list)     # 未来开奖
+    ticket_status: dict = field(default_factory=dict)        # 状态机计数
     disclaimer: str = DISCLAIMER
+
+    def notify_text(self) -> str:
+        """桌面通知文案（v4.1.1 Phase 1）。"""
+        if self.draw_today:
+            names = "、".join(self.draw_today)
+            if self.prize_due > 0:
+                return f"🎯 今晚{names}开奖，你有 {self.prize_due} 张彩票等待兑奖"
+            return f"🎯 今晚{names}开奖，去查你的彩票！"
+        if self.prize_due > 0:
+            return f"💰 你有 {self.prize_due} 张彩票今天可兑奖"
+        if self.unclaimed > 0:
+            return f"⏳ 你有 {self.unclaimed} 张已开奖彩票未确认"
+        return "📋 打开 Atlas，看看你的彩票状态"
 
     @property
     def has_anything(self) -> bool:
@@ -141,8 +155,26 @@ class ReminderEngine:
         return out
 
     @classmethod
+    def ticket_status(cls, tickets: List[dict], today: Optional[str] = None) -> dict:
+        """票据状态机（v4.1.1 Phase 1）：待开奖/已开奖待兑奖/已兑奖。"""
+        t = today or cls._today()
+        status = {"pending_draw": 0, "ready_claim": 0, "claimed": 0}
+        for tk in tickets:
+            draw = cls._parse_date(tk.get("draw_date") or "")
+            if not draw:
+                status["pending_draw"] += 1
+                continue
+            if draw.isoformat() > t:
+                status["pending_draw"] += 1
+            elif draw.isoformat() <= t and not tk.get("claimed"):
+                status["ready_claim"] += 1
+            else:
+                status["claimed"] += 1
+        return status
+
+    @classmethod
     def build(cls, tickets: List[dict], today: Optional[str] = None) -> TodayReminder:
-        """构建今日提醒。"""
+        """构建今日提醒（v4.1.1：含票据状态机）。"""
         t = today or cls._today()
         prize_due, unclaimed = cls._ticket_reminders(tickets)
         return TodayReminder(
@@ -152,6 +184,7 @@ class ReminderEngine:
             unclaimed=unclaimed,
             chase_notes=cls._chase_reminders(tickets),
             next_draws=cls._next_draws(),
+            ticket_status=cls.ticket_status(tickets, t),
         )
 
 

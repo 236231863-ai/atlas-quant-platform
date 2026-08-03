@@ -65,6 +65,24 @@ class DashboardPage(QWidget):
         except Exception:
             pass
 
+        # v4.1.1 Phase 3：首次引导（无票据时）
+        try:
+            from engine.ticket_system import TicketManager
+            if TicketManager().count() == 0:
+                guide = QLabel(
+                    "🆕 首次使用引导（30 秒完成价值体验）：\n"
+                    "① 在 AI 助手输入你的彩票号码，或到「工作台」保存第一张彩票\n"
+                    "② 开奖后 Atlas 会主动提醒你，自动帮你算中没中\n"
+                    "③ 保存越多，预算/复盘/年度报告越准\n\n"
+                    "💡 无需任何配置，直接开始即可。")
+                guide.setWordWrap(True)
+                guide.setStyleSheet(
+                    "background:#e8f5e9;border:1px solid #c8e6c9;border-radius:8px;"
+                    "padding:12px 14px;color:#2e7d32;font-size:13px;line-height:1.7;")
+                root.addWidget(guide)
+        except Exception:
+            pass
+
         src = get_data_source("dlt")
         quality = get_data_quality("dlt")
 
@@ -139,13 +157,13 @@ class DashboardPage(QWidget):
         row.addWidget(self._hotcold_panel(hot, cold), 2)
         root.addLayout(row, 1)
 
-    # ---------- v4.1 阶段1：我的彩票价值面板 ----------
+    # ---------- v4.1.1 Phase 2：我的彩票价值面板（6 项个人价值）----------
     def _value_metrics(self):
-        """计算 7 个价值指标（票据/开奖/待兑/投入/中奖/ROI/预算）。"""
+        """计算价值指标（v4.1.1：票/最近开奖/待兑奖/本月投入/本月结果/状态）。"""
         from engine.ticket_system import TicketManager
         from engine.personal_review import PersonalReviewEngine
         from engine.budget_manager import BudgetPlanner
-        from engine.ticket_system.schedule import LotterySchedule
+        from engine.reminder_center import today_reminders
         from datetime import date
 
         tm = TicketManager()
@@ -153,47 +171,106 @@ class DashboardPage(QWidget):
         rv = PersonalReviewEngine.review(tickets)
         bp = BudgetPlanner()
         budget = bp.evaluate_tickets(tickets)
+        reminder = today_reminders(tickets)
 
-        today = date.today().isoformat()
-        dlt_draw = LotterySchedule.is_draw_day("dlt", today)
-        ssq_draw = LotterySchedule.is_draw_day("ssq", today)
-        if dlt_draw and ssq_draw:
-            draw_txt = "大乐透+双色球"
-        elif dlt_draw:
-            draw_txt = "大乐透"
-        elif ssq_draw:
-            draw_txt = "双色球"
-        else:
-            draw_txt = "无"
+        # 最近开奖（今晚）
+        draw_txt = "今晚" + ("、".join(reminder.draw_today)) if reminder.draw_today else "无"
 
-        # 待兑奖：draw_date 在今天或之后（尚未开奖）
-        pending = 0
+        # 待兑奖：状态机 ready_claim + 今日可兑
+        ready = reminder.ticket_status["ready_claim"] + reminder.prize_due
+
+        # 本月投入/中奖（budget 本月 + 本月中奖估算）
+        month_spent = budget.month_spent
+        month_won = 0.0
+        today = date.today()
         for t in tickets:
-            d = t.get("draw_date") or t.get("buy_date", "")
-            if d and d >= today:
-                pending += 1
+            d = t.get("draw_date") or ""
+            if d.startswith(f"{today.year}-{today.month:02d}"):
+                try:
+                    from engine.lottery_intent.draw_matcher import DrawResultMatcher
+                    from engine.lottery_intent.prize_calculator import PrizeCalculator
+                    match = DrawResultMatcher().match(t.get("front", []), t.get("back", []),
+                                                     lottery=t.get("lottery", "dlt"),
+                                                     draw_date=d)
+                    if match.draw:
+                        pr = PrizeCalculator.calculate(match.front_hits, match.back_hits, t.get("lottery", "dlt"))
+                        month_won += pr.amount
+                except Exception:
+                    pass
 
-        roi = f"{rv.roi * 100:+.0f}%" if rv.total_investment else "—"
+        # 我的状态
+        if budget.warning_level == "超支" or reminder.chase_notes:
+            state = "需关注"
+        elif budget.warning_level == "预警":
+            state = "理性购彩"
+        else:
+            state = "理性购彩"
+
         return [
-            ("我的票据", f"{len(tickets)} 张"),
-            ("今日开奖", draw_txt),
-            ("待兑奖", f"{pending} 张"),
-            ("累计投入", f"¥{rv.total_investment:,.0f}"),
-            ("累计中奖", f"¥{rv.total_winnings:,.0f}"),
-            ("ROI", roi),
-            ("预算预警", budget.warning_level),
+            ("🎫 我的票", f"{len(tickets)} 张"),
+            ("⏰ 最近开奖", draw_txt),
+            ("💰 待兑奖", f"{ready} 张"),
+            ("📊 本月投入", f"¥{month_spent:,.0f}"),
+            ("📈 本月结果", f"中奖 ¥{month_won:,.0f}"),
+            ("🎯 我的状态", state),
         ]
 
     def _value_headline(self, metrics, rv, budget):
-        """价值面板顶部话术（动态）。
+        """价值面板顶部话术（v4.1.1：动态，含 30 天中奖/上月对比）。"""
+        from datetime import date, timedelta
+        from engine.ticket_system import TicketManager
+        from engine.personal_review import PersonalReviewEngine
 
-        优先级：无票据欢迎 > 开奖日 > 预算超支 > 预算预警 > 默认。
-        """
-        draw_txt = metrics[1][1]
-        if rv.total_tickets == 0:
+        tm = TicketManager()
+        tickets = [t.__dict__ for t in tm.list_all()]
+        if not tickets:
             return "👋 欢迎！输入你的第一注彩票，我来帮你管"
-        if draw_txt != "无":
-            return f"🎯 今天是开奖日（{draw_txt}），快去查你的彩票中没中！"
+
+        draw_txt = metrics[1][1]
+        # 动态话术库
+        dynamic = []
+        # 待兑奖
+        ready = int(metrics[2][1].split()[0])
+        if ready > 0:
+            dynamic.append(f"你有 {ready} 张彩票等待开奖/兑奖")
+        # 本月投入对比上月
+        today = date.today()
+        last_month = (today.replace(day=1) - timedelta(days=1))
+        last_key = f"{last_month.year}-{last_month.month:02d}"
+        cur_key = f"{today.year}-{today.month:02d}"
+        cur_spent = sum(t.get("cost", 2.0) for t in tickets
+                        if (t.get("buy_date") or "").startswith(cur_key))
+        last_spent = sum(t.get("cost", 2.0) for t in tickets
+                         if (t.get("buy_date") or "").startswith(last_key))
+        if last_spent > 0 and cur_spent < last_spent:
+            pct = int((1 - cur_spent / last_spent) * 100)
+            dynamic.append(f"本月投入比上月减少 {pct}%")
+        elif last_spent > 0 and cur_spent > last_spent:
+            pct = int((cur_spent / last_spent - 1) * 100)
+            dynamic.append(f"本月投入比上月增加 {pct}%，请注意")
+        # 30 天中奖次数
+        win30 = 0
+        cutoff = (today - timedelta(days=30)).isoformat()
+        for t in tickets:
+            d = t.get("draw_date") or ""
+            if d and d >= cutoff:
+                try:
+                    from engine.lottery_intent.draw_matcher import DrawResultMatcher
+                    from engine.lottery_intent.prize_calculator import PrizeCalculator
+                    match = DrawResultMatcher().match(t.get("front", []), t.get("back", []),
+                                                     lottery=t.get("lottery", "dlt"), draw_date=d)
+                    if match.draw and PrizeCalculator.calculate(match.front_hits, match.back_hits, t.get("lottery", "dlt")).won:
+                        win30 += 1
+                except Exception:
+                    pass
+        if win30 > 0:
+            dynamic.append(f"过去 30 天中奖 {win30} 次")
+
+        if dynamic:
+            return " · ".join(dynamic[:2])
+
+        if draw_txt.startswith("今晚"):
+            return f"🎯 {draw_txt}开奖，快去查你的彩票中没中！"
         if budget.month_over:
             return f"⚠️ 本月已超预算 ¥{budget.exceed_amount:,.0f}，建议控制投入"
         if budget.month_ratio > 0.8:

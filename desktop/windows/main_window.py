@@ -99,6 +99,20 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
 
+        # v4.1.1 Phase 1：开奖桌面通知（启动时提醒）
+        try:
+            from pages.reminder_notifier import ReminderNotifier
+            from engine.ticket_system import TicketManager
+            from engine.reminder_center import today_reminders
+            self.notifier = ReminderNotifier()
+            self.notifier.set_on_click(lambda: self.switch_page("AI 助手"))
+            tickets = [t.__dict__ for t in TicketManager().list_all()]
+            r = today_reminders(tickets)
+            if r.draw_today or r.prize_due > 0 or r.unclaimed > 0:
+                self.notifier.show_draw_reminder(r.notify_text())
+        except Exception:
+            pass
+
     def _open_help(self) -> None:
         """打开帮助中心。"""
         try:
