@@ -117,6 +117,13 @@ a = Analysis(
         'engine.data_center_v2.updater',
         'engine.data_center_v2.models',
         'engine.data_center_v2.quality',
+        # v4.4 实时开奖
+        'engine.live_draw',
+        'engine.live_draw.events',
+        'engine.live_draw.service',
+        'engine.live_draw.background',
+        'engine.live_draw.health',
+        'engine.live_draw.claim_link',
     ],
     hookspath=[],
     hooksconfig={},

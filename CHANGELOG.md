@@ -1,5 +1,20 @@
 # Atlas Quant Platform Changelog
 
+## [v4.4.0] - 2026-08-04
+### Data Reliability & Live Draw System
+### Added
+- engine/live_draw: LiveDrawService（后台开奖同步：大乐透一/三/六、双色球二/四/日 + DrawUpdated/NewIssue/UpdateFailed/Skipped 事件）
+- engine/live_draw/background: BackgroundServiceManager（Windows 计划任务后台服务：安装/卸载/状态 + 开机启动）
+- engine/live_draw/health: DataHealthCenter（数据可信等级 A<12h/B 12-24h/C>24h/D 异常）
+- engine/live_draw/claim_link: AutoClaimLink（live_draw→claim_center→notification 自动兑奖联动）
+- tools/atlas_worker.py: 升级为后台同步 worker（sync_once/run_loop）
+- 首页开奖状态卡片（距离下一开奖/最新开奖/数据可信/待兑奖）
+### Changed
+- 启动后台线程静默同步（保留）；新增计划任务后台服务（软件关闭仍同步）
+- Version 4.4.0 (window title)
+### Tests
+- tests/v440 新增 859 场景（≥800），覆盖数据更新/API失败/网络异常/新期发现/防旧覆盖/后台服务/自动兑奖
+
 ## [v4.3.1] - 2026-08-03
 ### Hotfix: 开奖数据实时更新
 ### Fixed

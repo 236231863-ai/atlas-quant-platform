@@ -99,6 +99,14 @@ class DashboardPage(QWidget):
         except Exception:
             pass
 
+        # v4.4 P5：开奖状态卡片（距离下一开奖 / 最新开奖 / 数据可信 / 待兑奖票据）
+        try:
+            status_card = self._draw_status_card()
+            if status_card:
+                root.addWidget(status_card)
+        except Exception:
+            pass
+
         # v4.1.1 Phase 3：首次引导（无票据时）
         try:
             from engine.ticket_system import TicketManager
@@ -357,6 +365,54 @@ class DashboardPage(QWidget):
         tickets = [t.__dict__ for t in tm.list_all()]
         r = today_reminders(tickets)
         return r.summary_text()
+
+    def _draw_status_card(self):
+        """v4.4 P5：开奖状态卡片（距离下一开奖 / 最新开奖 / 数据可信 / 待兑奖）。"""
+        from datetime import date
+        from engine.ticket_system.schedule import LotterySchedule
+        from engine.live_draw.health import DataHealthCenter
+        from engine.claim_center import ClaimCenter
+        from engine.ticket_system import TicketManager
+
+        today = date.today().isoformat()
+        # 下一开奖
+        next_dlt = LotterySchedule.next_draw_date("dlt", today)
+        next_ssq = LotterySchedule.next_draw_date("ssq", today)
+        # 数据可信
+        try:
+            h = DataHealthCenter.check("dlt")
+            health_txt = f"数据可信 {h.level} 级 · 最新 {h.latest_issue}（{h.draw_date}）· {h.age_text}"
+        except Exception:
+            health_txt = "数据状态未知"
+        # 待兑奖
+        tm = TicketManager()
+        tks = [t.__dict__ for t in tm.list_all()]
+        try:
+            pending = ClaimCenter.pending_list(tks)
+            pending_txt = f"待兑奖 {len(pending)} 张"
+        except Exception:
+            pending_txt = "待兑奖 0 张"
+
+        frame = QFrame()
+        frame.setStyleSheet(
+            "QFrame{background:#f4f8ff;border:1px solid #d6e4ff;border-radius:10px;}"
+            "QLabel{background:transparent;}")
+        lay = QVBoxLayout(frame)
+        lay.setContentsMargins(14, 12, 14, 12)
+        lay.setSpacing(4)
+        title = QLabel("📡 开奖状态")
+        title.setStyleSheet("font-size:14px;font-weight:bold;color:#1a1a2e;")
+        lay.addWidget(title)
+        for line in (
+            f"⏳ 距离下一开奖：大乐透 {next_dlt or '—'} · 双色球 {next_ssq or '—'}",
+            f"🩺 {health_txt}",
+            f"🎯 {pending_txt}",
+        ):
+            lbl = QLabel(line)
+            lbl.setWordWrap(True)
+            lbl.setStyleSheet("color:#445;font-size:12px;line-height:1.6;")
+            lay.addWidget(lbl)
+        return frame
 
     def _personal_panel_text(self) -> str:
         """个人中心：价值分 / 研究等级 / AI 建议 / 历史（v3.8.0）。"""
