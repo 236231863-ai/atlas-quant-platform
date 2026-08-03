@@ -73,7 +73,7 @@ class AIPage(QWidget):
         row.setSpacing(8)
         self.input = QTextEdit()
         self.input.setFixedHeight(60)
-        self.input.setPlaceholderText("输入问题，如：给我推荐下期号码 / 哪些是热号？")
+        self.input.setPlaceholderText("输入问题，如：我这张彩票中了吗 / 热号有哪些？")
         self.input.setStyleSheet(
             "QTextEdit{background:white;border:1px solid #d8dee8;border-radius:8px;font-size:13px;padding:8px;}"
         )
@@ -88,10 +88,10 @@ class AIPage(QWidget):
         root.addLayout(row)
 
         self._append("assistant", "你好，我是 Atlas 数据分析助手。你可以问我：\n"
-                                  "· 推荐下期号码（热号/冷号/均衡）\n"
-                                  "· 热号有哪些？冷号有哪些？\n"
-                                  "· 当前奇偶分布 / 和值 / 跨度情况\n"
-                                  "· 奖池数据概览")
+                                  "· 查彩票中没中（输入号码，如：大乐透 10 11 18 22 35 + 06 12）\n"
+                                  "· 历史开奖统计（热号/冷号/奇偶/和值/跨度）\n"
+                                  "· 预算与复盘建议\n\n"
+                                  "⚠️ 我不推荐号码——开奖完全随机，任何「推荐」都不可信。")
 
     def _append(self, role, text):
         prefix = "🧑 你" if role == "user" else "🤖 Atlas"
@@ -202,18 +202,11 @@ class AIPage(QWidget):
         if "冷号" in ql:
             cold = cold_numbers(self.draws, 8)
             return "近期冷号（前区）：" + " ".join(f"{n:02d}({c}次)" for n, c in cold)
-        if "推荐" in ql or "号码" in ql or "一注" in ql:
-            method = "hot"
-            if "冷" in ql:
-                method = "cold"
-            elif "均衡" in ql:
-                method = "balanced"
-            rec = recommendation(self.draws, method)
-            base = "均衡策略" if method == "balanced" else ("冷号策略" if method == "cold" else "热号策略")
-            return (f"按【{base}】推荐一注大乐透：\n"
-                    f"前区：{' '.join(f'{n:02d}' for n in rec['front'])}\n"
-                    f"后区：{' '.join(f'{n:02d}' for n in rec['back'])}\n"
-                    f"（仅基于历史统计，供研究参考）")
+        if "推荐" in ql or "号码" in ql or "一注" in ql or "预测" in ql:
+            return ("⚠️ 我不能推荐或预测号码。彩票开奖完全随机，任何号码组合的中奖概率都相同。\n"
+                    "· 想核对已购彩票 → 输入号码（如：大乐透 10 11 18 22 35 + 06 12）\n"
+                    "· 想看历史统计 → 问「热号有哪些」「和值分布」\n"
+                    "· 想管理购彩 → 到「工作台」保存票据，Atlas 帮你兑奖和复盘")
         if "奇偶" in ql:
             p = parity_stats(self.draws)
             return f"前区奇偶：奇数 {p['odd']} 次，偶数 {p['even']} 次，比值约 {p['odd'] / (p['odd'] + p['even']) * 100:.0f}:{p['even'] / (p['odd'] + p['even']) * 100:.0f}"
@@ -227,5 +220,7 @@ class AIPage(QWidget):
         if "奖池" in ql or "概览" in ql or "总览" in ql:
             return (f"当前样本 {len(self.draws)} 期，最新期 {last.number}（{last.draw_date}），"
                     f"最新奖池 {last.format_pool()}，连号 {consecutive_pairs(self.draws)} 对。")
-        return ("我可以分析本地开奖数据。请尝试问：\n"
-                "· “推荐下期号码”\n· “热号有哪些”\n· “奇偶分布如何”\n· “和值/跨度/奖池”")
+        return ("我可以帮你：\n"
+                "· 输入号码核对中奖（如：大乐透 10 11 18 22 35 + 06 12）\n"
+                "· 查看热号 / 冷号 / 奇偶 / 和值 / 跨度 / 奖池\n"
+                "⚠️ 我不提供号码推荐——开奖完全随机")
