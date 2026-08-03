@@ -44,9 +44,15 @@ class DashboardPage(QWidget):
         root.setContentsMargins(24, 20, 24, 20)
         root.setSpacing(16)
 
-        header = QLabel("📊 数据看板")
+        header = QLabel("🎯 我的彩票")
         header.setStyleSheet("font-size:22px;font-weight:bold;color:#1a1a2e;")
         root.addWidget(header)
+
+        # v4.1 阶段1：我的彩票价值面板（3 秒看懂：票据/开奖/待兑/投入/中奖/ROI/预算）
+        try:
+            root.addWidget(self._value_panel())
+        except Exception:
+            pass
 
         src = get_data_source("dlt")
         quality = get_data_quality("dlt")
@@ -121,6 +127,114 @@ class DashboardPage(QWidget):
         row.addWidget(self._recent_table(), 3)
         row.addWidget(self._hotcold_panel(hot, cold), 2)
         root.addLayout(row, 1)
+
+    # ---------- v4.1 阶段1：我的彩票价值面板 ----------
+    def _value_metrics(self):
+        """计算 7 个价值指标（票据/开奖/待兑/投入/中奖/ROI/预算）。"""
+        from engine.ticket_system import TicketManager
+        from engine.personal_review import PersonalReviewEngine
+        from engine.budget_manager import BudgetPlanner
+        from engine.ticket_system.schedule import LotterySchedule
+        from datetime import date
+
+        tm = TicketManager()
+        tickets = [t.__dict__ for t in tm.list_all()]
+        rv = PersonalReviewEngine.review(tickets)
+        bp = BudgetPlanner()
+        budget = bp.evaluate_tickets(tickets)
+
+        today = date.today().isoformat()
+        dlt_draw = LotterySchedule.is_draw_day("dlt", today)
+        ssq_draw = LotterySchedule.is_draw_day("ssq", today)
+        if dlt_draw and ssq_draw:
+            draw_txt = "大乐透+双色球"
+        elif dlt_draw:
+            draw_txt = "大乐透"
+        elif ssq_draw:
+            draw_txt = "双色球"
+        else:
+            draw_txt = "无"
+
+        # 待兑奖：draw_date 在今天或之后（尚未开奖）
+        pending = 0
+        for t in tickets:
+            d = t.get("draw_date") or t.get("buy_date", "")
+            if d and d >= today:
+                pending += 1
+
+        roi = f"{rv.roi * 100:+.0f}%" if rv.total_investment else "—"
+        return [
+            ("我的票据", f"{len(tickets)} 张"),
+            ("今日开奖", draw_txt),
+            ("待兑奖", f"{pending} 张"),
+            ("累计投入", f"¥{rv.total_investment:,.0f}"),
+            ("累计中奖", f"¥{rv.total_winnings:,.0f}"),
+            ("ROI", roi),
+            ("本月预算", f"{budget.month_ratio * 100:.0f}%"),
+        ]
+
+    def _value_headline(self, metrics, rv, budget):
+        """价值面板顶部话术（动态）。
+
+        优先级：无票据欢迎 > 开奖日 > 预算超支 > 预算预警 > 默认。
+        """
+        draw_txt = metrics[1][1]
+        if rv.total_tickets == 0:
+            return "👋 欢迎！输入你的第一注彩票，我来帮你管"
+        if draw_txt != "无":
+            return f"🎯 今天是开奖日（{draw_txt}），快去查你的彩票中没中！"
+        if budget.month_over:
+            return f"⚠️ 本月已超预算 ¥{budget.exceed_amount:,.0f}，建议控制投入"
+        if budget.month_ratio > 0.8:
+            return f"💳 本月预算已用 {budget.month_ratio * 100:.0f}%，请注意控制"
+        return "📋 你的彩票管家：中奖早知道 · 花钱有数 · 行为有复盘"
+
+    def _value_panel(self):
+        """我的彩票价值面板（3 秒看懂个人价值）。"""
+        from engine.ticket_system import TicketManager
+        from engine.personal_review import PersonalReviewEngine
+        from engine.budget_manager import BudgetPlanner
+
+        tm = TicketManager()
+        tickets = [t.__dict__ for t in tm.list_all()]
+        rv = PersonalReviewEngine.review(tickets)
+        bp = BudgetPlanner()
+        budget = bp.evaluate_tickets(tickets)
+        metrics = self._value_metrics()
+
+        frame = QFrame()
+        frame.setStyleSheet(
+            "QFrame{background:#1e3a8a;border-radius:12px;}"
+            "QLabel{background:transparent;color:white;}"
+        )
+        lay = QVBoxLayout(frame)
+        lay.setContentsMargins(20, 16, 20, 16)
+        lay.setSpacing(12)
+
+        headline = QLabel(self._value_headline(metrics, rv, budget))
+        headline.setStyleSheet(
+            "font-size:16px;font-weight:bold;color:white;background:transparent;")
+        lay.addWidget(headline)
+
+        row = QHBoxLayout()
+        row.setSpacing(10)
+        for title, value in metrics:
+            c = QFrame()
+            c.setStyleSheet(
+                "QFrame{background:rgba(255,255,255,0.12);border-radius:8px;}"
+                "QLabel{background:transparent;color:white;}")
+            v = QVBoxLayout(c)
+            v.setContentsMargins(12, 10, 12, 10)
+            v.setSpacing(2)
+            t = QLabel(title)
+            t.setStyleSheet("color:rgba(255,255,255,0.8);font-size:11px;background:transparent;")
+            vv = QLabel(value)
+            vv.setStyleSheet("font-size:20px;font-weight:bold;background:transparent;")
+            v.addWidget(t)
+            v.addWidget(vv)
+            row.addWidget(c)
+        lay.addLayout(row)
+        return frame
 
     def _personal_panel_text(self) -> str:
         """个人中心：价值分 / 研究等级 / AI 建议 / 历史（v3.8.0）。"""
