@@ -124,18 +124,28 @@ class ExcelDatasource:
 
 
 class APIDatasource:
-    """官方开奖 API 数据源（体彩 webapi.sporttery.cn）。"""
+    """官方开奖 API 数据源（体彩 webapi.sporttery.cn）。
+
+    支持多彩种：大乐透 gameNo=85（5+2），双色球 gameNo=235（6+1）。
+    """
 
     type_name = "api"
+
+    # 彩种 -> 官方 gameNo
+    GAME_NOS = {"dlt": "85", "ssq": "235"}
 
     def __init__(self, lottery: str = "dlt", pages: int = 18, page_size: int = 30):
         self.lottery = lottery
         self.pages = pages
         self.page_size = page_size
 
+    @property
+    def _game_no(self) -> str:
+        return self.GAME_NOS.get(self.lottery, "85")
+
     def _fetch_page(self, page_no: int) -> List[DrawRecord]:
         url = (
-            f"{SPORTTERY_API}?gameNo={DLT_GAME_NO}&provinceId=0"
+            f"{SPORTTERY_API}?gameNo={self._game_no}&provinceId=0"
             f"&pageSize={self.page_size}&isVerify=1&pageNo={page_no}"
         )
         req = urllib.request.Request(
@@ -151,7 +161,10 @@ class APIDatasource:
             pool = item.get("poolBalanceAfterdraw", "")
             if not num or not result:
                 continue
-            front, back = _parse_numbers(result, 5, 2)
+            if self.lottery == "ssq":
+                front, back = _parse_numbers(result, 6, 1)
+            else:
+                front, back = _parse_numbers(result, 5, 2)
             try:
                 pool_val = float(pool.replace(",", "")) if pool else 0.0
             except ValueError:

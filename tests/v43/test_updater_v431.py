@@ -235,3 +235,29 @@ def test_latest_issues(tmp_path):
                     {"issue": "26087", "date": "", "numbers": "1", "pool": "1"}])
     issues = [r["issue"] for r in upd.load_local()]
     assert issues == ["26085", "26086", "26087"]
+
+
+# ---------- 多彩种 / 优雅降级（v4.3.1 修复） ----------
+def test_api_game_no_switch():
+    """APIDatasource 按彩种切换 gameNo（dlt=85 / ssq=235）。"""
+    from engine.data_center_v2.sources import APIDatasource
+    assert APIDatasource("dlt")._game_no == "85"
+    assert APIDatasource("ssq")._game_no == "235"
+    assert APIDatasource("unknown")._game_no == "85"  # 默认回退
+
+
+def test_update_ssq_api_empty_preserves(tmp_path, monkeypatch):
+    """ssq API 为空时不得覆盖已有缓存（优雅降级）。"""
+    upd = IncrementalUpdater(lottery="ssq", storage_dir=str(tmp_path))
+    upd.save_local([{"issue": "2026087", "date": "2026-07-30",
+                     "numbers": "04 06 10 18 23 31|11", "pool": "1"}])
+    monkeypatch.setattr("engine.data_center_v2.updater.APIDatasource",
+                        lambda **kw: FakeAPISource([]))
+    result = upd.update(force=True)
+    assert result["updated"] is False
+    assert result["reason"] == "no_remote_data"
+    # 本地缓存未被破坏
+    rows = upd.load_local()
+    assert len(rows) == 1
+    assert rows[0]["issue"] == "2026087"
+    assert "04 06 10 18 23 31|11" in rows[0]["numbers"]
