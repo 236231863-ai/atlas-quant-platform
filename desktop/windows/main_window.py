@@ -36,7 +36,7 @@ PAGES = [
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Atlas Quant Platform v4.3.0")
+        self.setWindowTitle("Atlas Quant Platform v4.3.1")
         self.setWindowIcon(self._load_icon())
         self.setMinimumSize(1200, 800)
         self._run_first_run_if_needed()
@@ -101,6 +101,17 @@ class MainWindow(QMainWindow):
         try:
             from engine.user_events import EventTracker
             EventTracker().record("app_opened", {"source": "launch"})
+        except Exception:
+            pass
+
+        # v4.3.1：启动时后台静默更新开奖数据（不阻塞 UI，无网静默降级）
+        try:
+            import threading
+            from data_loader import maybe_update_draws
+            for lot in ("dlt", "ssq"):
+                threading.Thread(target=maybe_update_draws,
+                                 kwargs={"lottery": lot},
+                                 daemon=True).start()
         except Exception:
             pass
 

@@ -83,7 +83,10 @@ def _resource_path(rel: str) -> Optional[str]:
 
 
 def _user_data_dir() -> str:
-    """用户数据目录：优先桌面/AtlasData，其次项目 data/raw。"""
+    """用户数据目录：优先用户缓存 ~/.atlas/raw（实时更新写入），其次项目 data/raw。"""
+    user_raw = os.path.join(os.path.expanduser("~"), ".atlas", "raw")
+    if os.path.isdir(user_raw):
+        return user_raw
     project_raw = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "raw")
     return project_raw
 
@@ -197,13 +200,30 @@ def load_draws(lottery: str = "dlt") -> List[DrawRecord]:
     return _parse_csv(path, lottery)
 
 
+def maybe_update_draws(lottery: str = "dlt", force: bool = False) -> dict:
+    """启动时静默增量更新开奖数据（v4.3.1）。
+
+    从官方 API 拉取最新开奖，合并写回 ~/.atlas/raw/{lottery}_history.csv。
+    无网/异常静默降级，不影响启动；24h 限频。
+    """
+    try:
+        from engine.data_center_v2.updater import maybe_update_draws as _upd
+        return _upd(lottery, force=force)
+    except Exception:
+        return {"updated": False, "error": "updater_unavailable"}
+
+
 def get_data_source(lottery: str = "dlt") -> DataSourceInfo:
     """返回当前数据来源信息。"""
     path, stype = _find_data_file(lottery)
     draws = load_draws(lottery)
     note = ""
     if stype == "user":
-        note = "用户导入数据"
+        # 区分：用户缓存（实时更新） vs 项目导入
+        if os.path.exists(path) and os.path.sep + os.path.join(".atlas", "raw") in path:
+            note = "实时更新数据（官方 API，启动自动拉取）"
+        else:
+            note = "用户导入数据"
     elif stype == "bundled_history":
         note = "内置真实历史数据"
     elif stype == "bundled":

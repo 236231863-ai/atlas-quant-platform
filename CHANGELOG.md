@@ -1,5 +1,17 @@
 # Atlas Quant Platform Changelog
 
+## [v4.3.1] - 2026-08-03
+### Hotfix: 开奖数据实时更新
+### Fixed
+- 开奖信息不再停留在打包时刻：新增 engine/data_center_v2/updater（IncrementalUpdater）
+- 启动时后台静默拉取官方 API 最新开奖，按期号合并去重，写回 ~/.atlas/raw/{lottery}_history.csv
+- data_loader 用户缓存优先（~/.atlas/raw > 项目 > 内置），来源标注「实时更新数据」
+- 首次更新以内置 1200 期为 base 合并（不丢历史）
+- 24h 限频 / 无网静默降级 / 不阻塞 UI
+- 实测：更新后最新期 26087（2026-08-03）· 共 1201 期 · 可信等级 A
+### Tests
+- tests/v43/test_updater_v431.py 新增 32 场景（合并/去重/限频/写缓存/静默降级/用户缓存优先）
+
 ## [v4.3.0] - 2026-08-03
 ### User Retention Loop（留存闭环，不新增大量功能）
 ### Added

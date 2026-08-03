@@ -111,6 +111,12 @@ a = Analysis(
         'engine.asset_center.asset',
         'engine.growth_system',
         'engine.growth_system.growth',
+        # v4.3.1 增量更新器
+        'engine.data_center_v2',
+        'engine.data_center_v2.sources',
+        'engine.data_center_v2.updater',
+        'engine.data_center_v2.models',
+        'engine.data_center_v2.quality',
     ],
     hookspath=[],
     hooksconfig={},
