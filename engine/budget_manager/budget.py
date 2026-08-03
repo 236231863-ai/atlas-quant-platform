@@ -271,3 +271,42 @@ class BudgetPlanner:
         return self.evaluate(week, month, year,
                              self.week_budget, self.month_budget, self.year_budget,
                              loss_rate=loss_rate)
+
+    # ---------- v4.1.1 Phase 4：预算/连续购买提醒 ----------
+    @staticmethod
+    def consecutive_weeks(tickets: List[dict]) -> int:
+        """连续购买周数（按票据日期所在 ISO 周往前数）。"""
+        weeks = set()
+        for t in tickets:
+            d = BudgetPlanner._parse_date(t.get("buy_date") or t.get("saved_at", "")[:10])
+            if d:
+                iso = d.isocalendar()
+                weeks.add((iso[0], iso[1]))
+        if not weeks:
+            return 0
+        today_iso = date.today().isocalendar()
+        cur = (today_iso[0], today_iso[1])
+        streak = 0
+        while cur in weeks:
+            streak += 1
+            # 上一周
+            from datetime import date as _d
+            from datetime import timedelta
+            anchor = _d.fromisocalendar(cur[0], cur[1], 1) - timedelta(days=7)
+            a = anchor.isocalendar()
+            cur = (a[0], a[1])
+        return streak
+
+    @classmethod
+    def reminders(cls, tickets: List[dict]) -> List[str]:
+        """预算提醒文案（v4.1.1 Phase 4）。"""
+        r = cls().evaluate_tickets(tickets)
+        tips = []
+        if r.week_ratio >= 0.8:
+            tips.append(f"本周投入已达到预算 {r.week_ratio * 100:.0f}%")
+        weeks = cls.consecutive_weeks(tickets)
+        if weeks >= 2:
+            tips.append(f"已连续购买 {weeks} 周，建议关注投入节奏")
+        if r.month_over:
+            tips.append(f"本月已超预算 ¥{r.month_spent - r.month_budget:,.0f}")
+        return tips
