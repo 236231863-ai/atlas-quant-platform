@@ -18,6 +18,8 @@ from typing import List, Optional
 EVENT_TYPES = {
     "app_opened", "ticket_saved", "reminder_shown", "draw_countdown",
     "claim_viewed", "claim_confirmed", "report_generated", "auto_claim_run",
+    # v4.5 P5：用户行为埋点
+    "draw_reminder_received", "draw_opened", "claim_completed",
 }
 
 

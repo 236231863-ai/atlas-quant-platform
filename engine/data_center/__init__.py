@@ -28,3 +28,26 @@ class DataQualityEngine:
     @staticmethod
     def compute(accuracy:float, completeness:float, consistency:float, freshness:float, reliability:float) -> DataQualityScore:
         return DataQualityScore(accuracy=accuracy, completeness=completeness, consistency=consistency, freshness=freshness, reliability=reliability)
+
+
+# v4.5 P1：开奖数据可信中心
+from engine.data_center.health import (  # noqa: E402
+    DataHealthBuilder,
+    DataHealthReport,
+    LotteryHealth,
+    build_health_report,
+)
+from engine.data_center.providers import (  # noqa: E402
+    BackupProvider,
+    DataProvider,
+    DrawRecord,
+    LocalCache,
+    OfficialProvider,
+    fetch_with_fallback,
+    get_provider_chain,
+)
+from engine.data_center.validation import (  # noqa: E402
+    DrawValidator,
+    ValidationResult,
+    validate_records,
+)

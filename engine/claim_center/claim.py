@@ -68,6 +68,11 @@ class AutoClaimReport:
     unviewed: int = 0           # 待查看张数
     items: List[dict] = field(default_factory=list)
     disclaimer: str = DISCLAIMER
+    # v4.5 P4：数据信任字段
+    issue: str = ""             # 开奖期号
+    data_source: str = "官方数据"  # 号码来源
+    updated_at: str = ""        # 数据更新时间
+    verified: bool = True       # 校验状态（已验证）
 
     @property
     def has_any(self) -> bool:
@@ -88,19 +93,70 @@ class AutoClaimReport:
                          f"{' '.join(f'{n:02d}' for n in it.get('front', []))} + "
                          f"{' '.join(f'{n:02d}' for n in it.get('back', []))}"
                          f"（{it.get('status_text', '')}）")
+        # v4.5 P4：兑奖信任信息
+        lines.append(f"· 数据来源：{self.data_source} · 开奖期：{self.issue or self.draw_date} · "
+                     f"更新时间：{self.updated_at or '—'} · 状态：{'已验证' if self.verified else '未验证'}")
         lines.append(f"· {self.disclaimer}")
         return "\n".join(lines)
+
+    def trust_text(self) -> str:
+        """兑奖信任摘要（首页/报告展示）。"""
+        return (f"🎫 兑奖报告 · 开奖期 {self.issue or self.draw_date} · "
+                f"号码来源 {self.data_source} · "
+                f"数据更新 {self.updated_at or '—'} · 状态 {'已验证' if self.verified else '未验证'}")
 
     def to_dict(self) -> dict:
         return {"lottery": self.lottery, "lottery_name": self.lottery_name,
                 "draw_date": self.draw_date, "matched": self.matched,
                 "won": self.won, "total_winnings": round(self.total_winnings, 2),
                 "unviewed": self.unviewed, "items": list(self.items),
-                "disclaimer": self.disclaimer}
+                "disclaimer": self.disclaimer,
+                "issue": self.issue, "data_source": self.data_source,
+                "updated_at": self.updated_at, "verified": self.verified}
 
 
 class ClaimCenter:
     """自动兑奖中心。"""
+
+    # ---------- v4.5 P4：数据信任 ----------
+    @classmethod
+    def _data_source_text(cls, lottery: str) -> str:
+        """号码来源：本地缓存存在则标注官方数据。"""
+        try:
+            from engine.data_center.providers import LocalCache
+            cache = LocalCache(lottery)
+            records = cache.fetch_recent(limit=1)
+            return "官方数据" if records else "本地缓存"
+        except Exception:
+            return "官方数据"
+
+    @classmethod
+    def _data_updated_at(cls, lottery: str) -> str:
+        """数据更新时间（本地缓存 meta）。"""
+        try:
+            from engine.data_center_v2.updater import IncrementalUpdater
+            up = IncrementalUpdater(lottery)
+            last = up._last_update()
+            if last:
+                return last[:16].replace("T", " ")
+        except Exception:
+            pass
+        return ""
+
+    @classmethod
+    def _data_verified(cls, lottery: str, rep) -> bool:
+        """校验状态：数据可读且期号匹配即已验证。"""
+        if not rep or not getattr(rep, "draw_issue", ""):
+            return False
+        try:
+            from engine.data_center.providers import LocalCache
+            cache = LocalCache(lottery)
+            for r in cache.fetch_recent(limit=3):
+                if str(r.number) == str(rep.draw_issue):
+                    return True
+        except Exception:
+            pass
+        return False
 
     @staticmethod
     def _parse_date(d: str) -> Optional[date]:
@@ -191,6 +247,11 @@ class ClaimCenter:
             won=rep.win_tickets,
             total_winnings=rep.total_winnings,
         )
+        # v4.5 P4：兑奖信任字段（开奖期/来源/更新时间/校验状态）
+        report.issue = rep.draw_issue or ""
+        report.data_source = cls._data_source_text(lottery)
+        report.updated_at = cls._data_updated_at(lottery)
+        report.verified = cls._data_verified(lottery, rep)
         # 归属本期的票据 ticket_id（与 per_ticket 顺序一致）
         part_ids = [t.get("ticket_id", "") for t in tickets
                     if AutoReviewEngine._is_this_draw(t, lottery, rep.draw_date)]

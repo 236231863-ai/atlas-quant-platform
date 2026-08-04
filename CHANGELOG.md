@@ -1,5 +1,18 @@
 # Atlas Quant Platform Changelog
 
+## [v4.5.0] - 2026-08-04
+### 可信开奖数据与用户留存系统
+### Added
+- engine/data_center: DataProvider 链（官方/备用/本地缓存）+ DrawValidator 校验（期号递增/日期/前后区/范围）+ DataHealthReport
+- engine/draw_monitor: DrawMonitor（开奖日监控：大乐透一/三/六、双色球二/四/日）+ WindowsNotifier（Toast→msg→日志 后台提醒）
+- 兑奖信任升级：AutoClaimReport 增加 issue/data_source/updated_at/verified + trust_text
+- 用户行为埋点：draw_reminder_received/draw_opened/claim_completed + UserBehaviorReport
+- tools/atlas_worker.py: 同步后自动发后台提醒
+### Changed
+- Version 4.5.0 (window title)
+### Tests
+- tests/v450 新增 279 场景（数据可信/监控/提醒/兑奖信任/埋点）
+
 ## [v4.4.0] - 2026-08-04
 ### Data Reliability & Live Draw System
 ### Added

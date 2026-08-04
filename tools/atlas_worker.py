@@ -29,6 +29,14 @@ def sync_once() -> dict:
     summary = {"dlt": "ok", "ssq": "ok"}
     for ev in events:
         summary[ev.lottery] = f"{ev.event_type}" + (f":{ev.issue}" if ev.issue else "")
+        # v4.5 P3：新开奖 → 后台通知（开奖/中奖/待兑奖）
+        if ev.event_type == "draw_updated" and ev.issue:
+            try:
+                from engine.draw_monitor.notifier import WindowsNotifier
+                n = WindowsNotifier()
+                n.notify_draw_reminder(ev.lottery_name, ev.issue)
+            except Exception:
+                pass
     return summary
 
 
