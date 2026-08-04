@@ -1,5 +1,19 @@
 # Atlas Quant Platform Changelog
 
+## [v4.8.0] - 2026-08-05
+### 用户冷启动解决（快速建立彩票资产档案）
+### Added
+- engine/import_center: TextImporter/CSVImporter/HistoricalImporter（文本/CSV/历史导入，ImportReport）
+- engine/ticket_ocr: TicketOCREngine（票面解析 + 人工确认流程，未确认禁止保存）
+- engine/onboarding/flow_v48: 三步引导（建档案/看购彩/开提醒）+ onboarding 事件
+- engine/profile_card: ProfileCard（彩票年龄/购买次数/投入/中奖/最佳/连续周期/风险等级）
+- engine/data_quality: DataQualityChecker（重复/错误号码/日期/金额/彩种 → A/B/C）
+- AI 助手 import_analyze 工具（建档/导入）+ 亏损→资产分支
+### Changed
+- Version 4.8.0 (window title)
+### Tests
+- tests/v480 新增 1035 场景（≥1000），覆盖导入/OCR/数据质量/引导/AI路由
+
 ## [v4.7.0] - 2026-08-05
 ### 个人彩票行为分析助手
 ### Added

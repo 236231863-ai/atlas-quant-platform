@@ -19,6 +19,8 @@ EVENT_NAMES = (
     "claim_completed", "report_viewed", "budget_viewed", "export_clicked",
     # v4.6 P6：商业化
     "premium_view", "premium_click",
+    # v4.8 P3：新用户引导
+    "onboarding_start", "onboarding_complete", "onboarding_drop",
 )
 
 

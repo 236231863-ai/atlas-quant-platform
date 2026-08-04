@@ -41,7 +41,8 @@ def test_event_fields():
 def test_event_names_complete():
     expected = {"app_opened", "ticket_saved", "ticket_checked", "reminder_clicked",
                 "claim_completed", "report_viewed", "budget_viewed", "export_clicked",
-                "premium_view", "premium_click"}
+                "premium_view", "premium_click",
+                "onboarding_start", "onboarding_complete", "onboarding_drop"}
     assert set(EVENT_NAMES) == expected
 
 

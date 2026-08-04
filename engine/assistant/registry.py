@@ -121,10 +121,38 @@ def _report_handler(query: str, user_id: str = "default") -> ToolResult:
     return ToolResult(tool="report", text="报告工具：请到「研究报告」页面一键生成并导出。")
 
 
+def _import_analyze_handler(query: str, user_id: str = "default") -> ToolResult:
+    """彩票建档/导入工具（v4.8 P6）。
+
+    支持：帮我建立彩票档案 → 引导导入；含号码 → 直接导入。
+    """
+    from engine.import_center import TextImporter
+    from engine.ticket_system import TicketManager
+    try:
+        mgr = TicketManager()
+        # 含号码 → 直接导入
+        if any(ch.isdigit() for ch in query):
+            rep = TextImporter.import_text(query)
+            if rep.total_imported > 0:
+                return ToolResult(tool="import_analyze", text=rep.summary_text())
+        count = mgr.count()
+        return ToolResult(
+            tool="import_analyze",
+            text=f"📥 建立彩票档案（当前已有 {count} 张）\n"
+                 "支持 4 种方式：\n"
+                 "① 粘贴号码文本（每行一张）\n"
+                 "② 导入 CSV（日期/彩种/号码/金额）\n"
+                 "③ 拍照识别（OCR，需人工确认）\n"
+                 "④ 手动添加历史\n"
+                 "例如直接发送：01 05 12 23 30 + 06 08")
+    except Exception as e:  # noqa: BLE001
+        return ToolResult(tool="import_analyze", success=False, text=f"导入失败：{e}")
+
+
 def _behavior_analyze_handler(query: str, user_id: str = "default") -> ToolResult:
     """个人彩票行为分析工具（v4.7 P5）。
 
-    支持：行为画像（behavior_analysis）/ 健康评分（BehaviorScore）。
+    支持：行为画像（behavior_analysis）/ 健康评分（BehaviorScore）/ 盈亏（asset）。
     只分析过去行为，不预测。
     """
     tickets = []
@@ -137,9 +165,14 @@ def _behavior_analyze_handler(query: str, user_id: str = "default") -> ToolResul
 
     if not tickets:
         return ToolResult(tool="behavior_analyze", success=False,
-                          text="暂无投注数据。请在「工作台」保存票据后分析行为。", missing=["tickets"])
+                          text="暂无投注数据。可以让我「帮你建立彩票档案」。", missing=["tickets"])
 
     try:
+        # 亏/赚 → 资产净收益（v4.8 P6：我亏了多少）
+        if any(k in query for k in ("亏", "赚", "收益", "亏了多少", "亏很多")):
+            from engine.asset_center import build_asset_report
+            rep = build_asset_report(tickets)
+            return ToolResult(tool="behavior_analyze", text=rep.summary_text())
         # 习惯/风险 → 健康评分；否则 → 行为画像
         if any(k in query for k in ("习惯", "健康", "风险", "评分", "怎么样")):
             from engine.behavior_analysis import build_behavior_analysis, build_behavior_score
@@ -266,6 +299,7 @@ TOOL_KEYWORDS = {
     "quant_analyze": ["分析", "评分", "量化", "组合评分", "概率分析", "资金风险", "重复率",
                       "结构分析", "组合分析", "模拟", "风险", "覆盖", "我的号码", "号码结构",
                       "分析号码", "分析我的"],
+    "import_analyze": ["建立彩票档案", "导入彩票", "建档", "添加历史", "添加彩票", "添加票据", "建立档案"],
     "behavior_analyze": ["分析我今年", "分析我的彩票", "购彩习惯", "购彩情况", "健康分",
                          "中奖率", "投注方式", "风险等级", "有没有效果", "亏很多", "画像"],
     "personal_analyze": ["复盘", "我最近", "我一年", "花了多少", "花多少钱", "预算",
@@ -294,6 +328,7 @@ def register_tools() -> ToolRegistry:
     """注册全部业务工具（v4.0.0：personal_analyze 在 quant 之前）。"""
     reg = ToolRegistry()
     reg.register(Tool(name="prize", description="兑奖计算", handler=_prize_handler, keywords=TOOL_KEYWORDS["prize"]))
+    reg.register(Tool(name="import_analyze", description="彩票建档导入", handler=_import_analyze_handler, keywords=TOOL_KEYWORDS["import_analyze"]))
     reg.register(Tool(name="behavior_analyze", description="购彩行为分析", handler=_behavior_analyze_handler, keywords=TOOL_KEYWORDS["behavior_analyze"]))
     reg.register(Tool(name="personal_analyze", description="个人决策分析", handler=_personal_analyze_handler, keywords=TOOL_KEYWORDS["personal_analyze"]))
     reg.register(Tool(name="quant_analyze", description="彩票量化分析", handler=_quant_analyze_handler, keywords=TOOL_KEYWORDS["quant_analyze"]))

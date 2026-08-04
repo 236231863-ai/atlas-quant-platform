@@ -18,7 +18,7 @@ def test_execute_repeat(i):
 
 # 注册表全名
 def test_registry_names():
-    assert set(register_tools().names()) == {"prize", "behavior_analyze", "personal_analyze", "quant_analyze", "hot_cold", "recommend", "backtest", "report"}
+    assert set(register_tools().names()) == {"prize", "import_analyze", "behavior_analyze", "personal_analyze", "quant_analyze", "hot_cold", "recommend", "backtest", "report"}
 
 @pytest.mark.parametrize("name", ["prize", "personal_analyze", "quant_analyze", "hot_cold", "recommend", "backtest", "report"])
 def test_registry_get(name):
