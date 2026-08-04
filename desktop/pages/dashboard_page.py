@@ -107,6 +107,14 @@ class DashboardPage(QWidget):
         except Exception:
             pass
 
+        # v4.6 P4：自动兑奖汇总卡片（待开奖/已中奖/待领取，点击进报告）
+        try:
+            summary = self._claim_summary()
+            if summary:
+                root.addWidget(self._claim_summary_card(summary))
+        except Exception:
+            pass
+
         # v4.1.1 Phase 3：首次引导（无票据时）
         try:
             from engine.ticket_system import TicketManager
@@ -355,6 +363,62 @@ class DashboardPage(QWidget):
             v.addWidget(vv)
             row.addWidget(c)
         lay.addLayout(row)
+        return frame
+
+    def _claim_summary(self) -> dict:
+        """v4.6 P4：自动兑奖汇总（待开奖/已中奖/待领取金额）。"""
+        from engine.ticket_system import TicketManager
+        from engine.claim_center import ClaimCenter
+        from datetime import date
+
+        tm = TicketManager()
+        tickets = [t.__dict__ for t in tm.list_all()]
+        today = date.today().isoformat()
+
+        items = ClaimCenter.build_items(tickets)
+        waiting = sum(1 for it in items if it.status == "waiting_draw")
+        # 已中奖：已开奖票据匹配中奖
+        won_count = 0
+        pending_amount = 0.0
+        for it in items:
+            if it.status in ("settled_unviewed", "viewed"):
+                try:
+                    from engine.lottery_intent.draw_matcher import DrawResultMatcher
+                    from engine.lottery_intent.prize_calculator import PrizeCalculator
+                    match = DrawResultMatcher().match(it.front, it.back,
+                                                     lottery=it.lottery,
+                                                     draw_date=it.draw_date)
+                    if match.draw:
+                        pr = PrizeCalculator.calculate(match.front_hits, match.back_hits, it.lottery)
+                        if pr.won:
+                            won_count += 1
+                            if it.status == "settled_unviewed":
+                                pending_amount += pr.amount
+                except Exception:
+                    pass
+        return {"waiting": waiting, "won": won_count,
+                "pending_amount": pending_amount}
+
+    def _claim_summary_card(self, summary: dict):
+        """v4.6 P4：兑奖汇总卡片（待开奖/已中奖/待领取）。"""
+        frame = QFrame()
+        frame.setStyleSheet(
+            "QFrame{background:#e8f5e9;border:1px solid #c8e6c9;border-radius:10px;}"
+            "QLabel{background:transparent;}")
+        lay = QVBoxLayout(frame)
+        lay.setContentsMargins(14, 12, 14, 12)
+        lay.setSpacing(4)
+        title = QLabel("🎯 今日兑奖")
+        title.setStyleSheet("font-size:14px;font-weight:bold;color:#1a1a2e;")
+        lay.addWidget(title)
+        for line in (
+            f"🎫 待开奖：{summary['waiting']} 张",
+            f"🎉 已中奖：{summary['won']} 张",
+            f"💰 待领取：¥{summary['pending_amount']:,.0f}",
+        ):
+            lbl = QLabel(line)
+            lbl.setStyleSheet("color:#2e7d32;font-size:13px;line-height:1.6;")
+            lay.addWidget(lbl)
         return frame
 
     def _today_reminder_text(self) -> str:

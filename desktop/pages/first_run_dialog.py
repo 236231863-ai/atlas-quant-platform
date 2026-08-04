@@ -47,10 +47,27 @@ class FirstRunDialog(QDialog):
         self.purpose = "dashboard"    # dashboard / backtest / reports
         self.lottery = "dlt"          # dlt / ssq
         self.mode = "quick"           # quick / backtest
+        self._completed = False
         self.setWindowTitle("欢迎使用 Atlas Quant Platform")
         self.setFixedSize(560, 460)
+        # v4.6 P3：onboarding_start 事件
+        try:
+            from engine.user_analytics import AnalyticsTracker
+            AnalyticsTracker().record("app_opened", metadata={"onboarding": "start"})
+        except Exception:
+            pass
         self._build()
         self._go(0)
+
+    def reject(self):
+        """用户关闭引导（未完成）→ onboarding_drop。"""
+        if not self._completed:
+            try:
+                from engine.user_analytics import AnalyticsTracker
+                AnalyticsTracker().record("export_clicked", metadata={"onboarding": "drop"})
+            except Exception:
+                pass
+        super().reject()
 
     # ---- 界面构建 ----
     def _build(self):
@@ -161,11 +178,12 @@ class FirstRunDialog(QDialog):
         self._step = idx
         self.stack.setCurrentIndex(idx)
         self.prev_btn.setEnabled(idx > 0)
-        titles = ["第一步：用途选择", "第二步：数据选择", "第三步：分析模式"]
-        self.step_label.setText(f"第 {idx + 1} / 3 步")
+        # v4.6 P3：价值导向步骤
+        titles = ["以后不用记彩票开奖时间", "选择你常买的彩种", "选择你的分析模式"]
+        self.step_label.setText(f"第 {idx + 1} / 3 步 · 30 秒开始")
         self.title.setText(titles[idx])
         if idx == 2:
-            self.next_btn.setText("✓ 完成，开始使用")
+            self.next_btn.setText("✓ 完成，我的彩票已保护")
         else:
             self.next_btn.setText("下一步 →")
         # 默认选中第一个
@@ -205,4 +223,11 @@ class FirstRunDialog(QDialog):
         p.first_run_completed = True
         p.data_lottery = self.lottery
         save_profile(p)
+        # v4.6 P3：onboarding_complete 事件
+        self._completed = True
+        try:
+            from engine.user_analytics import AnalyticsTracker
+            AnalyticsTracker().record("claim_completed", metadata={"onboarding": "complete"})
+        except Exception:
+            pass
         self.accept()

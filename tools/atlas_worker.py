@@ -22,21 +22,32 @@ for _p in (_ROOT, os.path.join(_ROOT, "desktop")):
 
 
 def sync_once() -> dict:
-    """同步一次所有彩种。"""
+    """同步一次所有彩种 + 按提醒计划发送开奖前提醒。"""
     from engine.live_draw import LiveDrawService
+    from engine.draw_monitor.notifier import WindowsNotifier
+    from engine.draw_monitor.reminder_schedule import ReminderScheduler
     svc = LiveDrawService()
     events = svc.sync_all()
+    notifier = WindowsNotifier()
     summary = {"dlt": "ok", "ssq": "ok"}
     for ev in events:
         summary[ev.lottery] = f"{ev.event_type}" + (f":{ev.issue}" if ev.issue else "")
-        # v4.5 P3：新开奖 → 后台通知（开奖/中奖/待兑奖）
+        # v4.5 P3：新开奖 → 后台通知
         if ev.event_type == "draw_updated" and ev.issue:
             try:
-                from engine.draw_monitor.notifier import WindowsNotifier
-                n = WindowsNotifier()
-                n.notify_draw_reminder(ev.lottery_name, ev.issue)
+                notifier.notify_draw_reminder(ev.lottery_name, ev.issue)
             except Exception:
                 pass
+    # v4.6 P2：开奖前 24h/3h 提醒（计划任务唤起时按计划发，去重）
+    for lottery in ("dlt", "ssq"):
+        try:
+            due = ReminderScheduler.due_reminders(lottery)
+            for plan in due:
+                notifier.notify(plan.title, plan.message, kind=plan.kind)
+                summary[lottery] += f"+{plan.kind}"
+            ReminderScheduler.mark_reminders_sent(due)
+        except Exception:
+            pass
     return summary
 
 

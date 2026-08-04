@@ -1,5 +1,19 @@
 # Atlas Quant Platform Changelog
 
+## [v4.6.0] - 2026-08-04
+### 真实用户运营验证阶段
+### Added
+- engine/user_analytics: AnalyticsTracker（8类事件+premium事件）、FunnelBuilder（漏斗）、RetentionBuilder（D1/D3/D7）
+- engine/draw_monitor/reminder_schedule: ReminderScheduler（开奖前24h/3h + 开奖后提醒，Task Scheduler 唤起）
+- 首次引导价值导向升级（欢迎文案 + onboarding start/complete/drop 事件）
+- 首页兑奖汇总卡片（待开奖/已中奖/待领取金额）
+- engine/asset_center/monthly: MonthlyReportBuilder（月度购买/中奖/净收益 + 诚实负期望）
+- engine/premium/feature_test: PremiumFeatureTest（4高级功能 + premium_view/click 埋点，不开发支付）
+### Changed
+- Version 4.6.0 (window title)
+### Tests
+- tests/v460 新增 1076 场景（≥1000），覆盖用户事件/后台提醒/首次启动/兑奖/资产/商业化
+
 ## [v4.5.0] - 2026-08-04
 ### 可信开奖数据与用户留存系统
 ### Added
