@@ -141,6 +141,13 @@ a = Analysis(
         'engine.user_analytics.retention',
         'engine.asset_center.monthly',
         'engine.premium.feature_test',
+        # v4.7 个人彩票行为分析
+        'engine.behavior_analysis',
+        'engine.behavior_analysis.analysis',
+        'engine.behavior_analysis.score',
+        'engine.behavior_analysis.weekly',
+        'engine.strategy_review',
+        'engine.strategy_review.review',
     ],
     hookspath=[],
     hooksconfig={},

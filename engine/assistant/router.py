@@ -86,15 +86,17 @@ class AssistantIntentRouter:
         if confirm is not None:
             return confirm
 
-        # 优先级 2：业务工具（personal/quant 强意图词加权）
-        from .registry import QUANT_STRONG_WORDS, PERSONAL_STRONG_WORDS
+        # 优先级 2：业务工具（personal/quant/behavior 强意图词加权）
+        from .registry import QUANT_STRONG_WORDS, PERSONAL_STRONG_WORDS, BEHAVIOR_STRONG_WORDS
         ql = query.lower()
         best_tool = ""
         best_hits = 0
         matched = []
         for tool in self.registry.all():
             hits = sum(1 for k in tool.keywords if k in ql)
-            if tool.name == "personal_analyze":
+            if tool.name == "behavior_analyze":
+                hits += sum(2 for k in BEHAVIOR_STRONG_WORDS if k in ql)
+            elif tool.name == "personal_analyze":
                 hits += sum(2 for k in PERSONAL_STRONG_WORDS if k in ql)
             elif tool.name == "quant_analyze":
                 hits += sum(1 for k in QUANT_STRONG_WORDS if k in ql)

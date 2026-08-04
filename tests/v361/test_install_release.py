@@ -71,7 +71,7 @@ def test_desktop_spec_content(spec_file, needle):
 # ---------- 版本一致性 ----------
 @pytest.mark.parametrize("path,needle", [
     ("pyproject.toml", "4.0.0"),
-    ("desktop/windows/main_window.py", "v4.6.0"),
+    ("desktop/windows/main_window.py", "v4.7.0"),
     ("CHANGELOG.md", "4.0.0"),
 ])
 def test_version_consistency(path, needle):

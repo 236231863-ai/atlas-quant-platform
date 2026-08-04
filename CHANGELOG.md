@@ -1,5 +1,17 @@
 # Atlas Quant Platform Changelog
 
+## [v4.7.0] - 2026-08-05
+### 个人彩票行为分析助手
+### Added
+- engine/behavior_analysis: BehaviorAnalyzer（10指标投注画像）+ BehaviorScore（四维健康分，非中奖）+ WeeklyReport（每周彩票报告）
+- engine/strategy_review: StrategyReviewer（固定/随机/倍投/重复比例/冷热，不预测）
+- asset_center 升级: AnnualSummary +ROI/最大回撤/中奖分布（年度报告2.0）
+- AI 助手 behavior_analyze 工具（行为画像/健康评分，BEHAVIOR_STRONG_WORDS 加权）
+### Changed
+- Version 4.7.0 (window title)
+### Tests
+- tests/v470 新增 841 场景（≥800），覆盖行为分析/资产ROI/风险评分/AI调用
+
 ## [v4.6.0] - 2026-08-04
 ### 真实用户运营验证阶段
 ### Added

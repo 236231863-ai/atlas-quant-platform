@@ -19,7 +19,7 @@ LOTTERY_NAMES = {"dlt": "大乐透", "ssq": "双色球"}
 
 @dataclass
 class AnnualSummary:
-    """某年度资产总结。"""
+    """某年度资产总结（v4.7 P3：+ROI/最大回撤/中奖分布）。"""
 
     year: int
     tickets: int = 0
@@ -29,10 +29,18 @@ class AnnualSummary:
     max_win: float = 0.0
     active_months: int = 0
     favorite_lottery: str = ""
+    max_drawdown: float = 0.0
+    prize_dist: dict = field(default_factory=dict)
 
     @property
     def net(self) -> float:
         return self.winnings - self.investment
+
+    @property
+    def roi(self) -> float:
+        if self.investment <= 0:
+            return 0.0
+        return self.net / self.investment
 
     def to_dict(self) -> dict:
         return {"year": self.year, "tickets": self.tickets,
@@ -41,7 +49,9 @@ class AnnualSummary:
                 "win_count": self.win_count, "max_win": round(self.max_win, 2),
                 "active_months": self.active_months,
                 "favorite_lottery": self.favorite_lottery,
-                "net": round(self.net, 2)}
+                "net": round(self.net, 2), "roi": round(self.roi, 4),
+                "max_drawdown": round(self.max_drawdown, 2),
+                "prize_dist": dict(self.prize_dist)}
 
 
 @dataclass
@@ -200,6 +210,8 @@ class AssetCenter:
                 a.win_count += 1
                 a.winnings += amt
                 win_amounts.append(amt)
+                level = t.get("prize_level", "") or "中奖"
+                a.prize_dist[level] = a.prize_dist.get(level, 0) + 1
         if win_amounts:
             a.max_win = max(win_amounts)
         months = {(t.get("buy_date") or t.get("saved_at", ""))[:7]
@@ -211,7 +223,25 @@ class AssetCenter:
         cnt = Counter(t.get("lottery", "dlt") for t in year_tickets)
         if cnt:
             a.favorite_lottery = cls._name(cnt.most_common(1)[0][0])
+        # v4.7 P3：最大回撤（累计净收益序列的最大负偏离）
+        a.max_drawdown = cls._max_drawdown(year_tickets)
         return a
+
+    @classmethod
+    def _max_drawdown(cls, year_tickets: List[dict]) -> float:
+        """按时间累计投入/中奖，计算净收益的最大负偏离（最大回撤）。"""
+        spent = 0.0
+        won = 0.0
+        peak = 0.0
+        max_dd = 0.0
+        for t in sorted(year_tickets,
+                        key=lambda x: x.get("buy_date") or x.get("saved_at", "")):
+            spent += float(t.get("cost", 2.0))
+            won += cls._win_of(t)
+            net = won - spent
+            peak = max(peak, net)
+            max_dd = max(max_dd, peak - net)
+        return max_dd
 
     @classmethod
     def risk_line(cls, rep: AssetReport) -> str:

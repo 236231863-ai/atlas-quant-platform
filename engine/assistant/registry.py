@@ -121,6 +121,39 @@ def _report_handler(query: str, user_id: str = "default") -> ToolResult:
     return ToolResult(tool="report", text="报告工具：请到「研究报告」页面一键生成并导出。")
 
 
+def _behavior_analyze_handler(query: str, user_id: str = "default") -> ToolResult:
+    """个人彩票行为分析工具（v4.7 P5）。
+
+    支持：行为画像（behavior_analysis）/ 健康评分（BehaviorScore）。
+    只分析过去行为，不预测。
+    """
+    tickets = []
+    try:
+        from engine.ticket_system import TicketManager
+        mgr = TicketManager()
+        tickets = [t.__dict__ for t in mgr.list_all()]
+    except Exception:
+        pass
+
+    if not tickets:
+        return ToolResult(tool="behavior_analyze", success=False,
+                          text="暂无投注数据。请在「工作台」保存票据后分析行为。", missing=["tickets"])
+
+    try:
+        # 习惯/风险 → 健康评分；否则 → 行为画像
+        if any(k in query for k in ("习惯", "健康", "风险", "评分", "怎么样")):
+            from engine.behavior_analysis import build_behavior_analysis, build_behavior_score
+            rep = build_behavior_analysis(tickets)
+            s = build_behavior_score(rep)
+            return ToolResult(tool="behavior_analyze", text=s.summary_text())
+        from engine.behavior_analysis import build_behavior_analysis
+        rep = build_behavior_analysis(tickets)
+        return ToolResult(tool="behavior_analyze", text=rep.summary_text())
+    except Exception as e:  # noqa: BLE001
+        return ToolResult(tool="behavior_analyze", success=False,
+                          text=f"行为分析失败：{e}")
+
+
 def _personal_analyze_handler(query: str, user_id: str = "default") -> ToolResult:
     """个人决策分析工具（v4.0.0 Phase 5）。
 
@@ -233,6 +266,8 @@ TOOL_KEYWORDS = {
     "quant_analyze": ["分析", "评分", "量化", "组合评分", "概率分析", "资金风险", "重复率",
                       "结构分析", "组合分析", "模拟", "风险", "覆盖", "我的号码", "号码结构",
                       "分析号码", "分析我的"],
+    "behavior_analyze": ["分析我今年", "分析我的彩票", "购彩习惯", "购彩情况", "健康分",
+                         "中奖率", "投注方式", "风险等级", "有没有效果", "亏很多", "画像"],
     "personal_analyze": ["复盘", "我最近", "我一年", "花了多少", "花多少钱", "预算",
                          "我的行为", "投注情况", "买彩票情况", "习惯", "行为分析",
                          "个人报告", "投入多少", "中奖情况", "收益",
@@ -250,11 +285,16 @@ QUANT_STRONG_WORDS = ["风险", "模拟", "结构", "重复率", "覆盖", "组�
 PERSONAL_STRONG_WORDS = ["复盘", "预算", "花了多少", "花多少钱", "我一年", "我最近",
                          "我的行为", "投注情况", "习惯"]
 
+# 行为分析强意图词（v4.7 P5，优先于 personal/quant）
+BEHAVIOR_STRONG_WORDS = ["分析我今年", "购彩习惯", "风险等级", "健康分", "中奖率",
+                         "投注方式", "画像", "亏很多", "有没有效果"]
+
 
 def register_tools() -> ToolRegistry:
     """注册全部业务工具（v4.0.0：personal_analyze 在 quant 之前）。"""
     reg = ToolRegistry()
     reg.register(Tool(name="prize", description="兑奖计算", handler=_prize_handler, keywords=TOOL_KEYWORDS["prize"]))
+    reg.register(Tool(name="behavior_analyze", description="购彩行为分析", handler=_behavior_analyze_handler, keywords=TOOL_KEYWORDS["behavior_analyze"]))
     reg.register(Tool(name="personal_analyze", description="个人决策分析", handler=_personal_analyze_handler, keywords=TOOL_KEYWORDS["personal_analyze"]))
     reg.register(Tool(name="quant_analyze", description="彩票量化分析", handler=_quant_analyze_handler, keywords=TOOL_KEYWORDS["quant_analyze"]))
     reg.register(Tool(name="hot_cold", description="热号/冷号查询", handler=_hot_numbers_handler, keywords=TOOL_KEYWORDS["hot_cold"]))
