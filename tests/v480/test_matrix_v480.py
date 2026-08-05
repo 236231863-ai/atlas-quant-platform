@@ -16,8 +16,9 @@ def nums_text(front, back):
 # ---------- import 纯计算 ----------
 @pytest.mark.parametrize("i", range(40))
 def test_text_parse_front_back(i):
-    t = TextImporter.parse(f"{i+1:02d} 05 12 23 30 + 06 08")
-    assert t["front"][0] == i + 1
+    # 前区第一号在 1-35 合法范围内（i 循环取模，保持 40 个参数）
+    t = TextImporter.parse(f"{i % 35 + 1:02d} 05 12 23 30 + 06 08")
+    assert t["front"][0] == i % 35 + 1
 
 
 @pytest.mark.parametrize("i", range(30))

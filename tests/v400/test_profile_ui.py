@@ -69,7 +69,10 @@ def test_trend_area(window):
 
 
 # ---------- 空数据 ----------
-def test_empty_state(window):
+def test_empty_state(window, ticket_storage):
+    from engine.ticket_system import TicketManager
+    TicketManager().clear()
+    window.profile._refresh()
     p = window.profile
     assert p.ticket_card.value_label.text() == "0"
     assert "暂无" in p.report_area.text() or "0" in p.ticket_card.value_label.text()

@@ -53,11 +53,23 @@ class TextImporter:
     """文本导入：号码串 → 票据。"""
 
     @staticmethod
+    def _valid_range(front, back, lottery: str) -> bool:
+        """校验号码在合法范围内（大乐透 1-35/1-12，双色球 1-33/1-16）。"""
+        if lottery == "dlt":
+            return (all(1 <= n <= 35 for n in front)
+                    and all(1 <= n <= 12 for n in back))
+        if lottery == "ssq":
+            return (all(1 <= n <= 33 for n in front)
+                    and all(1 <= n <= 16 for n in back))
+        return True
+
+    @staticmethod
     def parse(text: str, lottery: str = "dlt", buy_date: str = "") -> Optional[dict]:
         """解析一行号码文本。支持：
         01 05 12 23 30 + 06 08
         01 05 12 23 30 06 08
         01,05,12,23,30|06,08
+        越界号码（超出彩种合法范围）拒绝。
         """
         if not text or not text.strip():
             return None
@@ -69,6 +81,8 @@ class TextImporter:
             else:
                 front, back = TextImporter._manual_parse(text, lottery)
             if not front or not back:
+                return None
+            if not TextImporter._valid_range(front, back, lottery):
                 return None
             return {"lottery": lottery, "front": front, "back": back,
                     "buy_date": buy_date, "draw_date": "", "cost": 2.0}

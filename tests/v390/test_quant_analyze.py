@@ -98,13 +98,16 @@ def test_execute_quant_probability():
 
 
 # ---------- 无号码引导 ----------
-def test_quant_no_numbers():
+def test_quant_no_numbers(tmp_path, monkeypatch):
+    # 隔离票据存储，模拟"用户无号码"场景
+    monkeypatch.setenv("ATLAS_STORAGE_DIR", str(tmp_path))
     res = execute_intent("quant_analyze", "分析一下我的号码")
     assert not res.success
     assert "号码" in res.text or "票据" in res.text
 
 
-def test_quant_no_numbers_missing_field():
+def test_quant_no_numbers_missing_field(tmp_path, monkeypatch):
+    monkeypatch.setenv("ATLAS_STORAGE_DIR", str(tmp_path))
     res = execute_intent("quant_analyze", "分析一下我的号码")
     assert "numbers" in res.missing
 

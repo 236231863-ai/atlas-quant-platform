@@ -80,7 +80,7 @@ def csv_file(tmp_path):
         w = csv.writer(f)
         w.writerow(["date", "lottery", "numbers", "cost"])
         w.writerow(["2026-08-01", "dlt", "01 02 03 04 05 06 07", "2"])
-        w.writerow(["2026-08-02", "dlt", "11 12 13 14 15 16 17", "4"])
+        w.writerow(["2026-08-02", "dlt", "11 12 13 14 15 01 02", "4"])
     return p
 
 

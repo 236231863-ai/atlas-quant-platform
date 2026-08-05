@@ -21,22 +21,27 @@ class ProfilePage(QWidget):
 
     def _build(self):
         root = QVBoxLayout(self)
-        root.setContentsMargins(24, 20, 24, 20)
-        root.setSpacing(12)
+        root.setContentsMargins(24, 16, 24, 12)
+        root.setSpacing(10)
 
+        # 标题行：左侧标题+副标题，右侧操作按钮（减少垂直占用）
+        top = QHBoxLayout()
+        top.setSpacing(12)
+        title_col = QVBoxLayout()
+        title_col.setSpacing(2)
         header = QLabel("👤 个人中心")
-        header.setStyleSheet("font-size:22px;font-weight:bold;color:#1a1a2e;")
-        root.addWidget(header)
-
+        header.setStyleSheet("font-size:20px;font-weight:bold;color:#1a1a2e;")
+        title_col.addWidget(header)
         sub = QLabel("我的票据 · 投入 · 中奖 · 风险 · 报告 · 趋势")
-        sub.setStyleSheet("color:#666;font-size:12px;")
-        root.addWidget(sub)
+        sub.setStyleSheet("color:#888;font-size:12px;")
+        title_col.addWidget(sub)
+        top.addLayout(title_col, 1)
 
         btn_row = QHBoxLayout()
         btn_row.setSpacing(8)
         refresh = QPushButton("🔄 刷新")
         refresh.setStyleSheet(
-            "QPushButton{background:#2a6df4;color:white;border:none;padding:8px 16px;border-radius:6px;}"
+            "QPushButton{background:#2a6df4;color:white;border:none;padding:6px 14px;border-radius:6px;font-size:12px;}"
         )
         refresh.clicked.connect(self._refresh)
         btn_row.addWidget(refresh)
@@ -45,11 +50,12 @@ class ProfilePage(QWidget):
         export_btn = QPushButton("📄 导出年度报告")
         export_btn.setStyleSheet(
             "QPushButton{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;"
-            "padding:8px 16px;border-radius:6px;}"
+            "padding:6px 14px;border-radius:6px;font-size:12px;}"
         )
         export_btn.clicked.connect(self._export_annual)
         btn_row.addWidget(export_btn)
-        root.addLayout(btn_row)
+        top.addLayout(btn_row)
+        root.addLayout(top)
 
         # 统计卡片区（我的票据/投入/中奖/风险）
         cards = QHBoxLayout()
@@ -63,20 +69,23 @@ class ProfilePage(QWidget):
         root.addLayout(cards)
 
         # v4.2 Phase 1：我的彩票档案（累计购买/中奖/次数/最高奖金/周期/常购彩种）
+        # v4.3 P3：彩票资产中心 —— 两栏并排，减少垂直堆叠
+        info_row = QHBoxLayout()
+        info_row.setSpacing(10)
         self.archive_area = QLabel("档案加载中…")
         self.archive_area.setWordWrap(True)
         self.archive_area.setStyleSheet(
             "background:#f0f7ff;border:1px solid #cfe4ff;border-radius:8px;"
             "padding:10px 12px;color:#1e3a8a;font-size:12px;line-height:1.7;")
-        root.addWidget(self.archive_area)
+        info_row.addWidget(self.archive_area, 1)
 
-        # v4.3 P3：彩票资产中心（累计购买/中奖/净收益/中奖率/风险等级 + 风险提示）
         self.asset_area = QLabel("资产加载中…")
         self.asset_area.setWordWrap(True)
         self.asset_area.setStyleSheet(
             "background:#fff3f0;border:1px solid #ffd0c4;border-radius:8px;"
             "padding:10px 12px;color:#7a1f0d;font-size:12px;line-height:1.7;")
-        root.addWidget(self.asset_area)
+        info_row.addWidget(self.asset_area, 1)
+        root.addLayout(info_row)
 
         # v4.2 Phase 5：Atlas Premium 会员状态
         self.premium_area = QLabel("会员加载中…")
@@ -172,14 +181,11 @@ class ProfilePage(QWidget):
             except Exception:
                 self.archive_area.setText("档案加载中…")
 
-            # v4.3 P3：彩票资产中心（含风险提示）
+            # v4.3 P3：彩票资产中心（summary_text 已含风险等级，不再附加重复 risk_line）
             try:
                 from engine.asset_center import AssetCenter
                 rep = AssetCenter.build(tickets)
-                txt = rep.summary_text()
-                if tickets:
-                    txt += "\n" + AssetCenter.risk_line(rep)
-                self.asset_area.setText(txt)
+                self.asset_area.setText(rep.summary_text())
             except Exception:
                 self.asset_area.setText("资产加载中…")
 
@@ -193,8 +199,8 @@ class ProfilePage(QWidget):
                     prem_txt = f"👑 {tier_name} · 已解锁：自动提醒/无限历史/年度报告/高级复盘"
                 else:
                     locked = [f.name for f in PremiumPlan.features_for("premium")]
-                    prem_txt = (f"💎 {tier_name} · 会员可解锁：{'、'.join(locked)}\n"
-                                f"（会员只解锁数据服务，不包含任何预测功能）")
+                    prem_txt = (f"💎 {tier_name} · 会员可解锁：{'、'.join(locked)}"
+                                f"（仅数据服务，不含预测）")
                 self.premium_area.setText(prem_txt)
             except Exception:
                 pass
