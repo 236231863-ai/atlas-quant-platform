@@ -13,9 +13,20 @@ from __future__ import annotations
 import csv
 import os
 from dataclasses import dataclass, field
+from datetime import date
 from typing import List, Optional
 
 LOTTERY_NAMES = {"dlt": "大乐透", "ssq": "双色球"}
+
+
+def fill_dates(buy_date: str, lottery: str) -> tuple:
+    """补全购买/开奖日期：购买日期空→今天；开奖日期=购买日后最近开奖日。"""
+    from engine.ticket_system.schedule import LotterySchedule
+    if not buy_date:
+        buy_date = date.today().isoformat()
+    draw_date = LotterySchedule.next_draw_date(lottery, buy_date) or ""
+    return buy_date, draw_date
+
 
 
 @dataclass
@@ -116,8 +127,9 @@ class TextImporter:
             if not ticket:
                 rep.skipped += 1
                 continue
+            bd, dd = fill_dates(ticket["buy_date"], ticket["lottery"])
             added = mgr.add(ticket["lottery"], ticket["front"], ticket["back"],
-                            buy_date=ticket["buy_date"], draw_date="",
+                            buy_date=bd, draw_date=dd,
                             cost=ticket["cost"])
             rep.tickets.append(added.__dict__)
             rep.total_imported += 1
@@ -154,9 +166,10 @@ class CSVImporter:
                     except ValueError:
                         ticket["cost"] = 2.0
                     from engine.ticket_system import TicketManager
+                    bd, dd = fill_dates(date_s, ticket["lottery"])
                     t = TicketManager().add(ticket["lottery"], ticket["front"],
-                                            ticket["back"], buy_date=date_s,
-                                            draw_date="", cost=ticket["cost"])
+                                            ticket["back"], buy_date=bd,
+                                            draw_date=dd, cost=ticket["cost"])
                     rep.tickets.append(t.__dict__)
                     rep.total_imported += 1
         except Exception as e:  # noqa: BLE001
