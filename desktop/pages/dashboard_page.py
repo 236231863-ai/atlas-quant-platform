@@ -442,12 +442,18 @@ class DashboardPage(QWidget):
         # 下一开奖
         next_dlt = LotterySchedule.next_draw_date("dlt", today)
         next_ssq = LotterySchedule.next_draw_date("ssq", today)
-        # 数据可信
+        # 数据可信（v4.9 P2：明确 🟢/🟡 状态 + 更新时间 + 来源 + 失败原因，不伪装实时）
         try:
             h = DataHealthCenter.check("dlt")
-            health_txt = f"数据可信 {h.level} 级 · 最新 {h.latest_issue}（{h.draw_date}）· {h.age_text}"
+            status_icon = "🟢" if h.level == "A" else ("🟡" if h.level in ("B", "C") else "🔴")
+            if h.level == "D":
+                health_txt = (f"{status_icon} 数据可信 D 级：数据异常（暂未更新）· 最后可信数据：{h.draw_date or '—'}"
+                              f" · 原因：{h.message}")
+            else:
+                health_txt = (f"{status_icon} 数据可信 {h.level} 级 {h.message} · 最新期 {h.latest_issue}（{h.draw_date}）"
+                              f" · 更新时间 {h.updated_at or '—'} · 来源 {h.source}")
         except Exception:
-            health_txt = "数据状态未知"
+            health_txt = "🟡 数据可信：状态未知"
         # 待兑奖
         tm = TicketManager()
         tks = [t.__dict__ for t in tm.list_all()]

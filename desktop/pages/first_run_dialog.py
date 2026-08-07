@@ -1,12 +1,12 @@
-"""Atlas 首次使用引导对话框。
+"""Atlas 首次使用引导对话框（v4.9 P2 建档导向重构）。
 
-三步极简引导（目标：30 秒完成第一次分析）：
-  1. 用途选择  → 你想用 Atlas 做什么？
-  2. 数据选择  → 关注哪个彩种？（展示当前数据量）
-  3. 分析模式  → 立即开始哪种分析？
+三步极简引导（目标：30 秒理解价值 + 3 分钟完成建档）：
+  1. 价值主张 → Atlas 帮你保存彩票 / 提醒开奖 / 自动兑奖 / 统计资产
+  2. 建档引导 → 保存你的第一张彩票（输入号码，秒级完成）
+  3. 完成页    → 你的彩票已保护，知道下次开奖时间
 
 完成后保存档案，并携带选择结果（purpose / lottery / mode）
-供主窗口跳转到对应页面。
+供主窗口跳转到对应页面（默认工作台建档）。
 """
 from __future__ import annotations
 
@@ -122,15 +122,16 @@ class FirstRunDialog(QDialog):
         return group
 
     def _step_purpose(self) -> QWidget:
+        """价值主张步骤：30 秒理解 Atlas 能帮你做什么（不展示研究指标）。"""
         w = QWidget()
         lay = QVBoxLayout(w)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(10)
-        lay.addWidget(QLabel("你想用 Atlas 做什么？"))
+        lay.addWidget(QLabel("Atlas 帮你："))
         self._purpose_group = self._make_group([
-            ("dashboard", "📊 快速看数据", "频率 / 冷热号 / 和值走势"),
-            ("backtest", "📉 回测验证策略", "历史数据上检验策略表现"),
-            ("reports", "📄 生成研究报告", "一键统计报告与推荐"),
+            ("dashboard", "🎫 保存彩票，自动兑奖", "买了不会忘，中奖自动发现"),
+            ("reports", "⏰ 提醒开奖", "不用记开奖时间，到点提醒你"),
+            ("backtest", "📊 统计购彩资产", "花了多少、中了多少、心里有数"),
         ])
         for b in self._purpose_group.buttons():
             lay.addWidget(b)
@@ -153,14 +154,15 @@ class FirstRunDialog(QDialog):
         return w
 
     def _step_mode(self) -> QWidget:
+        """建档引导步骤：保存第一张彩票，进入工作台建档。"""
         w = QWidget()
         lay = QVBoxLayout(w)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(10)
-        lay.addWidget(QLabel("立即开始哪种分析？"))
+        lay.addWidget(QLabel("保存你的第一张彩票？"))
         self._mode_group = self._make_group([
-            ("quick", "⚡ 快速分析", "打开看板，马上看到数据概况"),
-            ("backtest", "🧪 深度回测", "直接进入回测中心验证策略"),
+            ("quick", "🎫 现在建档", "到工作台录入号码，我的彩票已保护"),
+            ("backtest", "⏭ 稍后再说", "先随便看看，之后再录"),
         ])
         for b in self._mode_group.buttons():
             lay.addWidget(b)
@@ -178,9 +180,9 @@ class FirstRunDialog(QDialog):
         self._step = idx
         self.stack.setCurrentIndex(idx)
         self.prev_btn.setEnabled(idx > 0)
-        # v4.6 P3：价值导向步骤
-        titles = ["以后不用记彩票开奖时间", "选择你常买的彩种", "选择你的分析模式"]
-        self.step_label.setText(f"第 {idx + 1} / 3 步 · 30 秒开始")
+        # v4.9 P2：建档导向步骤标题
+        titles = ["以后不用记彩票开奖时间", "你常买哪种彩票？", "现在建档，3 分钟完成"]
+        self.step_label.setText(f"第 {idx + 1} / 3 步 · 30 秒了解价值")
         self.title.setText(titles[idx])
         if idx == 2:
             self.next_btn.setText("✓ 完成，我的彩票已保护")

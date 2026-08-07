@@ -78,11 +78,14 @@ class MainWindow(QMainWindow):
         self.strategy.run_backtest_requested.connect(self._run_backtest_from_strategy)
         self.workbench.quant_requested.connect(lambda: self.switch_page("量化中心"))
 
-        # 首次引导后按用户选择跳转（30 秒上手）
+        # 首次引导后跳转（v4.9 P2：默认进入工作台建档；选择建档则停留工作台）
         if getattr(self, "_first_run_target", None) == "backtest":
-            self.switch_page("回测中心")
+            # 用户选择"稍后再说" → 进入工作台（建档入口），不强制建档
+            self.switch_page("工作台")
         elif getattr(self, "_first_run_target", None) == "reports":
-            self.switch_page("研究报告")
+            self.switch_page("工作台")
+        elif getattr(self, "_first_run_target", None) == "dashboard":
+            self.switch_page("工作台")  # v4.9 P2：首次默认到工作台建档
 
         # 首次使用：自动生成第一份报告（FirstSuccessFlow）
         if getattr(self, "_is_first_run", False):
@@ -191,11 +194,8 @@ class MainWindow(QMainWindow):
 
             dlg = FirstRunDialog(self.profile, self)
             dlg.exec()
-            # 记录引导选择：用途=backtest/reports 时跳对应页，其余到 Dashboard
-            self._first_run_target = (
-                "backtest" if dlg.purpose == "backtest" or dlg.mode == "backtest"
-                else ("reports" if dlg.purpose == "reports" else "dashboard")
-            )
+            # 记录引导选择（v4.9 P2：首次一律到工作台建档，让用户完成第一次保存）
+            self._first_run_target = "dashboard"
             self._is_first_run = True
             self.profile = load_profile()
 
