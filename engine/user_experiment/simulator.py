@@ -18,7 +18,11 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional
 
-from engine.user_experiment.events import ExperimentEvent, ExperimentTracker
+from engine.user_experiment.events import (
+    ExperimentEvent,
+    ExperimentTracker,
+    SOURCE_SIMULATION,
+)
 from engine.user_experiment.funnel import ExperimentFunnel, ExperimentFunnelReport
 from engine.user_experiment.metrics import ValidationMetrics, ValidationMetricsBuilder
 from engine.user_experiment.retention import (
@@ -174,10 +178,10 @@ class UserBehaviorSimulator:
         all_events: List[ExperimentEvent] = []
         for u in users:
             all_events.extend(self.generate_path(u, config, experiment_id))
-            # 写入持久化（模拟真实采集）
+            # 写入持久化（标记 SIMULATION，禁止与真实数据混合统计）
             for e in all_events:
                 tracker.record(e.event_name, e.user_id, e.experiment_id,
-                               e.source, e.metadata)
+                               SOURCE_SIMULATION, e.metadata)
 
         funnel = ExperimentFunnel.build(all_events)
         retention = ExperimentRetentionBuilder.build(all_events)

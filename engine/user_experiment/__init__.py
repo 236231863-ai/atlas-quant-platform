@@ -9,8 +9,11 @@
 from engine.user_experiment.events import (
     EXPERIMENT_EVENTS,
     MILESTONES,
+    SOURCE_REAL,
+    SOURCE_SIMULATION,
     ExperimentEvent,
     ExperimentTracker,
+    normalize_source,
 )
 from engine.user_experiment.funnel import (
     ExperimentFunnel,
@@ -28,6 +31,12 @@ from engine.user_experiment.metrics import (
     ValidationMetricsBuilder,
     build_metrics,
 )
+from engine.user_experiment.feedback import (
+    UNINSTALL_REASONS,
+    USE_REASONS,
+    UserFeedback,
+    UserFeedbackSurvey,
+)
 from engine.user_experiment.simulator import (
     SimConfig,
     SimUser,
@@ -35,9 +44,12 @@ from engine.user_experiment.simulator import (
 )
 
 __all__ = [
-    "EXPERIMENT_EVENTS", "MILESTONES", "ExperimentEvent", "ExperimentTracker",
+    "EXPERIMENT_EVENTS", "MILESTONES",
+    "SOURCE_REAL", "SOURCE_SIMULATION", "normalize_source",
+    "ExperimentEvent", "ExperimentTracker",
     "ExperimentFunnel", "ExperimentFunnelReport", "build_funnel",
     "ExperimentRetention", "ExperimentRetentionBuilder", "build_retention",
     "ValidationMetric", "ValidationMetrics", "ValidationMetricsBuilder",
     "build_metrics", "SimConfig", "SimUser", "UserBehaviorSimulator",
+    "UNINSTALL_REASONS", "USE_REASONS", "UserFeedback", "UserFeedbackSurvey",
 ]

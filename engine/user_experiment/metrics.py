@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from engine.user_experiment.events import ExperimentTracker
+from engine.user_experiment.events import ExperimentTracker, SOURCE_REAL
 from engine.user_experiment.funnel import ExperimentFunnel, ExperimentFunnelReport
 from engine.user_experiment.retention import (
     ExperimentRetention,
@@ -72,15 +72,20 @@ class ValidationMetricsBuilder:
     def build(cls, events: Optional[list] = None,
               experiment_id: Optional[str] = None,
               retention: Optional[ExperimentRetention] = None,
-              funnel: Optional[ExperimentFunnelReport] = None) -> ValidationMetrics:
+              funnel: Optional[ExperimentFunnelReport] = None,
+              source: Optional[str] = SOURCE_REAL) -> ValidationMetrics:
         if events is None:
             events = ExperimentTracker().all()
         if experiment_id:
             events = [e for e in events if e.experiment_id == experiment_id]
+        if source is not None:
+            from engine.user_experiment.events import normalize_source
+            events = [e for e in events
+                      if normalize_source(e.source) == source]
         if funnel is None:
-            funnel = ExperimentFunnel.build(events)
+            funnel = ExperimentFunnel.build(events, source=None)
         if retention is None:
-            retention = ExperimentRetentionBuilder.build(events)
+            retention = ExperimentRetentionBuilder.build(events, source=None)
 
         # 触达用户
         reached: dict = {}

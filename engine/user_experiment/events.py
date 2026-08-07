@@ -30,6 +30,11 @@ EXPERIMENT_EVENTS = (
     "weekly_return",
 )
 
+# 数据来源标记（v4.9 P3：禁止混合统计）
+SOURCE_REAL = "REAL"              # 真实用户
+SOURCE_SIMULATION = "SIMULATION"  # 模拟用户
+SOURCE_DESKTOP_LEGACY = "desktop" # 旧版埋点（视为真实桌面使用）
+
 # 里程碑：首次发生时间
 MILESTONES = {
     "first_open_at": "app_open",
@@ -37,6 +42,15 @@ MILESTONES = {
     "first_prize_checked_at": "claim_checked",
     "first_report_viewed_at": "report_viewed",
 }
+
+
+def normalize_source(source: str) -> str:
+    """统一数据来源标记：REAL / SIMULATION（模块级，供各模块复用）。"""
+    if not source:
+        return SOURCE_REAL
+    if source == SOURCE_SIMULATION:
+        return SOURCE_SIMULATION
+    return SOURCE_REAL  # desktop 及一切非 SIMULATION 视为真实使用
 
 
 @dataclass
@@ -209,3 +223,65 @@ class ExperimentTracker:
                 os.remove(self._path)
         except OSError:
             pass
+
+    # ---- 数据来源标记（v4.9 P3）----
+    @staticmethod
+    def normalize_source(source: str) -> str:
+        """统一数据来源标记：REAL / SIMULATION。"""
+        return normalize_source(source)
+
+    def real_events(self, experiment_id: Optional[str] = None) -> List[ExperimentEvent]:
+        """仅真实用户事件（REAL，禁止混合 SIMULATION）。"""
+        return [e for e in self.all()
+                if self.normalize_source(e.source) == SOURCE_REAL
+                and (experiment_id is None or e.experiment_id == experiment_id)]
+
+    def simulation_events(self, experiment_id: Optional[str] = None) -> List[ExperimentEvent]:
+        """仅模拟用户事件（SIMULATION）。"""
+        return [e for e in self.all()
+                if self.normalize_source(e.source) == SOURCE_SIMULATION
+                and (experiment_id is None or e.experiment_id == experiment_id)]
+
+    def import_real_events(self, jsonl_path: str,
+                           experiment_id: str = "real_users") -> int:
+        """从真实埋点文件（analytics_v46 / events_v43 jsonl）导入真实用户事件。
+
+        事件名映射：与实验事件集对齐；不认识的旧事件名忽略。
+        全部标记 SOURCE_REAL，写入实验存储（不去重，追加真实记录）。
+        返回导入条数。
+        """
+        imported = 0
+        if not os.path.exists(jsonl_path):
+            return 0
+        alias = {
+            "app_opened": "app_open",
+            "ticket_checked": "claim_checked",
+            "reminder_clicked": "draw_reminder_clicked",
+        }
+        try:
+            with open(jsonl_path, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        d = json.loads(line)
+                    except (json.JSONDecodeError, TypeError):
+                        continue
+                    name = alias.get(d.get("event_name"), d.get("event_name"))
+                    if name not in EXPERIMENT_EVENTS:
+                        continue
+                    ev = ExperimentEvent(
+                        event_name=name,
+                        experiment_id=experiment_id,
+                        user_id=d.get("user_id", "default"),
+                        timestamp=d.get("timestamp", ""),
+                        source=SOURCE_REAL,
+                        metadata=d.get("metadata") or {},
+                    )
+                    with open(self._path, "a", encoding="utf-8") as out:
+                        out.write(json.dumps(ev.to_dict(), ensure_ascii=False) + "\n")
+                    imported += 1
+        except OSError:
+            return 0
+        return imported

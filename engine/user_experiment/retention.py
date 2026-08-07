@@ -9,7 +9,11 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
-from engine.user_experiment.events import ExperimentTracker
+from engine.user_experiment.events import (
+    ExperimentTracker,
+    normalize_source,
+    SOURCE_REAL,
+)
 
 
 @dataclass
@@ -53,8 +57,9 @@ class ExperimentRetentionBuilder:
     def build(cls, events: Optional[list] = None,
               experiment_id: Optional[str] = None,
               use_weekly_return: bool = False,
-              max_day: int = 7) -> ExperimentRetention:
-        """从事件构建留存。
+              max_day: int = 7,
+              source: Optional[str] = SOURCE_REAL) -> ExperimentRetention:
+        """从事件构建留存。默认只统计真实用户（REAL）。
 
         use_weekly_return=True 时，活跃判定同时计入 weekly_return 事件
         （周回访也算活跃）；否则仅统计 app_open。
@@ -63,6 +68,9 @@ class ExperimentRetentionBuilder:
             events = ExperimentTracker().all()
         if experiment_id:
             events = [e for e in events if e.experiment_id == experiment_id]
+        if source is not None:
+            events = [e for e in events
+                      if normalize_source(e.source) == source]
 
         active_events = [e for e in events
                          if e.event_name == "app_open"

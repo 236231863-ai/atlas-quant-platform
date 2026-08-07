@@ -8,7 +8,11 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from engine.user_experiment.events import ExperimentTracker
+from engine.user_experiment.events import (
+    ExperimentTracker,
+    normalize_source,
+    SOURCE_REAL,
+)
 
 # 漏斗阶段（事件名, 中文标签）
 FUNNEL_STAGES = (
@@ -62,11 +66,16 @@ class ExperimentFunnel:
 
     @classmethod
     def build(cls, events: Optional[list] = None,
-              experiment_id: Optional[str] = None) -> ExperimentFunnelReport:
+              experiment_id: Optional[str] = None,
+              source: Optional[str] = SOURCE_REAL) -> ExperimentFunnelReport:
+        """构建漏斗。默认只统计真实用户（REAL）；source=None 统计全部（不推荐混用）。"""
         if events is None:
             events = ExperimentTracker().all()
         if experiment_id:
             events = [e for e in events if e.experiment_id == experiment_id]
+        if source is not None:
+            events = [e for e in events
+                      if normalize_source(e.source) == source]
 
         # 每阶段触达用户
         reached: dict = {}
