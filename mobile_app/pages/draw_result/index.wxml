@@ -1,0 +1,18 @@
+<!-- 开奖结果页 -->
+<view class="container">
+  <block wx:if="{{loading}}"><text class="loading">核对中...</text></block>
+
+  <block wx:elif="{{result}}">
+    <view class="card {{result.won ? 'won' : 'lost'}}">
+      <text class="big">{{result.won ? '🎉 中奖了' : '本期未中奖'}}</text>
+      <text class="issue">开奖期号：{{issue}}</text>
+      <text class="detail">前区命中 {{result.front_hit}} 个 · 后区命中 {{result.back_hit}} 个</text>
+      <text wx:if="{{result.won}}" class="prize">🏅 {{result.level}} · ¥{{result.amount}}</text>
+    </view>
+    <button class="primary-btn" bindtap="goStats">查看本月统计</button>
+  </block>
+
+  <block wx:else>
+    <view class="card"><text>未找到开奖数据</text></view>
+  </block>
+</view>

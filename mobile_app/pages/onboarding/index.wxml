@@ -1,0 +1,22 @@
+<!-- 引导页：3 屏轮播 + 开始 -->
+<view class="container">
+  <swiper class="swiper" current="{{current}}" bindchange="onSwiperChange">
+    <swiper-item wx:for="{{steps}}" wx:key="title">
+      <view class="slide">
+        <text class="icon">{{item.icon}}</text>
+        <text class="title">{{item.title}}</text>
+        <text class="desc">{{item.desc}}</text>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <view class="dots">
+    <view wx:for="{{steps}}" wx:key="title"
+          class="dot {{index === current ? 'active' : ''}}"></view>
+  </view>
+
+  <button class="primary-btn" bindtap="next" loading="{{loading}}">
+    {{current < steps.length - 1 ? '下一步' : '开始使用 Atlas'}}
+  </button>
+  <text class="disclaimer">不推荐号码，不预测开奖。开奖结果随机。</text>
+</view>

@@ -1,0 +1,7 @@
+.container { padding: 24px; background: #f7f9fc; min-height: 100vh; }
+.card { background: #fff; border-radius: 16px; padding: 48px 24px; text-align: center; margin-top: 40px; }
+.icon { font-size: 60px; display: block; }
+.title { font-size: 20px; font-weight: 700; display: block; margin-top: 12px; }
+.desc { font-size: 14px; color: #666; display: block; margin: 8px 0 24px; }
+.primary-btn { background: #2b6cb0; color: #fff; }
+.tip { font-size: 12px; color: #999; display: block; margin-top: 12px; }

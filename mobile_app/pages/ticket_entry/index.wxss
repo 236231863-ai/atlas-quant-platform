@@ -1,0 +1,7 @@
+.container { padding: 24px; background: #f7f9fc; min-height: 100vh; }
+.card { background: #fff; border-radius: 16px; padding: 24px; }
+.picker { font-size: 18px; font-weight: 600; padding: 16px; background: #f0f4fa; border-radius: 12px; }
+.input { width: 100%; min-height: 140px; margin-top: 16px; font-size: 16px; }
+.hint { color: #e53e3e; font-size: 14px; display: block; margin: 8px 0; }
+.primary-btn { margin-top: 16px; background: #2b6cb0; color: #fff; }
+.tip { display: block; font-size: 12px; color: #999; margin-top: 12px; }

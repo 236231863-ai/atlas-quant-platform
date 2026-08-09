@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "pages/onboarding/index",
+    "pages/my_tickets/index",
+    "pages/ticket_entry/index",
+    "pages/draw_result/index",
+    "pages/reminder_setting/index",
+    "pages/monthly_stats/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "Atlas 彩票管家",
+    "navigationBarBackgroundColor": "#2b6cb0",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f7f9fc"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

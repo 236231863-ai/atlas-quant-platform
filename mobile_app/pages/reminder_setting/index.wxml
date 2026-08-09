@@ -1,0 +1,12 @@
+<!-- 提醒设置页 -->
+<view class="container">
+  <view class="card">
+    <text class="icon">🔔</text>
+    <text class="title">开启开奖提醒</text>
+    <text class="desc">开奖前微信通知你，下期开奖：{{remind_at || '待定'}}</text>
+    <button class="primary-btn" bindtap="enable" loading="{{loading}}">
+      {{enabled ? '✅ 已开启' : '立即开启提醒'}}
+    </button>
+    <text class="tip">开启后开奖日自动推送，中奖第一时间知道</text>
+  </view>
+</view>

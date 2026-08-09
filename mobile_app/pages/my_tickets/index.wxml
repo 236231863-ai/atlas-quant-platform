@@ -1,0 +1,28 @@
+<!-- 我的票（首页） -->
+<view class="container">
+  <view class="header">
+    <text class="title">我的彩票</text>
+    <button class="add-btn" bindtap="add">➕ 录票</button>
+  </view>
+
+  <block wx:if="{{loading}}"><text class="empty">加载中...</text></block>
+  <block wx:elif="{{tickets.length === 0}}">
+    <view class="empty-card">
+      <text class="empty-icon">🎫</text>
+      <text class="empty-text">还没有彩票</text>
+      <text class="empty-desc">录第一张票，开奖自动提醒</text>
+      <button class="primary-btn" bindtap="add">录第一张</button>
+    </view>
+  </block>
+
+  <view wx:else class="list">
+    <view class="ticket" wx:for="{{tickets}}" wx:key="ticket_id"
+          data-id="{{item.ticket_id}}" bindtap="check">
+      <text class="t-lottery">{{item.lottery === 'dlt' ? '大乐透' : '双色球'}}</text>
+      <text class="t-nums">{{item.front.join(' ').replace(/,/g, ' ')}}  +  {{item.back.join(' ').replace(/,/g, ' ')}}</text>
+      <text class="t-date">开奖 {{item.draw_date || '待定'}}</text>
+    </view>
+  </view>
+
+  <button wx:if="{{tickets.length > 0}}" class="ghost-btn" bindtap="goStats">📊 本月统计</button>
+</view>

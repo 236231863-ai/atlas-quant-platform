@@ -1,0 +1,10 @@
+.container { padding: 24px; background: #f7f9fc; min-height: 100vh; }
+.loading { display: block; text-align: center; margin-top: 120px; color: #666; }
+.card { background: #fff; border-radius: 16px; padding: 40px 24px; text-align: center; }
+.card.won { border: 2px solid #38a169; }
+.card.lost { border: 2px solid #e2e8f0; }
+.big { font-size: 26px; font-weight: 700; display: block; }
+.issue { display: block; font-size: 14px; color: #666; margin-top: 12px; }
+.detail { display: block; font-size: 14px; color: #888; margin-top: 8px; }
+.prize { display: block; font-size: 22px; font-weight: 600; color: #38a169; margin-top: 16px; }
+.primary-btn { margin-top: 24px; background: #2b6cb0; color: #fff; }

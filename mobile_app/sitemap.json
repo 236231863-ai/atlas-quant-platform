@@ -1,0 +1,4 @@
+{
+  "desc": "Atlas Mobile MVP 站点地图",
+  "rules": [{ "action": "allow", "page": "*" }]
+}

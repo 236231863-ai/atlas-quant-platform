@@ -12,8 +12,10 @@ from engine.user_experiment.events import (
     MILESTONES,
     SOURCE_REAL,
     SOURCE_SIMULATION,
+    SOURCE_MOBILE,
     ExperimentEvent,
     ExperimentTracker,
+    is_real_source,
     normalize_source,
 )
 from engine.user_experiment.funnel import (
@@ -65,7 +67,8 @@ from engine.user_experiment.reminder_value import (
 
 __all__ = [
     "EXPERIMENT_EVENTS", "MILESTONES",
-    "SOURCE_REAL", "SOURCE_SIMULATION", "normalize_source",
+    "SOURCE_REAL", "SOURCE_SIMULATION", "SOURCE_MOBILE",
+    "is_real_source", "normalize_source",
     "ExperimentEvent", "ExperimentTracker",
     "ExperimentFunnel", "ExperimentFunnelReport", "build_funnel",
     "ExperimentRetention", "ExperimentRetentionBuilder", "build_retention",

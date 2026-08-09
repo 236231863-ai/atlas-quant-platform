@@ -1,0 +1,13 @@
+{
+  "description": "Atlas Mobile MVP - 真实用户验证版",
+  "compileType": "miniprogram",
+  "libVersion": "3.0.0",
+  "appid": "touristappid",
+  "projectname": "atlas-mobile-mvp",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "minified": true
+  }
+}

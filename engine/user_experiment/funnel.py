@@ -10,6 +10,7 @@ from typing import List, Optional
 
 from engine.user_experiment.events import (
     ExperimentTracker,
+    is_real_source,
     normalize_source,
     SOURCE_REAL,
 )
@@ -74,8 +75,13 @@ class ExperimentFunnel:
         if experiment_id:
             events = [e for e in events if e.experiment_id == experiment_id]
         if source is not None:
-            events = [e for e in events
-                      if normalize_source(e.source) == source]
+            if source == SOURCE_REAL:
+                # REAL 口径 = REAL + MOBILE（移动端真实用户计入真实统计）
+                events = [e for e in events
+                          if is_real_source(normalize_source(e.source))]
+            else:
+                events = [e for e in events
+                          if normalize_source(e.source) == source]
 
         # 每阶段触达用户
         reached: dict = {}

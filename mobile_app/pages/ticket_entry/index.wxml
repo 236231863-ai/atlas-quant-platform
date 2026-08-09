@@ -1,0 +1,13 @@
+<!-- 录票页 -->
+<view class="container">
+  <view class="card">
+    <picker mode="selector" range="{{['dlt','ssq']}}" bindchange="onLotteryChange">
+      <view class="picker">{{lottery === 'dlt' ? '🎯 大乐透（前5+后2）' : '🔴 双色球（红6+蓝1）'}}</view>
+    </picker>
+    <textarea class="input" placeholder="粘贴号码，例如：&#10;06 16 21 30 34 + 06 12"
+              value="{{text}}" bindinput="onInput" maxlength="500" auto-height></textarea>
+    <text class="hint">{{hint}}</text>
+    <button class="primary-btn" bindtap="save" loading="{{saving}}">➕ 保存彩票</button>
+    <text class="tip">支持每行一组，+ 或空格分隔；开奖提醒保存后开启</text>
+  </view>
+</view>

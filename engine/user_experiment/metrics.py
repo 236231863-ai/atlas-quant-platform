@@ -79,9 +79,14 @@ class ValidationMetricsBuilder:
         if experiment_id:
             events = [e for e in events if e.experiment_id == experiment_id]
         if source is not None:
-            from engine.user_experiment.events import normalize_source
-            events = [e for e in events
-                      if normalize_source(e.source) == source]
+            from engine.user_experiment.events import is_real_source, normalize_source
+            if source == SOURCE_REAL:
+                # REAL 口径 = REAL + MOBILE（移动端真实用户计入真实统计）
+                events = [e for e in events
+                          if is_real_source(normalize_source(e.source))]
+            else:
+                events = [e for e in events
+                          if normalize_source(e.source) == source]
         if funnel is None:
             funnel = ExperimentFunnel.build(events, source=None)
         if retention is None:

@@ -3,7 +3,7 @@
 验证 Sprint 基础设施：为每个用户分配 experiment_id，记录关键行为事件，
 并支持里程碑（首次打开/首次保存/首次查看中奖）与 CSV 导出。
 
-事件集（v4.9 P1 + v4.9.1 P1 扩展）：
+事件集（v4.9 P1 + v4.9.1 P1 扩展 + Mobile MVP 扩展）：
   app_install              安装完成
   app_open                 打开应用
   onboarding_start         引导开始
@@ -21,6 +21,11 @@
   premium_view             查看 Premium 页
   premium_click            点击付费意愿
   weekly_return            周回访（触发一次=本周活跃）
+  mobile_opened            小程序打开（Mobile MVP）
+  mobile_ticket_saved      小程序保存彩票
+  mobile_reminder_enabled  小程序开启提醒
+  mobile_draw_viewed       小程序查看开奖
+  mobile_feedback_submitted 小程序提交反馈
 """
 from __future__ import annotations
 
@@ -39,12 +44,24 @@ EXPERIMENT_EVENTS = (
     "claim_completed", "asset_viewed", "report_viewed",
     "weekly_report_viewed", "premium_view", "premium_click",
     "weekly_return",
+    # Mobile MVP 事件（v4.9.1 P3）
+    "mobile_opened", "mobile_ticket_saved", "mobile_reminder_enabled",
+    "mobile_draw_viewed", "mobile_feedback_submitted",
 )
 
 # 数据来源标记（v4.9 P3：禁止混合统计）
-SOURCE_REAL = "REAL"              # 真实用户
+SOURCE_REAL = "REAL"              # 真实用户（桌面）
 SOURCE_SIMULATION = "SIMULATION"  # 模拟用户
 SOURCE_DESKTOP_LEGACY = "desktop" # 旧版埋点（视为真实桌面使用）
+SOURCE_MOBILE = "MOBILE"          # 真实用户（移动端/小程序，v4.9.1 P3）
+
+# 真实来源集合（REAL + MOBILE 均为真实统计）
+REAL_SOURCES = (SOURCE_REAL, SOURCE_MOBILE)
+
+
+def is_real_source(source: str) -> bool:
+    """判断是否为真实用户来源（REAL 或 MOBILE）。"""
+    return source in REAL_SOURCES
 
 # 里程碑：首次发生时间
 MILESTONES = {
@@ -62,9 +79,16 @@ MILESTONES = {
 
 
 def normalize_source(source: str) -> str:
-    """统一数据来源标记：REAL / SIMULATION（模块级，供各模块复用）。"""
+    """统一数据来源标记：REAL / MOBILE / SIMULATION（模块级，供各模块复用）。
+
+    - "MOBILE" → SOURCE_MOBILE（独立来源，计入真实统计）
+    - "SIMULATION" → SOURCE_SIMULATION
+    - 其余（desktop / 空 / 未知）→ SOURCE_REAL（视为真实桌面使用）
+    """
     if not source:
         return SOURCE_REAL
+    if source == SOURCE_MOBILE:
+        return SOURCE_MOBILE
     if source == SOURCE_SIMULATION:
         return SOURCE_SIMULATION
     return SOURCE_REAL  # desktop 及一切非 SIMULATION 视为真实使用
@@ -280,9 +304,15 @@ class ExperimentTracker:
         return normalize_source(source)
 
     def real_events(self, experiment_id: Optional[str] = None) -> List[ExperimentEvent]:
-        """仅真实用户事件（REAL，禁止混合 SIMULATION）。"""
+        """仅真实用户事件（REAL + MOBILE，禁止混合 SIMULATION）。"""
         return [e for e in self.all()
-                if self.normalize_source(e.source) == SOURCE_REAL
+                if is_real_source(self.normalize_source(e.source))
+                and (experiment_id is None or e.experiment_id == experiment_id)]
+
+    def mobile_events(self, experiment_id: Optional[str] = None) -> List[ExperimentEvent]:
+        """仅移动端真实用户事件（MOBILE）。"""
+        return [e for e in self.all()
+                if self.normalize_source(e.source) == SOURCE_MOBILE
                 and (experiment_id is None or e.experiment_id == experiment_id)]
 
     def simulation_events(self, experiment_id: Optional[str] = None) -> List[ExperimentEvent]:

@@ -1,0 +1,15 @@
+.container { padding: 16px 24px; background: #f7f9fc; min-height: 100vh; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.title { font-size: 22px; font-weight: 700; }
+.add-btn { background: #2b6cb0; color: #fff; font-size: 14px; border-radius: 10px; padding: 0 16px; }
+.empty { display: block; text-align: center; color: #999; margin-top: 60px; }
+.empty-card { background: #fff; border-radius: 16px; padding: 48px 24px; text-align: center; margin-top: 40px; }
+.empty-icon { font-size: 60px; display: block; }
+.empty-text { font-size: 18px; font-weight: 600; display: block; margin-top: 12px; }
+.empty-desc { font-size: 14px; color: #888; display: block; margin: 8px 0 16px; }
+.primary-btn { background: #2b6cb0; color: #fff; }
+.ticket { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+.t-lottery { font-size: 13px; color: #2b6cb0; font-weight: 600; display: block; }
+.t-nums { font-size: 17px; font-weight: 600; display: block; margin: 6px 0; }
+.t-date { font-size: 13px; color: #888; }
+.ghost-btn { margin-top: 8px; background: #eef4fb; color: #2b6cb0; }

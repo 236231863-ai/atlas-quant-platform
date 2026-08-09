@@ -1,0 +1,11 @@
+<!-- 本月统计页 -->
+<view class="container">
+  <text class="title">本月彩票统计</text>
+  <view class="grid">
+    <view class="stat"><text class="label">本票数</text><text class="value">{{count}}</text></view>
+    <view class="stat"><text class="label">投入</text><text class="value">¥{{total_cost}}</text></view>
+    <view class="stat"><text class="label">中奖</text><text class="value">¥{{total_win}}</text></view>
+    <view class="stat"><text class="label">净额</text><text class="value {{net < 0 ? 'neg' : ''}}">¥{{net}}</text></view>
+  </view>
+  <text class="disclaimer">彩票开奖结果随机，长期投入期望为负。理性购彩。</text>
+</view>
