@@ -14,8 +14,10 @@ import pytest
 
 @pytest.fixture()
 def task_storage(tmp_path, monkeypatch):
-    """每个测试隔离的 PendingTask 存储目录。"""
+    """每个测试隔离的 PendingTask 存储目录（同时隔离 ATLAS_STORAGE_DIR，
+    防止 TicketManager() 等引擎模块落到真实 ~/.atlas 误删用户数据）。"""
     monkeypatch.setenv("ATLAS_TASK_STORAGE_DIR", str(tmp_path))
+    monkeypatch.setenv("ATLAS_STORAGE_DIR", str(tmp_path))
     return str(tmp_path)
 
 
