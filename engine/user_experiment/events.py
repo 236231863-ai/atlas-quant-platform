@@ -3,16 +3,24 @@
 验证 Sprint 基础设施：为每个用户分配 experiment_id，记录关键行为事件，
 并支持里程碑（首次打开/首次保存/首次查看中奖）与 CSV 导出。
 
-事件集（v4.9 P1 验收口径）：
-  app_install            安装完成
-  app_open               打开应用
-  ticket_saved           保存彩票
-  draw_reminder_clicked  点击开奖提醒
-  claim_checked          查看兑奖结果
-  report_viewed          查看报告
-  premium_view           查看 Premium 页
-  premium_click          点击付费意愿
-  weekly_return          周回访（触发一次=本周活跃）
+事件集（v4.9 P1 + v4.9.1 P1 扩展）：
+  app_install              安装完成
+  app_open                 打开应用
+  onboarding_start         引导开始
+  ticket_saved             保存彩票
+  reminder_enabled         开启开奖提醒
+  reminder_sent            发送开奖提醒
+  draw_reminder_clicked    点击开奖提醒
+  draw_checked             查看开奖结果
+  draw_checked_after_reminder  收到提醒后查看开奖
+  claim_checked            查看兑奖结果
+  claim_completed          兑奖完成
+  asset_viewed             查看资产
+  report_viewed            查看报告
+  weekly_report_viewed     查看周报
+  premium_view             查看 Premium 页
+  premium_click            点击付费意愿
+  weekly_return            周回访（触发一次=本周活跃）
 """
 from __future__ import annotations
 
@@ -25,8 +33,11 @@ from typing import Dict, List, Optional
 
 # 实验事件集
 EXPERIMENT_EVENTS = (
-    "app_install", "app_open", "ticket_saved", "draw_reminder_clicked",
-    "claim_checked", "report_viewed", "premium_view", "premium_click",
+    "app_install", "app_open", "onboarding_start", "ticket_saved",
+    "reminder_enabled", "reminder_sent", "draw_reminder_clicked",
+    "draw_checked", "draw_checked_after_reminder", "claim_checked",
+    "claim_completed", "asset_viewed", "report_viewed",
+    "weekly_report_viewed", "premium_view", "premium_click",
     "weekly_return",
 )
 
@@ -38,9 +49,15 @@ SOURCE_DESKTOP_LEGACY = "desktop" # 旧版埋点（视为真实桌面使用）
 # 里程碑：首次发生时间
 MILESTONES = {
     "first_open_at": "app_open",
+    "first_onboarding_at": "onboarding_start",
     "first_ticket_saved_at": "ticket_saved",
+    "first_reminder_enabled_at": "reminder_enabled",
+    "first_draw_checked_at": "draw_checked",
     "first_prize_checked_at": "claim_checked",
+    "first_claim_completed_at": "claim_completed",
+    "first_asset_viewed_at": "asset_viewed",
     "first_report_viewed_at": "report_viewed",
+    "first_weekly_report_viewed_at": "weekly_report_viewed",
 }
 
 
@@ -118,17 +135,49 @@ class ExperimentTracker:
                     metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
         return self.record("ticket_saved", user_id, experiment_id, metadata=metadata)
 
+    def onboarding_start(self, user_id: str, experiment_id: str = "default",
+                         metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("onboarding_start", user_id, experiment_id, metadata=metadata)
+
+    def enable_reminder(self, user_id: str, experiment_id: str = "default",
+                        metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("reminder_enabled", user_id, experiment_id, metadata=metadata)
+
+    def reminder_sent(self, user_id: str, experiment_id: str = "default",
+                      metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("reminder_sent", user_id, experiment_id, metadata=metadata)
+
     def reminder_click(self, user_id: str, experiment_id: str = "default",
                        metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
         return self.record("draw_reminder_clicked", user_id, experiment_id, metadata=metadata)
+
+    def check_draw(self, user_id: str, experiment_id: str = "default",
+                   metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("draw_checked", user_id, experiment_id, metadata=metadata)
+
+    def checked_after_reminder(self, user_id: str, experiment_id: str = "default",
+                               metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("draw_checked_after_reminder", user_id, experiment_id, metadata=metadata)
 
     def check_claim(self, user_id: str, experiment_id: str = "default",
                     metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
         return self.record("claim_checked", user_id, experiment_id, metadata=metadata)
 
+    def claim_completed(self, user_id: str, experiment_id: str = "default",
+                        metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("claim_completed", user_id, experiment_id, metadata=metadata)
+
+    def view_asset(self, user_id: str, experiment_id: str = "default",
+                   metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("asset_viewed", user_id, experiment_id, metadata=metadata)
+
     def view_report(self, user_id: str, experiment_id: str = "default",
                     metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
         return self.record("report_viewed", user_id, experiment_id, metadata=metadata)
+
+    def view_weekly_report(self, user_id: str, experiment_id: str = "default",
+                           metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
+        return self.record("weekly_report_viewed", user_id, experiment_id, metadata=metadata)
 
     def premium_view(self, user_id: str, experiment_id: str = "default",
                      metadata: Optional[dict] = None) -> Optional[ExperimentEvent]:
@@ -257,6 +306,10 @@ class ExperimentTracker:
             "app_opened": "app_open",
             "ticket_checked": "claim_checked",
             "reminder_clicked": "draw_reminder_clicked",
+            "onboarding_complete": "onboarding_start",
+            "draw_checked": "draw_checked",
+            "asset_viewed": "asset_viewed",
+            "weekly_report_opened": "weekly_report_viewed",
         }
         try:
             with open(jsonl_path, encoding="utf-8") as f:
