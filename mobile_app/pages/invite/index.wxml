@@ -1,0 +1,23 @@
+<!-- Beta 邀请页 -->
+<view class="container">
+  <view class="hero">
+    <text class="logo">🎫</text>
+    <text class="title">Atlas 彩票管家</text>
+    <text class="badge">Beta 体验版</text>
+    <text class="subtitle">帮购彩者管好每一注彩票</text>
+  </view>
+
+  <view class="features">
+    <view class="feat" wx:for="{{features}}" wx:key="title">
+      <text class="f-icon">{{item.icon}}</text>
+      <view class="f-text">
+        <text class="f-title">{{item.title}}</text>
+        <text class="f-desc">{{item.desc}}</text>
+      </view>
+    </view>
+  </view>
+
+  <button class="primary-btn" bindtap="start">🚀 开始使用 Atlas</button>
+  <text class="tip">3 分钟：录一张票 → 开提醒 → 等开奖</text>
+  <text class="disclaimer">不推荐号码 · 不预测开奖 · 请理性购彩</text>
+</view>
