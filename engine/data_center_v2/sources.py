@@ -282,17 +282,23 @@ class DataSourceManager:
 
     @classmethod
     def from_project(cls, lottery: str = "dlt", base_dir: Optional[str] = None) -> "DataSourceManager":
-        """从项目数据目录构建（用户数据优先，内置回退）。"""
+        """从项目数据目录构建（用户数据优先，内置回退）。
+
+        v4.9.1 修复：优先读用户增量缓存 `~/.atlas/raw/`（含最新开奖，如 26090），
+        其次 `~/.atlas/data/`（旧版），最后项目内置。修复中奖计算漏算最新期的问题。
+        """
         mgr = cls(lottery)
         if base_dir:
             raw = Path(base_dir) / "data" / "raw"
         else:
             raw = Path(__file__).resolve().parent.parent.parent / "data" / "raw"
-        # 用户数据目录优先
-        user_home = Path.home() / ".atlas" / "data"
-        user_file = user_home / f"{lottery}_history.csv"
-        if user_file.exists():
-            mgr.add_csv(str(user_file))
+        # 用户数据目录优先（raw = v4.3.1 增量更新器缓存，data = 旧版）
+        user_home = Path.home() / ".atlas"
+        for sub in ("raw", "data"):
+            user_file = user_home / sub / f"{lottery}_history.csv"
+            if user_file.exists():
+                mgr.add_csv(str(user_file))
+                return mgr
         # 项目 data/raw（真实历史数据或样例）
         cands = [raw / f"{lottery}_history.csv", raw / f"{lottery}_2024_sample.csv"]
         for c in cands:
