@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/terms/index",
     "pages/onboarding/index",
     "pages/my_tickets/index",
     "pages/ticket_entry/index",

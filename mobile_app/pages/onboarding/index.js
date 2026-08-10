@@ -14,6 +14,14 @@ Page({
     loading: false,
   },
 
+  onLoad() {
+    // 协议守卫：未同意协议则回协议页
+    if (!wx.getStorageSync('atlas_terms_agreed')) {
+      wx.redirectTo({ url: '/pages/terms/index' })
+      return
+    }
+  },
+
   onSwiperChange(e) {
     this.setData({ current: e.detail.current })
   },

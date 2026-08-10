@@ -1,0 +1,37 @@
+<!-- 首次使用协议页 -->
+<view class="container">
+  <view class="title-block">
+    <text class="app-name">🎫 Atlas 彩票管家</text>
+    <text class="tagline">帮购彩者管好每一注彩票</text>
+  </view>
+
+  <view class="terms-card">
+    <view class="term">
+      <text class="term-icon">📒</text>
+      <text class="term-text"><text class="bold">彩票记录工具</text>：Atlas 用于记录和管理你的彩票，自动提醒开奖、自动核对中奖，方便你复盘购彩行为。</text>
+    </view>
+    <view class="term">
+      <text class="term-icon">🚫</text>
+      <text class="term-text"><text class="bold">不提供预测</text>：Atlas 不提供任何号码推荐、开奖预测或中奖概率提升服务。</text>
+    </view>
+    <view class="term">
+      <text class="term-icon">⚖️</text>
+      <text class="term-text"><text class="bold">不保证中奖</text>：彩票开奖结果完全随机，任何号码组合理论中奖概率相同。使用 Atlas 不构成任何中奖承诺。</text>
+    </view>
+    <view class="term">
+      <text class="term-icon">🧠</text>
+      <text class="term-text"><text class="bold">自主购彩</text>：是否购买彩票、购买多少完全由你自己决定。请理性购彩，量力而行。彩票长期期望为负。</text>
+    </view>
+  </view>
+
+  <view class="agree-row">
+    <checkbox-group bindchange="onAgreeChange">
+      <label class="agree-label">
+        <checkbox value="agreed" checked="{{agreed}}" /> 我已阅读并同意以上协议
+      </label>
+    </checkbox-group>
+  </view>
+
+  <button class="primary-btn" bindtap="agreeAndContinue" disabled="{{!agreed}}">同意并继续</button>
+  <text class="disclaimer">未成年人不得购买彩票 · 请理性购彩</text>
+</view>

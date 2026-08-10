@@ -45,6 +45,19 @@ MOBILE_EVENTS = (
     EVENT_MOBILE_FEEDBACK_SUBMITTED,
 )
 
+# ---- 数据指标冻结（v4.9.1 P4.5：只采集这 6 项）----
+# 指标名 → 实际事件名（映射到 mobile 事件集）
+FROZEN_METRICS = {
+    "install_completed": "app_install",          # 安装完成（首次授权）
+    "mobile_opened": EVENT_MOBILE_OPENED,         # 打开小程序
+    "ticket_saved": EVENT_MOBILE_TICKET_SAVED,    # 保存彩票
+    "reminder_enabled": EVENT_MOBILE_REMINDER_ENABLED,  # 开启提醒
+    "draw_viewed": EVENT_MOBILE_DRAW_VIEWED,      # 查看开奖
+    "feedback_submitted": EVENT_MOBILE_FEEDBACK_SUBMITTED,  # 提交反馈
+}
+
+FROZEN_METRIC_NAMES = tuple(FROZEN_METRICS.keys())
+
 # 奖级定义（大乐透：前区命中数, 后区命中数）→ (奖级, 奖金)
 # 注意：八等奖/九等奖各有多个命中组合（官方规则）。
 DLT_PRIZE_TABLE = [
@@ -256,15 +269,20 @@ class MobileService:
         return round(f["first_ticket_saved"] / f["registered"], 4)
 
     # ---- 埋点 ----
+    # 允许记录的事件（移动端事件集 + 冻结指标名 + 兼容旧桌面事件）
+    ALLOWED_EVENTS = frozenset(MOBILE_EVENTS) | frozenset((
+        "app_install", "app_open", "onboarding_start", "ticket_saved",
+        "reminder_enabled", "reminder_sent", "draw_reminder_clicked",
+        "draw_checked", "claim_checked", "claim_completed", "asset_viewed",
+        "report_viewed", "weekly_report_viewed", "premium_view", "premium_click",
+        "weekly_return",
+    )) | frozenset(FROZEN_METRIC_NAMES)
+
     def track(self, event_name: str, user_id: str, source: str = "MOBILE",
               metadata: Optional[Dict[str, Any]] = None) -> bool:
-        if event_name not in MOBILE_EVENTS and event_name not in (
-            "app_install", "app_open", "onboarding_start", "ticket_saved",
-            "reminder_enabled", "reminder_sent", "draw_reminder_clicked",
-            "draw_checked", "claim_checked", "claim_completed", "asset_viewed",
-            "report_viewed", "weekly_report_viewed", "premium_view", "premium_click",
-            "weekly_return",
-        ):
+        # 冻结指标名 → 映射为实际 mobile 事件名
+        resolved = FROZEN_METRICS.get(event_name, event_name)
+        if resolved not in self.ALLOWED_EVENTS and resolved not in MOBILE_EVENTS:
             return False
-        self.events.record(event_name, user_id, source=source, metadata=metadata)
+        self.events.record(resolved, user_id, source=source, metadata=metadata)
         return True

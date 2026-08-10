@@ -87,13 +87,19 @@ class WeChatReminderClient:
 
 
 class ReminderDispatcher:
-    """提醒调度：扫描未发送提醒 → 调用微信客户端下发 → 标记 sent。"""
+    """提醒调度：扫描未发送提醒 → 调用微信客户端下发 → 标记 sent + 记录事件。
+
+    v4.9.1 P4.5 数据链路修复：
+      发送成功 → 记录 reminder_sent 行为事件（behavior_events）
+      发送失败 → 保留未发送状态（下次重试），不丢提醒
+    """
 
     def __init__(self, wechat: WeChatReminderClient, reminder_repo,
-                 user_repo):
+                 user_repo, event_repo=None):
         self._wechat = wechat
         self._reminders = reminder_repo
         self._users = user_repo
+        self._events = event_repo  # 可选：BehaviorEventRepository
 
     def dispatch_all(self) -> Dict[str, int]:
         """下发所有未发送提醒，返回 {sent, failed}。"""
@@ -105,6 +111,11 @@ class ReminderDispatcher:
             result = self._wechat.send_draw_reminder(openid, r.issue, r.remind_at)
             if result.get("ok"):
                 self._reminders.mark_sent(r.id)
+                if self._events is not None:
+                    self._events.record(
+                        "reminder_sent", r.user_id, source="MOBILE",
+                        metadata={"reminder_id": r.id, "issue": r.issue},
+                    )
                 sent += 1
             else:
                 failed += 1

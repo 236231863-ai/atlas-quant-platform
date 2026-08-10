@@ -1,0 +1,15 @@
+.container { padding: 32px 24px; background: #f7f9fc; min-height: 100vh; }
+.title-block { text-align: center; margin-bottom: 24px; }
+.app-name { font-size: 24px; font-weight: 700; display: block; }
+.tagline { font-size: 14px; color: #888; display: block; margin-top: 8px; }
+.terms-card { background: #fff; border-radius: 16px; padding: 20px; }
+.term { display: flex; margin-bottom: 16px; }
+.term:last-child { margin-bottom: 0; }
+.term-icon { font-size: 22px; margin-right: 12px; }
+.term-text { font-size: 14px; color: #333; flex: 1; line-height: 1.6; }
+.bold { font-weight: 700; }
+.agree-row { margin: 20px 0 12px; }
+.agree-label { font-size: 14px; }
+.primary-btn { background: #2b6cb0; color: #fff; }
+.primary-btn[disabled] { background: #a0aec0; color: #fff; }
+.disclaimer { display: block; text-align: center; font-size: 12px; color: #999; margin-top: 16px; }
