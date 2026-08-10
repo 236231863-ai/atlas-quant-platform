@@ -1,0 +1,6 @@
+# Atlas Mobile MVP - 生产依赖（精简）
+# 与 requirements.txt 核心一致，不含桌面/AI/前端等非必要依赖
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.5.0
+sqlalchemy>=2.0.0
