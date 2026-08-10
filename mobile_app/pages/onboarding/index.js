@@ -35,17 +35,22 @@ Page({
   },
 
   async start() {
-    // 微信授权登录（openid 由后端以模拟 openid 提供，真实接入 wx.login 后换 code）
+    // 真实微信登录：wx.login → code → 后端 code2session → openid → U_ID
     if (this.data.loading) return
     this.setData({ loading: true })
     try {
-      // 验证阶段：用随机 openid；真实接入改为 wx.login → code → 后端换 openid
-      const openid = 'demo_openid_' + Date.now()
-      const auth = await api.auth(openid, '大乐透', '每周')
-      getApp().setAuth(auth)
-      api.track('mobile_opened', auth.user_id, { page: 'onboarding' })
+      // 1. wx.login 获取临时 code
+      const loginRes = await new Promise((resolve, reject) => {
+        wx.login({ success: resolve, fail: reject })
+      })
+      if (!loginRes.code) throw new Error('wx.login 无 code')
+      // 2. 调后端 /api/auth/wechat/login
+      const auth = await api.wechatLogin(loginRes.code, '大乐透', '每周')
+      getApp().setAuth({ user_id: auth.user_id, openid: auth.openid })
+      api.track('mobile_opened', auth.user_id, { page: 'onboarding', is_new: auth.is_new })
       wx.navigateTo({ url: '/pages/ticket_entry/index' })
     } catch (e) {
+      console.error('登录失败', e)
       wx.showToast({ title: '登录失败，请重试', icon: 'none' })
     } finally {
       this.setData({ loading: false })

@@ -21,9 +21,10 @@ from sqlalchemy.orm import Session
 
 from backend.mobile.db import MobileDB
 from backend.mobile.service import MobileService
-from backend.mobile.wechat import WeChatReminderClient
+from backend.mobile.wechat import WeChatLoginClient, WeChatReminderClient
 
 router = APIRouter(prefix="/api/mobile/v1", tags=["mobile"])
+auth_router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 # 模块级 DB（默认真实文件；测试可通过 api._db = MobileDB.in_memory() 替换）
 _db = MobileDB.file_based()
@@ -76,6 +77,12 @@ class ReminderClickRequest(BaseModel):
     reminder_id: str
 
 
+class WechatLoginRequest(BaseModel):
+    code: str = Field(..., min_length=1, max_length=128)
+    lottery_type: str = "大乐透"
+    purchase_frequency: str = "每周"
+
+
 class EventRequest(BaseModel):
     event_name: str
     user_id: str
@@ -84,6 +91,34 @@ class EventRequest(BaseModel):
 
 
 # ---- Routes ----
+@auth_router.post("/wechat/login")
+def wechat_login(req: WechatLoginRequest, svc: MobileService = Depends(get_service)):
+    """真实微信登录：wx.login code → code2session → openid → 查/建用户。
+
+    - openid 已存在 → 返回原 U_ID（同一微信用户稳定身份）
+    - openid 不存在 → 创建新用户并分配 U_ID
+    """
+    client = WeChatLoginClient()
+    result = client.code2session(req.code)
+    if not result.get("ok") or not result.get("openid"):
+        raise HTTPException(status_code=401, detail=result.get("errmsg", "code_invalid"))
+    openid = result["openid"]
+    user = svc.users.get_by_openid(openid)
+    is_new = user is None
+    if user is None:
+        lottery_type, frequency = svc._normalize(req.lottery_type, req.purchase_frequency)
+        user = svc.users.create(openid, lottery_type, frequency)
+        svc.track("install_completed", user.user_id, source="MOBILE")
+    else:
+        svc.track("mobile_opened", user.user_id, source="MOBILE")
+    return {
+        "user_id": user.user_id,
+        "openid": openid,
+        "is_new": is_new,
+        "mock": result.get("mock", False),
+    }
+
+
 @router.post("/users/auth")
 def auth_user(req: AuthRequest, svc: MobileService = Depends(get_service)):
     user = svc.register_or_get(req.openid, req.lottery_type, req.purchase_frequency)

@@ -23,9 +23,25 @@ function track(event_name, user_id, metadata) {
   }).catch(() => null)
 }
 
+// 真实微信登录（wx.login code → 后端 code2session → openid → U_ID）
+// 注意：auth 路由前缀是 /api/auth（与 mobile 路由分开）
+const AUTH_BASE = BASE.replace('/api/mobile/v1', '/api/auth')
+function wechatLogin(code, lottery_type, purchase_frequency) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: AUTH_BASE + '/wechat/login',
+      method: 'POST',
+      data: { code, lottery_type, purchase_frequency },
+      success: (res) => resolve(res.data),
+      fail: (err) => reject(err),
+    })
+  })
+}
+
 module.exports = {
   auth: (openid, lottery_type, purchase_frequency) =>
     request('/users/auth', 'POST', { openid, lottery_type, purchase_frequency }),
+  wechatLogin,
   saveTicket: (user_id, lottery, text, buy_date, draw_date) =>
     request('/tickets', 'POST', { user_id, lottery, text, buy_date, draw_date }),
   listTickets: (user_id) => request(`/tickets?user_id=${user_id}`, 'GET'),
