@@ -19,7 +19,7 @@
     <view class="ticket" wx:for="{{tickets}}" wx:key="ticket_id"
           data-id="{{item.ticket_id}}" bindtap="check">
       <text class="t-lottery">{{item.lottery === 'dlt' ? '大乐透' : '双色球'}}</text>
-      <text class="t-nums">{{item.front.join(' ').replace(/,/g, ' ')}}  +  {{item.back.join(' ').replace(/,/g, ' ')}}</text>
+      <text class="t-nums">{{item.front.join(' ')}}  +  {{item.back.join(' ')}}</text>
       <text class="t-date">开奖 {{item.draw_date || '待定'}}</text>
     </view>
   </view>

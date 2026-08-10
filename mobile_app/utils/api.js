@@ -1,6 +1,8 @@
 // Atlas Mobile MVP - API 客户端（极简，POST/GET + 埋点上报）
 
-const BASE = 'http://127.0.0.1:8000/api/mobile/v1'
+// 真机预览：指向电脑局域网 IP（手机与电脑同一 WiFi）
+// 正式部署：替换为 HTTPS 域名
+const BASE = 'http://192.168.31.95:8000/api/mobile/v1'
 
 function request(path, method, data) {
   return new Promise((resolve, reject) => {
