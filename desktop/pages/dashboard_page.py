@@ -488,23 +488,23 @@ class DashboardPage(QWidget):
         title.setStyleSheet("font-size:14px;font-weight:bold;color:#1a1a2e;")
         lay.addWidget(title)
 
-        # v4.9.1 修复：最新开奖号码醒目展示（彩色球 + 大字号）
+        # v4.9.1 修复：最新开奖号码醒目展示（彩色球 + 大字号 + 清晰间距）
         try:
             if self.draws:
                 latest = self.draws[-1]
-                front_html = "".join(
-                    f'<span style="background:#2b6cb0;color:#fff;border-radius:50%;'
-                    f'padding:5px 10px;margin:2px;font-size:16px;font-weight:bold;'
-                    f'display:inline-block;">{n:02d}</span>' for n in latest.front)
-                back_html = "".join(
-                    f'<span style="background:#e53e3e;color:#fff;border-radius:50%;'
-                    f'padding:5px 10px;margin:2px;font-size:16px;font-weight:bold;'
-                    f'display:inline-block;">{n:02d}</span>' for n in latest.back)
+                # 球间显式空格（QLabel QTextDocument 对 CSS margin 支持有限，用 &nbsp; 保证间距）
+                def _balls(nums, color):
+                    return ("&#160;".join(
+                        f'<span style="background:{color};color:#fff;border-radius:50%;'
+                        f'padding:6px 12px;margin:0 5px;font-size:16px;font-weight:bold;'
+                        f'display:inline-block;">{n:02d}</span>' for n in nums))
+                front_html = _balls(latest.front, "#2b6cb0")
+                back_html = _balls(latest.back, "#e53e3e")
                 latest_label = QLabel(
                     f'<div style="text-align:center;padding:4px;">'
                     f'<span style="font-size:12px;color:#666;">🎯 最新开奖 '
                     f'{getattr(latest, "number", "")}（{getattr(latest, "draw_date", "")}）</span><br>'
-                    f'{front_html} <span style="color:#999;font-size:16px;">+</span> {back_html}</div>')
+                    f'{front_html} &#160;<span style="color:#999;font-size:18px;">+</span>&#160; {back_html}</div>')
                 latest_label.setStyleSheet(
                     "background:#ffffff;border:1px solid #d6e4ff;border-radius:10px;padding:8px;")
                 lay.addWidget(latest_label)
