@@ -38,12 +38,26 @@ class DashboardPage(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.draws = load_draws()
+        self._outer = QVBoxLayout(self)
+        self._outer.setContentsMargins(0, 0, 0, 0)
+        self._build()
+
+    def refresh(self) -> None:
+        """重新加载数据并重建看板（新增票据 / 切换页面时调用，保证数据实时）。"""
+        try:
+            self.draws = load_draws()
+        except Exception:
+            pass
+        while self._outer.count():
+            item = self._outer.takeAt(0)
+            w = item.widget()
+            if w is not None:
+                w.deleteLater()
         self._build()
 
     def _build(self):
         # v4.2 UI 优化：可滚动容器，内容多时滚动查看，避免拥挤
-        outer = QVBoxLayout(self)
-        outer.setContentsMargins(0, 0, 0, 0)
+        outer = self._outer
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QFrame.NoFrame)
@@ -473,6 +487,30 @@ class DashboardPage(QWidget):
         title = QLabel("📡 开奖状态")
         title.setStyleSheet("font-size:14px;font-weight:bold;color:#1a1a2e;")
         lay.addWidget(title)
+
+        # v4.9.1 修复：最新开奖号码醒目展示（彩色球 + 大字号）
+        try:
+            if self.draws:
+                latest = self.draws[-1]
+                front_html = "".join(
+                    f'<span style="background:#2b6cb0;color:#fff;border-radius:50%;'
+                    f'padding:5px 10px;margin:2px;font-size:16px;font-weight:bold;'
+                    f'display:inline-block;">{n:02d}</span>' for n in latest.front)
+                back_html = "".join(
+                    f'<span style="background:#e53e3e;color:#fff;border-radius:50%;'
+                    f'padding:5px 10px;margin:2px;font-size:16px;font-weight:bold;'
+                    f'display:inline-block;">{n:02d}</span>' for n in latest.back)
+                latest_label = QLabel(
+                    f'<div style="text-align:center;padding:4px;">'
+                    f'<span style="font-size:12px;color:#666;">🎯 最新开奖 '
+                    f'{getattr(latest, "number", "")}（{getattr(latest, "draw_date", "")}）</span><br>'
+                    f'{front_html} <span style="color:#999;font-size:16px;">+</span> {back_html}</div>')
+                latest_label.setStyleSheet(
+                    "background:#ffffff;border:1px solid #d6e4ff;border-radius:10px;padding:8px;")
+                lay.addWidget(latest_label)
+        except Exception:
+            pass
+
         for line in (
             f"⏳ 距离下一开奖：大乐透 {next_dlt or '—'} · 双色球 {next_ssq or '—'}",
             f"🩺 {health_txt}",

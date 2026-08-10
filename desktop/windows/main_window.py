@@ -219,6 +219,12 @@ class MainWindow(QMainWindow):
     def switch_page(self, name: str) -> None:
         if name in PAGES:
             self.stack.setCurrentIndex(PAGES.index(name))
+            # v4.9.1 修复：切换到数据看板时实时刷新（新增票据后立即同步显示）
+            if name == "数据看板":
+                try:
+                    self.dashboard.refresh()
+                except Exception:
+                    pass
             # 用户行为追踪（v3.7.0 Phase 4）
             try:
                 from engine.user_feedback_v2 import UserFeedbackTracker
