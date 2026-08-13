@@ -14,9 +14,10 @@ import csv
 import io
 import json
 import sqlite3
+import time
 import urllib.request
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional, Tuple
 
 from .models import DrawRecord, DataSourceInfo
 from .quality import DataQualityReport
@@ -211,6 +212,12 @@ class DatabaseDatasource:
             return []
 
 
+# 模块级缓存（v4.9.1 性能修复：避免每次匹配开奖都重复读 CSV 解析上千期）
+# key: (lottery, base_dir) → (timestamp, List[DrawRecord])
+_SOURCE_CACHE: Dict[Tuple[str, Optional[str]], Tuple[float, List]] = {}
+_SOURCE_CACHE_TTL = 300  # 秒（5 分钟；数据更新后 TTL 过期自动重读）
+
+
 class DataSourceManager:
     """数据源管理器：按优先级加载数据并给出质量报告。"""
 
@@ -218,6 +225,7 @@ class DataSourceManager:
         self.lottery = lottery
         self._sources: List[object] = []
         self.draws: List[DrawRecord] = []
+        self._cached_draws: Optional[List[DrawRecord]] = None
         self.report: Optional[DataQualityReport] = None
         self.info: Optional[DataSourceInfo] = None
 
@@ -241,6 +249,10 @@ class DataSourceManager:
     # ---- 加载 ----
     def load(self) -> List[DrawRecord]:
         """按注册顺序加载，取第一个有数据的源；数据不足时可合并。"""
+        # 缓存命中：直接返回（避免重复读文件，性能优化 v4.9.1）
+        if self._cached_draws is not None:
+            self.draws = self._cached_draws
+            return self.draws
         combined: List[DrawRecord] = []
         used: Optional[object] = None
         for src in self._sources:
@@ -286,7 +298,16 @@ class DataSourceManager:
 
         v4.9.1 修复：优先读用户增量缓存 `~/.atlas/raw/`（含最新开奖，如 26090），
         其次 `~/.atlas/data/`（旧版），最后项目内置。修复中奖计算漏算最新期的问题。
+        同时加模块级缓存（TTL 5 分钟）避免每次匹配重复读 CSV 解析上千期。
         """
+        key = (lottery, base_dir)
+        now = time.time()
+        cached = _SOURCE_CACHE.get(key)
+        if cached and now - cached[0] < _SOURCE_CACHE_TTL:
+            mgr = cls(lottery)
+            mgr._cached_draws = cached[1]
+            return mgr
+
         mgr = cls(lottery)
         if base_dir:
             raw = Path(base_dir) / "data" / "raw"
@@ -298,11 +319,15 @@ class DataSourceManager:
             user_file = user_home / sub / f"{lottery}_history.csv"
             if user_file.exists():
                 mgr.add_csv(str(user_file))
+                mgr.load()
+                _SOURCE_CACHE[key] = (now, mgr.draws)
                 return mgr
         # 项目 data/raw（真实历史数据或样例）
         cands = [raw / f"{lottery}_history.csv", raw / f"{lottery}_2024_sample.csv"]
         for c in cands:
             if c.exists():
                 mgr.add_csv(str(c))
+                mgr.load()
+                _SOURCE_CACHE[key] = (now, mgr.draws)
                 break
         return mgr

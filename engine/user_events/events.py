@@ -22,6 +22,10 @@ EVENT_TYPES = {
     "draw_reminder_received", "draw_opened", "claim_completed",
 }
 
+# 模块级缓存（v4.9.1 性能修复：events 文件可达数 MB，避免每次读全文件 json.loads 数千行）
+# key: 文件路径 → (mtime, List[UserEvent])；文件 mtime 变化时自动失效重读
+_EVENT_FILE_CACHE: dict = {}
+
 
 @dataclass
 class UserEvent:
@@ -62,6 +66,14 @@ class EventTracker:
     def all(self) -> List[UserEvent]:
         if not os.path.exists(self._path):
             return []
+        # 模块级缓存：文件 mtime 未变则直接复用（性能修复 v4.9.1）
+        try:
+            mtime = os.path.getmtime(self._path)
+        except OSError:
+            mtime = -1
+        cached = _EVENT_FILE_CACHE.get(self._path)
+        if cached is not None and cached[0] == mtime:
+            return cached[1]
         out = []
         try:
             with open(self._path, encoding="utf-8") as f:
@@ -76,6 +88,7 @@ class EventTracker:
                         continue
         except OSError:
             return []
+        _EVENT_FILE_CACHE[self._path] = (mtime, out)
         return out
 
     def count(self, event_type: str) -> int:
