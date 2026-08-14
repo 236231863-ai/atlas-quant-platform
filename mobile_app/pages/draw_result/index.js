@@ -5,6 +5,7 @@ Page({
   data: {
     ticket_id: '',
     issue: '',
+    draw_date: '',
     result: null,
     loading: true,
   },
@@ -22,9 +23,10 @@ Page({
       // 用最新开奖核对（验证阶段取最新期）
       const latest = await api.latestDraw('dlt')
       const issue = latest.issue
+      const draw_date = latest.draw_date || ''
       const res = await api.checkDraw(app.globalData.user_id, this.data.ticket_id, issue)
       api.track('mobile_draw_viewed', app.globalData.user_id, { ticket_id: this.data.ticket_id, issue })
-      this.setData({ issue, result: res.result, loading: false })
+      this.setData({ issue, draw_date, result: res.result, loading: false })
     } catch (e) {
       this.setData({ loading: false, result: null })
     }
@@ -34,7 +36,16 @@ Page({
     wx.navigateTo({ url: '/pages/monthly_stats/index' })
   },
 
+  goReminder() {
+    wx.setStorageSync('pending_reminder_ticket', {
+      ticket_id: this.data.ticket_id,
+      issue: this.data.issue,
+      draw_date: this.data.draw_date || '',
+    })
+    wx.navigateTo({ url: '/pages/reminder_setting/index' })
+  },
+
   goHome() {
-    wx.switchTab({ url: '/pages/my_tickets/index' })
+    wx.navigateTo({ url: '/pages/my_tickets/index' })
   },
 })

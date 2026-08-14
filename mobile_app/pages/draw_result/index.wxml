@@ -9,7 +9,9 @@
       <text class="detail">前区命中 {{result.front_hit}} 个 · 后区命中 {{result.back_hit}} 个</text>
       <text wx:if="{{result.won}}" class="prize">🏅 {{result.level}} · ¥{{result.amount}}</text>
     </view>
+    <button class="primary-btn" bindtap="goReminder">🔔 开启开奖提醒</button>
     <button class="primary-btn" bindtap="goStats">查看本月统计</button>
+    <button class="plain-btn" bindtap="goHome">回到我的票</button>
   </block>
 
   <block wx:else>

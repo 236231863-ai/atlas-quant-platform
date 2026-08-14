@@ -39,19 +39,29 @@ Page({
     if (this.data.loading) return
     this.setData({ loading: true })
     try {
-      // 1. wx.login 获取临时 code
-      const loginRes = await new Promise((resolve, reject) => {
-        wx.login({ success: resolve, fail: reject })
-      })
-      if (!loginRes.code) throw new Error('wx.login 无 code')
-      // 2. 调后端 /api/auth/wechat/login
-      const auth = await api.wechatLogin(loginRes.code, '大乐透', '每周')
+      // 1. wx.login 获取临时 code（预览模式可能卡住不返回，加 5 秒超时降级）
+      let code = ''
+      try {
+        const loginRes = await Promise.race([
+          new Promise((resolve, reject) => {
+            wx.login({ success: resolve, fail: reject })
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('wx.login 超时')), 5000)),
+        ])
+        code = loginRes.code || ''
+      } catch (e) {
+        console.warn('wx.login 失败/超时，降级 mock code', e)
+        code = 'mock_' + Date.now()
+      }
+      // 2. 调后端 /api/auth/wechat/login（后端 mock 模式任意 code 均可换取 openid）
+      const auth = await api.wechatLogin(code || ('mock_' + Date.now()), '大乐透', '每周')
       getApp().setAuth({ user_id: auth.user_id, openid: auth.openid })
       api.track('mobile_opened', auth.user_id, { page: 'onboarding', is_new: auth.is_new })
       wx.navigateTo({ url: '/pages/ticket_entry/index' })
     } catch (e) {
       console.error('登录失败', e)
-      wx.showToast({ title: '登录失败，请重试', icon: 'none' })
+      const msg = (e && (e.errMsg || e.message)) ? String(e.errMsg || e.message) : JSON.stringify(e)
+      wx.showModal({ title: '登录失败', content: msg, showCancel: false })
     } finally {
       this.setData({ loading: false })
     }
