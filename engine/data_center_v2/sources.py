@@ -26,6 +26,9 @@ from .quality import DataQualityReport
 SPORTTERY_API = "https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry"
 DLT_GAME_NO = "85"
 
+# 官方福彩 API（双色球）。注意：双色球属福彩，不能用体彩 sporttery 的 gameNo=235。
+CWL_API = "https://www.cwl.gov.cn/cwl_admin/front/cwlkj/search/kjxx/findDrawNotice"
+
 
 def _parse_numbers(text: str, front_n: int, back_n: int) -> tuple[List[int], List[int]]:
     """'10 11 18 22 35|06 12' / '10 11 18 22 35 06 12' / '04,06,10,18,23,31|11' -> (front, back)。
@@ -132,8 +135,8 @@ class APIDatasource:
 
     type_name = "api"
 
-    # 彩种 -> 官方 gameNo
-    GAME_NOS = {"dlt": "85", "ssq": "235"}
+    # 彩种 -> 官方 gameNo（仅体彩；双色球属福彩，走 CWLDatasource）
+    GAME_NOS = {"dlt": "85"}
 
     def __init__(self, lottery: str = "dlt", pages: int = 18, page_size: int = 30):
         self.lottery = lottery
@@ -181,6 +184,46 @@ class APIDatasource:
             except Exception:
                 break
         return rows
+
+
+class CWLDatasource:
+    """官方福彩 API 数据源（双色球 ssq，v4.10.1 修复）。
+
+    双色球属于中国福利彩票，之前误用体彩 sporttery 的 gameNo=235（返回空），
+    导致双色球数据长期滞后。此源改调福彩官网公开 API。
+    """
+
+    type_name = "api"
+
+    def __init__(self, lottery: str = "ssq", issue_count: int = 100):
+        self.lottery = lottery
+        self.issue_count = issue_count
+
+    def load(self) -> List[DrawRecord]:
+        url = f"{CWL_API}?name=ssq&issueCount={self.issue_count}"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        try:
+            with urllib.request.urlopen(req, timeout=15) as r:
+                data = json.loads(r.read().decode("utf-8"))
+        except Exception:
+            return []
+        out: List[DrawRecord] = []
+        for item in (data.get("result") or []):
+            num = item.get("code", "")
+            dt = item.get("date", "")
+            red = item.get("red", "")
+            blue = item.get("blue", "")
+            if not num or not red:
+                continue
+            # 福彩返回 red="05,08,15,20,21,24"、blue="09"；date 形如 "2026-08-13(四)"
+            front = [int(x) for x in red.replace(",", " ").split()]
+            back = [int(x) for x in blue.replace(",", " ").split()] if blue else []
+            if "(" in dt:
+                dt = dt.split("(")[0]
+            out.append(DrawRecord(num, dt, front, back, 0.0, self.lottery))
+        # 福彩 API 返回从新到旧，反转为从旧到新（与其它数据源一致）
+        out.reverse()
+        return out
 
 
 class DatabaseDatasource:
@@ -239,7 +282,10 @@ class DataSourceManager:
         return self
 
     def add_api(self, pages: int = 18) -> "DataSourceManager":
-        self._sources.append(APIDatasource(self.lottery, pages=pages))
+        if self.lottery == "ssq":
+            self._sources.append(CWLDatasource(self.lottery))
+        else:
+            self._sources.append(APIDatasource(self.lottery, pages=pages))
         return self
 
     def add_database(self, conn_str: str) -> "DataSourceManager":

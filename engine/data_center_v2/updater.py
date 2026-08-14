@@ -19,7 +19,7 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 # 官方体彩 API（与 sources.APIDatasource 一致）
-from engine.data_center_v2.sources import APIDatasource, CSVDatasource
+from engine.data_center_v2.sources import APIDatasource, CSVDatasource, CWLDatasource
 
 DEFAULT_MAX_AGE_HOURS = 24
 
@@ -167,7 +167,10 @@ class IncrementalUpdater:
             if not local:
                 local = self._load_builtin()  # 首次以内置历史为 base，避免丢历史
             local_issues = {r["issue"] for r in local}
-            src = APIDatasource(lottery=self.lottery, pages=pages, page_size=30)
+            if self.lottery == "ssq":
+                src = CWLDatasource(lottery=self.lottery)  # 双色球属福彩，用福彩 API
+            else:
+                src = APIDatasource(lottery=self.lottery, pages=pages, page_size=30)
             remote_records = src.load()
             # 过滤非法记录（号码数量/范围），防脏数据覆盖
             remote_records = [r for r in remote_records

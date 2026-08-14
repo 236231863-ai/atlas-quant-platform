@@ -239,11 +239,12 @@ def test_latest_issues(tmp_path):
 
 # ---------- 多彩种 / 优雅降级（v4.3.1 修复） ----------
 def test_api_game_no_switch():
-    """APIDatasource 按彩种切换 gameNo（dlt=85 / ssq=235）。"""
-    from engine.data_center_v2.sources import APIDatasource
+    """APIDatasource 按彩种切换 gameNo（dlt=85；ssq 走福彩 CWLDatasource，v4.10.1 修复）。"""
+    from engine.data_center_v2.sources import APIDatasource, CWLDatasource
     assert APIDatasource("dlt")._game_no == "85"
-    assert APIDatasource("ssq")._game_no == "235"
     assert APIDatasource("unknown")._game_no == "85"  # 默认回退
+    # 双色球属福彩，不再用体彩 APIDatasource 的 gameNo
+    assert CWLDatasource("ssq").lottery == "ssq"
 
 
 def test_update_ssq_api_empty_preserves(tmp_path, monkeypatch):
@@ -251,7 +252,7 @@ def test_update_ssq_api_empty_preserves(tmp_path, monkeypatch):
     upd = IncrementalUpdater(lottery="ssq", storage_dir=str(tmp_path))
     upd.save_local([{"issue": "2026087", "date": "2026-07-30",
                      "numbers": "04 06 10 18 23 31|11", "pool": "1"}])
-    monkeypatch.setattr("engine.data_center_v2.updater.APIDatasource",
+    monkeypatch.setattr("engine.data_center_v2.updater.CWLDatasource",
                         lambda **kw: FakeAPISource([]))
     result = upd.update(force=True)
     assert result["updated"] is False
