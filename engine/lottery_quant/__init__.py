@@ -10,6 +10,7 @@
   portfolio/     投注组合分析
   backtest/      策略回测（复用 evaluation_v2）
   report/        量化报告生成（复用 export）
+  randomness/    随机性检验（v4.10：卡方/游程/自相关，证伪选号）
   quant_director 量化分析总控制器
 
 原则：所有输出必须声明「彩票开奖结果具有随机性」，

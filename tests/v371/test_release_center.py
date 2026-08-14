@@ -25,7 +25,7 @@ def test_versions_unknown(v):
 
 
 def test_current_version():
-    assert CURRENT_VERSION == "v3.7.1-beta"
+    assert CURRENT_VERSION == "v4.10.0"
 
 
 @pytest.mark.parametrize("i", range(3))
@@ -115,7 +115,7 @@ def test_faq_has_answer(rc, i):
 
 
 # ---------- 更新检查 ----------
-@pytest.mark.parametrize("installed", ["v3.7.1-beta"])
+@pytest.mark.parametrize("installed", ["v4.10.0"])
 def test_has_update_same(rc, installed):
     assert not rc.has_update(installed)
 
@@ -125,7 +125,7 @@ def test_has_update_newer(rc, installed):
     assert rc.has_update(installed)
 
 
-@pytest.mark.parametrize("installed", ["v3.7.1-beta"])
+@pytest.mark.parametrize("installed", ["v4.10.0"])
 def test_cmp_same(rc, installed):
     assert rc._cmp(installed) == 0
 
@@ -193,7 +193,7 @@ def test_install_guide_content(i):
 @pytest.mark.parametrize("installed", ["v3.7.1-beta", "v3.7.0", "v3.6.1"])
 def test_has_update_matrix(installed):
     rc = ReleaseCenter()
-    if installed == "v3.7.1-beta":
+    if installed == "v4.10.0":
         assert not rc.has_update(installed)
     else:
         assert rc.has_update(installed)

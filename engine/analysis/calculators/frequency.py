@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from core.types.models import DrawRecordData
 
+DISCLAIMER = "统计分析仅陈述历史数据，不构成选号依据。开奖结果具有随机性。"
+
 
 def frequency_analysis(
     draws: List[DrawRecordData],
@@ -33,6 +35,7 @@ def frequency_analysis(
             "total_draws": 0,
             "main_numbers": _empty_frequency(main_range),
             "bonus_numbers": _empty_frequency(bonus_range) if bonus_range else None,
+            "disclaimer": DISCLAIMER,
         }
 
     # Count main number frequencies
@@ -58,6 +61,7 @@ def frequency_analysis(
         "total_draws": len(draws),
         "main_numbers": main_result,
         "bonus_numbers": bonus_result,
+        "disclaimer": DISCLAIMER,
     }
 
 

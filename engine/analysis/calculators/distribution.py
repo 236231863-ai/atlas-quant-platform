@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from core.types.models import DrawRecordData
 
+DISCLAIMER = "统计分析仅陈述历史数据，不构成选号依据。开奖结果具有随机性。"
+
 
 def distribution_analysis(
     draws: List[DrawRecordData],
@@ -41,6 +43,7 @@ def distribution_analysis(
             "zone_distribution": {},
             "sum_values": {},
             "span_values": {},
+            "disclaimer": DISCLAIMER,
         }
 
     min_v, max_v = main_range
@@ -145,6 +148,7 @@ def distribution_analysis(
         "zone_distribution": zone_result,
         "sum_values": sum_result,
         "span_values": span_result,
+        "disclaimer": DISCLAIMER,
     }
 
 
